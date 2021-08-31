@@ -45,6 +45,15 @@ CREATE TABLE `exode_tx` (
 ```
 
 ```
+CREATE TABLE `exode_cancel` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cancelled_tx_id` varchar(100) NOT NULL,
+  `block` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)
+```
+
+```
 CREATE TABLE `exode_player` (
   `id` int NOT NULL AUTO_INCREMENT,
   `player` varchar(100) NOT NULL,
