@@ -1,0 +1,4 @@
+NO_ALERT     = 0
+ALERT_MARKET = 1
+ALERT_MINT   = 2
+ALERT_KILL   = -1

@@ -8,10 +8,13 @@ import json
 import os.path
 import mysql.connector
 from timeit import default_timer as timer
+import time
 
 import discord
 from dotenv import load_dotenv
 from discord.ext import tasks
+
+import exode_const as excst
 
 
 load_dotenv()
@@ -896,7 +899,7 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 			msg_elite = "a **"
 				
 		
-		msg = "{player} found {elite}{name}** (**{mint}**/{mint}) *uid={uid}* (mint numbers are estimation only and are not official)".format(player=card_owner,elite=msg_elite,name=card_name, mint=card_mint, uid=card_uid)
+		msg = ":tada: {player} found {elite}{name}** (**{mint}**/{mint} *uid={uid}*)".format(player=card_owner,elite=msg_elite,name=card_name, mint=card_mint, uid=card_uid)
 	
 	return msg
 	
@@ -950,7 +953,7 @@ def db_Card_Apply_Burn( card_burner, card_id, card_uid, card_block, tx_id, bypas
 		else:
 			msg_elite = "a **"
 				
-		msg = "{player} burn {elite}{name}** (**{mint}**/{mint}) *uid={uid}*  (mint numbers are estimation only and are not official)".format(player=card_burner,elite=msg_elite,name=card_name, mint=card_mint, uid=card_uid)
+		msg = ":fire: {player} burn {elite}{name}** (**{mint}**/{mint} *uid={uid})*".format(player=card_burner,elite=msg_elite,name=card_name, mint=card_mint, uid=card_uid)
 	
 	return msg
 	
@@ -1146,11 +1149,11 @@ def db_Sale_Apply_New( sale_seller, asset_id, asset_uid, sale_block, sale_tx, sa
 		
 	return True
 	
-def db_Sale_Apply_Cancel( sale_seller, asset_id, asset_uid, sale_block, sale_tx, sale_update ):
+def db_Sale_Apply_Cancel( sale_seller, asset_id, asset_uid, sale_block, sale_tx, sale_update, transfert_cancel=False ):
 
 	# Check asset
 	(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(asset_id)
-	if ( not is_pack and not sale_update ):
+	if ( not is_pack and not sale_update and not transfert_cancel ):
 		cInfo = db_Card_IsTransferable( sale_seller, "market", asset_id, asset_uid, sale_block, sale_tx, "sale-cancel" )
 		if ( not cInfo[0] ):
 			return False
@@ -1163,7 +1166,11 @@ def db_Sale_Apply_Cancel( sale_seller, asset_id, asset_uid, sale_block, sale_tx,
 			return True
 	
 	sInfo = db_Sale_GetDetails( asset_uid, 0, sale_block )
-	if ( not sInfo['exist'] ):
+	
+	if ( not sInfo['exist'] and transfert_cancel ):
+		#Skip
+		return True
+	elif ( not sInfo['exist'] ):
 		with open('logs/sale_error.json', 'a') as f:
 			err_msg = { "sale": { "seller": sale_seller, "buyer": "", "sold": 0, "card": { "id": asset_id, "uid": asset_uid } }, "issue": "unknown_sale", "spotted": {"action": "cancel_sale", "block": sale_block, "tx_id": sale_tx} } 
 			json.dump( err_msg, f ) 
@@ -1197,9 +1204,55 @@ def db_Sale_Apply_Sold( sale_seller, asset_id, asset_uid, sale_block, sale_tx, s
 			f.write("\n")
 		return [ False, "", 0.0 ]
 	else:
-		db_Sale_Sold( asset_uid, sale_tx, 0, sale_block, sale_buyer )
+		db_Sale_Sold( asset_uid, sale_tx, 1, sale_buyer, sale_block)
 		
 	return [ True, sInfo['seller'], sInfo['price'] ]
+	
+	
+def db_Sale_GetAverageSoldPrice(mID=""): 
+
+	if ( mID == "" ):
+		return -1.0
+	cursor = mSQLConnector.cursor()
+	
+	query = ("SELECT AVG(price) from exode_sales "
+		"WHERE asset_type = %s and sold = %s")  
+		 
+	cursor.execute(query, (mID,1) )
+	m_out = cursor.fetchall()
+	
+	if ( m_out[0][0] != None ):
+		m_price = float(m_out[0][0])
+	else: 
+		m_price = -1.0
+		
+	cursor.reset()
+	cursor.close()
+	
+	return m_price
+	
+def db_Sale_GetLastSoldPrice(mID=""): 
+
+	if ( mID == "" ):
+		return -1.0
+	cursor = mSQLConnector.cursor()
+	
+	query = ("SELECT price from exode_sales "
+		"WHERE asset_type = %s and sold = %s ORDER BY block_update DESC")  
+		 
+	cursor.execute(query, (mID,1) )
+	m_out = cursor.fetchall()
+	
+	if (  cursor.rowcount != 0 ):
+		m_price = float(m_out[0][0])
+	else: 
+		m_price = -1.0
+		
+	cursor.reset()
+	cursor.close()
+	
+	return m_price
+	
 			
 #########################################################################################
 
@@ -1343,7 +1396,7 @@ class my_eXode_bot(discord.Client):
 	######################################################################################
 	
 	# Parameters:
-	fFast            = True
+	fFast            = False
 	fDoDiscord       = False
 	
 	# Variables
@@ -1351,7 +1404,7 @@ class my_eXode_bot(discord.Client):
 	fLastTransaction  = "0000"
 	fLoadExodeGame    = False
 	fLoadPlayerMarket = False
-	fReBuildDataBase  = fFast
+	fReBuildDataBase  = False
 	fCancelTransactionList   = []
 	
 	# Discord Channels
@@ -1438,7 +1491,7 @@ class my_eXode_bot(discord.Client):
 				mPlayer = tInst['recipient']
 				
 				if ( not self.CheckTransaction(tBlock, tVId, mTxId, "", mPlayer, tVAuth, tVAuth, tInst) ):
-					return [ 0, tMSGOut ]
+					return [ excst.NO_ALERT, tMSGOut ]
 												
 				l_owner      = mPlayer
 				l_card_ids   = tInst['receivedcardids'].split(',')
@@ -1492,7 +1545,7 @@ class my_eXode_bot(discord.Client):
 					iPack_nb = 0					
 				else:
 					print("[ERROR] New card, unknown pack", l_owner, l_pack_ids, l_card_ids, l_card_uids, l_card_elite, l_source_id, l_source_uids)				
-					return [ -1, tMSGOut ]
+					return [ excst.ALERT_KILL, tMSGOut ]
 					
 				if ( iPack_nb > 0 ):
 					db_Pack_Apply_Update(l_owner, l_source_id, -1*iPack_nb, iPack_nb )
@@ -1510,13 +1563,14 @@ class my_eXode_bot(discord.Client):
 					if ( lOut != "" ):
 						tMSGOut.append(lOut)
 						
+				return [ excst.ALERT_MINT, tMSGOut ]
 				#end = timer()				
 				#print ( "New pack took ", (end-start) )										
 			
 			elif ( tVId == "exode_contract_dropready" ):
 				# contract dropready
 				# SKIP!
-				return [ 0, tMSGOut ]
+				return [ excst.NO_ALERT, tMSGOut ]
 				
 			elif ( 	tVId == "exode_newpacks" 
 				or 	tVId == "exode_bonuspacks" 	or tVId == "community_gift" 
@@ -1554,7 +1608,7 @@ class my_eXode_bot(discord.Client):
 				mPlayer = tInst['recipient']
 				
 				if ( not self.CheckTransaction(tBlock, tVId, mTxId, "", mPlayer, tVAuth, tVAuth, tInst) ):
-					return [ 0, tMSGOut ]
+					return [ excst.NO_ALERT, tMSGOut ]
 						
 				#print( 'pack', mTxId, tInst['recipient'], tInst['typeids'].split(','), tInst['typenbs'].split(',') ) 
 				
@@ -1576,7 +1630,7 @@ class my_eXode_bot(discord.Client):
 				mPlayer = tInst['recipient']
 				
 				if ( not self.CheckTransaction(tBlock, tVId, mTxId, "", mPlayer, tVAuth, tVAuth, tInst) ):
-					return [ 0, tMSGOut ]
+					return [ excst.NO_ALERT, tMSGOut ]
 					
 				#print( 'giftcard', mTxId, tInst['recipient'], tInst['sourceid'], tInst['receivedcardnb'] ) 
 					
@@ -1587,7 +1641,9 @@ class my_eXode_bot(discord.Client):
 				for iCard in range( l_card_nb ):
 					lOut = db_Card_Apply_Mint( l_owner, l_card_id, "none", 0, 0, 0, tBlock, mTxId, self.CheckByPass( tBlock ) )					
 					if ( lOut != "" ):
-						tMSGOut.append(lOut)		
+						tMSGOut.append(lOut)
+							
+				return [ excst.ALERT_MINT, tMSGOut ]	
 					
 			elif ( tVId == "exode_upgrade_confirmed" ):		
 				#Burn card	
@@ -1598,7 +1654,7 @@ class my_eXode_bot(discord.Client):
 				mPlayer = tInst['recipient']
 				
 				if ( not self.CheckTransaction(tBlock, tVId, mTxId, "", mPlayer, tVAuth, tVAuth, tInst) ):
-					return [ 0, tMSGOut ]
+					return [ excst.NO_ALERT, tMSGOut ]
 				
 				l_card_owner     = tInst['recipient']
 				l_card_id        = tInst['globalid']
@@ -1615,30 +1671,30 @@ class my_eXode_bot(discord.Client):
 					lOut = db_Card_Apply_Burn( l_card_owner, l_card_id, l_card_burn_uids[iCard], tBlock, mTxId, self.CheckByPass( tBlock ) )					
 					if ( lOut != "" ):
 						tMSGOut.append(lOut)	
+						
+				return [ excst.ALERT_MINT, tMSGOut ]
 					
 			elif ( tVId == "exode_reward_medal" ):
 				#exode_reward_medal ['exode_reward_medal', {'recipient': 'raudell', 'medal_title': 'Winner of the Ocean World (Planetary Challenge, July 2020)', 'medal_globalid': '', 'medal_nft': '', 'medal_picture': '', 'tx_id': '', 'app_tx': '3b45b4392dcf1957ead42082a0628552'}]
-				return [ 0, tMSGOut ]
+				return [ excst.NO_ALERT, tMSGOut ]
 				#TODO
 			elif ( tVId == "exode_cancel_test_transaction" ):
 				tInst   = tVJSON[1]
 				mTxId   = tInst['tx_id']
 				
 				if ( not self.CheckTransaction(tBlock, tVId, mTxId, "", tVAuth, tVAuth, tVAuth, tInst, True) ):
-					return [ 0, tMSGOut ]
+					return [ excst.NO_ALERT, tMSGOut ]
 								
 				db_Cancel_FillTX( mTxId, tValue['block'] )	
-				return [ 0, tMSGOut ]
 				
 			elif (	   tVId == "for_development_test" 	or tVId == "for_development"
 				or tVId == "artist_payment" 		or tVId == "follow" 
 				or tVId == "market_test_booster" 	or tVId == "exode_delivery" ):		
 				# SKIP
-				return [ 0, tMSGOut ]
+				return [ excst.NO_ALERT, tMSGOut ]
 			else:	
 				with open('logs/log_unknown.log', 'a') as f:
 					f.write("Type: {del_type}, Block: {block}, transaction: {del_txt}\n".format(del_type=tVId,block=tBlock,del_txt=tVJSON) )
-				return [ 0, tMSGOut ]
 							
 		elif ( tVId == "exode_market_sell" ):
 			# Get JSON to add new market sell			
@@ -1654,10 +1710,10 @@ class my_eXode_bot(discord.Client):
 				self.fLastTransaction = tInst['txid']
 				l_sale_txid    = tInst['txid']
 			else:
-				return [ 0, tMSGOut ]			
+				return [ excst.NO_ALERT, tMSGOut ]			
 							
 			if ( not self.CheckTransaction(tBlock, tVId, l_sale_txid, "", tVAuth, tVAuth, tVAuth, tInst, True) ):
-				return [ 0, tMSGOut ]			
+				return [ excst.NO_ALERT, tMSGOut ]			
 			
 			l_asset_seller = tVAuth
 			
@@ -1684,15 +1740,17 @@ class my_eXode_bot(discord.Client):
 				bOK = db_Sale_Apply_New( l_asset_seller, l_asset_id, l_asset_uids[iAsset], tBlock, l_sale_txid, l_sale_price, 0, "", self.fLoadPlayerMarket )
 
 			if ( not bOK ):
-				return [ 0, tMSGOut ]
+				return [ excst.NO_ALERT, tMSGOut ]
 			
 			(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(l_asset_id) 
+			mSoldPrice = db_Sale_GetAverageSoldPrice(l_asset_id)
+			mLastPrice = db_Sale_GetLastSoldPrice(l_asset_id)
 
 			if ( is_pack ):
 						
 				pack_name                               = asset_name
 				
-				lOut = "[MARKET] {seller} listed {nb} **{name}** on the market for ${price}".format(seller=l_asset_seller, nb=len(l_asset_uids), name=pack_name, price=l_sale_price)
+				lOut = ":blue_square: {seller} listed {nb} **{name}** on the market for **${price}** (average sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller, nb=len(l_asset_uids), name=pack_name, price=l_sale_price)
 				tMSGOut.append(lOut)
 							
 			else:
@@ -1724,17 +1782,15 @@ class my_eXode_bot(discord.Client):
 					card_elite_msg = "Elite "
 				
 				if ( len(l_asset_uids) == 1 ):
-					lOut = "[MARKET] {seller} listed 1 **{elite}{name}** ({mint}/{ntot_mint} *uid={muid})* from **{seller}** for ${price}  (mint numbers are estimation only and are not official)".format(seller=l_asset_seller, 
-								name=card_name, mint=card_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=card_muid, price=l_sale_price)
+					lOut = ":blue_square: {seller} listed 1 **{elite}{name}** (**{mint}**/{ntot_mint} *uid={muid})* for **${price}** (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller, 
+								name=card_name, mint=card_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=card_muid, price=l_sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 				else:						
-					lOut = "[MARKET] {seller} listed {nb} **{elite}{name}** for ${price} (minimum mint listed is **{mint}**/{ntot_mint} *uid={muid}*)  (mint numbers are estimation only and are not official)".format(seller=l_asset_seller,
+					lOut = ":blue_square: {seller} listed {nb} **{elite}{name}** for **${price}** (minimum mint listed is **{mint}**/{ntot_mint} *uid={muid}*) (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller,
 								nb=len(l_asset_uids), elite=card_elite_msg, name=card_name, mint=card_mint, ntot_mint=card_ntot_mint, muid=card_muid,
-								price=l_sale_price)
+								price=l_sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 				tMSGOut.append(lOut)
-					
-			tMSGOut.append(lOut)
 			
-			return [ 1, tMSGOut ]
+			return [ excst.ALERT_MARKET, tMSGOut ]
 							
 						
 		elif ( tVId == "exode_market_cancel_sell" ):
@@ -1756,16 +1812,16 @@ class my_eXode_bot(discord.Client):
 			else:			
 				l_asset_uid = tInst['uniqueids']
 				print("[DEBUG] New cancel from : ", tVAuth, tVJSON)
-				return [ -1, tMSGOut ]	
+				return [ excst.ALERT_KILL, tMSGOut ]	
 				
 			if ( not self.CheckTransaction(tBlock, tVId, l_sale_txid, l_asset_uid, tVAuth, tVAuth, tVAuth, tInst, True) ):
-				return [ 0, tMSGOut ]	
+				return [ excst.NO_ALERT, tMSGOut ]	
 				
 			print( 'cancelsell', l_sale_txid, l_asset_seller, l_asset_id, l_asset_uid )
 			bOK = db_Sale_Apply_Cancel( l_asset_seller, l_asset_id, l_asset_uid, tBlock, l_sale_txid, self.fLoadPlayerMarket )
 				
 			if ( not bOK ):
-				return [ 0, tMSGOut ]
+				return [ excst.NO_ALERT, tMSGOut ]
 
 			(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(l_asset_id) 
 
@@ -1773,7 +1829,7 @@ class my_eXode_bot(discord.Client):
 						
 				pack_name                               = asset_name
 				
-				lOut = "[MARKET] {seller} unlisted {nb} **{name}** on the market".format(seller=l_asset_seller, nb=1, name=pack_name)
+				lOut = ":purple_square: {seller} unlisted {nb} **{name}** on the market".format(seller=l_asset_seller, nb=1, name=pack_name)
 				tMSGOut.append(lOut)
 							
 			else:
@@ -1790,18 +1846,18 @@ class my_eXode_bot(discord.Client):
 				if ( card_elite == 1 ):
 					card_elite_msg = "Elite "
 				
-				lOut = "[MARKET] {seller} unlisted 1 **{elite}{name}** (**{mint}**/{ntot_mint} *uid={muid}*)  (mint numbers are estimation only and are not official)".format(seller=l_asset_seller, 
+				lOut = ":purple_square: {seller} unlisted 1 **{elite}{name}** (**{mint}**/{ntot_mint} *uid={muid}*)".format(seller=l_asset_seller, 
 								name=card_name, mint=card_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=card_muid)
 				tMSGOut.append(lOut)
 						
-			return [ 1, tMSGOut ]
+			return [ excst.ALERT_MARKET, tMSGOut ]
 						
 							
 		elif ( tVId == "exode_market_transfer" ):
 			# Ownership is set by exodegame, ignore
-			return [ 0, tMSGOut ]	
+			return [ excst.NO_ALERT, tMSGOut ]	
 				
-		return [ 0, tMSGOut ]
+		return [ excst.NO_ALERT, tMSGOut ]
 
 	######################################################################################
 
@@ -1830,7 +1886,10 @@ class my_eXode_bot(discord.Client):
 					
 					
 					if ( not self.CheckTransaction(tBlock, tMemo[1], mTxId, mUID, tTo, mFrom, tFrom, tMemo) ):
-						return [ 0, tMSGOut ]	
+						return [ excst.NO_ALERT, tMSGOut ]	
+					
+					# Cancel sale if any
+					bOK = db_Sale_Apply_Cancel( mFrom, mID, mUID, tBlock, mTxId, False, True )
 					
 					if ( ex_IsPack(mID) ):
 						print('pack-transfer', mTxId, mFrom, tTo, mID, mUID )
@@ -1848,7 +1907,7 @@ class my_eXode_bot(discord.Client):
 					mTxId = tMemo[8]
 					
 					if ( not self.CheckTransaction(tBlock, tMemo[1], mTxId, mUID, tTo, mFrom, tFrom, tMemo) ):
-						return [ 0, tMSGOut ]	
+						return [ excst.NO_ALERT, tMSGOut ]	
 		
 					if ( self.fLoadExodeGame ):
 						bOK = db_Sale_Apply_New( "market", mID, mUID, tBlock, mTxId, 0.0, 1, tTo, self.CheckByPass( tBlock ), True )
@@ -1863,9 +1922,10 @@ class my_eXode_bot(discord.Client):
 						asset_price  = sInfo[2]
 										
 					if ( not bOK ):
-						return [ 0, tMSGOut ]	
+						return [ excst.NO_ALERT, tMSGOut ]	
 						
 					(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(mID) 
+					mSoldPrice = db_Sale_GetAverageSoldPrice(mID)
 					
 					if ( is_pack ):
 						print('pack-buy', mTxId, mFrom, tTo, mID, mUID )
@@ -1874,7 +1934,7 @@ class my_eXode_bot(discord.Client):
 						
 						db_Pack_Apply_Transfer( asset_seller, tTo, mID, 1 )
 						
-						lOut = "[MARKET] Sale {buyer} bought one {name} from {seller} for ${price}".format(buyer=tTo, name=pack_name, seller=asset_seller, price=asset_price)
+						lOut = ":green_square: {buyer} bought 1 **{name}** from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=pack_name, seller=asset_seller, price=asset_price, sold_price=mSoldPrice)
 						tMSGOut.append(lOut)
 							
 					else:
@@ -1893,13 +1953,13 @@ class my_eXode_bot(discord.Client):
 						if ( card_elite == 1 ):
 							card_elite_msg = "Elite "
 											
-						lOut = "[MARKET] Sale {buyer} bought one {elite}{name} ({mint}/{ntot_mint}) from {seller} for ${price}  (mint numbers are estimation only and are not official)".format(buyer=tTo, name=card_name,
-									 elite=card_elite_msg, mint=card_mint, ntot_mint=card_ntot_mint, seller=asset_seller, price=asset_price)
+						lOut = ":green_square: {buyer} bought 1 **{elite}{name}** (**{mint}**/{ntot_mint}  *uid={muid}*) from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=card_name,
+									 elite=card_elite_msg, mint=card_mint, ntot_mint=card_ntot_mint, muid=mUID, seller=asset_seller, price=asset_price,sold_price=mSoldPrice)
 						if ( lOut != "" ):
 							tMSGOut.append(lOut)
 						
 					
-					return [ 0, tMSGOut ]
+					return [ excst.ALERT_MARKET, tMSGOut ]
 					
 				elif ( tMemo[1] == "exode_delivery" or tMemo[1] == "exode_delivery_update" ):	
 				
@@ -1913,23 +1973,21 @@ class my_eXode_bot(discord.Client):
 						mUID = ""						
 					
 					if ( not self.CheckTransaction(tBlock, tMemo[1], mTxId, mUID, tTo, tFrom, tFrom, tMemo) ):
-						return [ 0, tMSGOut ]	
+						return [ excst.NO_ALERT, tMSGOut ]	
 						
 					with open('logs/transaction_delivery.json', 'a') as f:
 						err_msg = { "transaction": { "type": tMemo[1], "block": tBlock, "tx_id": "" },  
 							"transaction_details": tMemo[2:] }
 						json.dump( err_msg, f ) 
 						f.write("\n")
-					return [ 0, tMSGOut ]
 			
 				elif ( tMemo[1] == "exode_market_rewards" or tMemo[1] == "exode_market_sale" or tMemo[1] == "exode_market_sale_manual" ):			
 					#SKIP!
-					return [ 0, tMSGOut ]
+					return [ excst.NO_ALERT, tMSGOut ]
 			
 				else:	
 					with open('logs/log_unknown_transfert.log', 'a') as f:
 						f.write("From: {del_from}, To: {del_to}, Type: {del_type}, Block: {block}, memo: {del_txt}\n".format(del_from=tFrom, del_to=tTo,del_type=tMemo[1],block=tBlock,del_txt=tMemo[2:]) )
-					return [ 0, tMSGOut ]
 			
 			else:
 				with open('logs/log_unknown_transfert.log', 'a') as f:
@@ -1943,7 +2001,7 @@ class my_eXode_bot(discord.Client):
 				mTo = tnMemo[3]
 			
 				if ( not self.CheckTransaction(tBlock, tnMemo[0], tBlock, "", mTo, tFrom, tFrom, tnMemo) ):
-					return [ 0, tMSGOut ]	
+					return [ excst.NO_ALERT, tMSGOut ]	
 						
 				print( 'mass-transfer-pack', 0, tFrom, tnMemo[3], tnMemo[1], tnMemo[2] )		
 				
@@ -1958,7 +2016,7 @@ class my_eXode_bot(discord.Client):
 					mTo = "birdbeaksd"
 					
 				if ( not self.CheckTransaction(tBlock, tnMemo[0], tBlock, "", mTo, tFrom, tFrom, tnMemo) ):
-					return [ 0, tMSGOut ]	
+					return [ excst.NO_ALERT, tMSGOut ]	
 					
 				print( 'mass-transfer-account', 0, tFrom, mTo )
 				
@@ -1969,18 +2027,15 @@ class my_eXode_bot(discord.Client):
 					f.write("From: {del_from}, To: {del_to}, Type: {del_type}, Block: {block}, memo: {del_txt}\n".format(del_from=tFrom, del_to=tTo,del_type="unknown",block=tBlock,del_txt=tValue['memo']) )
 			
 
-		return [ 0, tMSGOut ]
+		return [ excst.NO_ALERT, tMSGOut ]
 		
 	######################################################################################
 		
-	async def ProcessTransaction(self, hTransaction ):
+	async def ProcessTransaction(self, tType, tBlock, hTransaction ):
 	
-		lOut = [ 0, [] ]
+		lOut = [ excst.NO_ALERT, [] ]
 		
-		tType  = hTransaction['type']
-		tBlock = hTransaction['block']
-		
-		if ( tType == "transfer" ):
+		if ( tType == "transfer" or tType == "transfer_operation" ):
 			#transfer transaction
 						
 			#Get transaction From/To
@@ -1990,7 +2045,7 @@ class my_eXode_bot(discord.Client):
 			if ( tFrom == "exodegame" or tTo == "exodegame" ):
 				lOut = self.ReadTransfert(hTransaction, tBlock)
 					
-		elif ( tType == "custom_json" ):
+		elif ( tType == "custom_json" or tType == "custom_json_operation" ):
 			#JSON transaction
 						
 			#Get transaction value
@@ -2001,14 +2056,14 @@ class my_eXode_bot(discord.Client):
 			lOut = self.ReadJSONTransaction(hTransaction, tBlock)
 			
 							
-		if ( lOut[0] == 0 ):
+		if ( lOut[0] == excst.ALERT_MINT ):
 			if( len(lOut[1]) > 0 ):
 				for msg in lOut[1]:
 					print ( msg )
 								
 				await self.disc_send_msg_list( lOut[1], self.DISC_CHANNELS_MINT )
 				
-		elif ( lOut[0] == 1 ):
+		elif ( lOut[0] == excst.ALERT_MARKET ):
 			if( len(lOut[1]) > 0 ):
 				for msg in lOut[1]:
 					print ( msg )	
@@ -2032,11 +2087,11 @@ class my_eXode_bot(discord.Client):
 		for discord_guild in self.guilds:
 			DISC_CHANNEL = discord.utils.get(discord_guild.channels, name=self.DISC_CHANNEL_MARKET_NAME)
 			if ( DISC_CHANNEL != None ):
-				DISC_CHANNELS_TMP.append(DISC_CHANNEL.id)
+				DISC_CHANNELS_MARKET_TMP.append(DISC_CHANNEL.id)
 						
 				if ( DISC_CHANNEL.id not in self.DISC_CHANNELS_MARKET):					
 					print ( "DISCORD BOT:eXode bot [MARKET-ALERT] connected to {guild_name}".format(guild_name=discord_guild.name) )
-					await DISC_CHANNEL.send("eXode BOT [MARKET-ALERT] is connected here!")
+					await DISC_CHANNEL.send("*eXode BOT [MARKET-ALERT] is connected here!*")
 							
 			DISC_CHANNEL = discord.utils.get(discord_guild.channels, name=self.DISC_CHANNEL_MINT_NAME)
 			if ( DISC_CHANNEL != None ):
@@ -2044,27 +2099,28 @@ class my_eXode_bot(discord.Client):
 						
 				if ( DISC_CHANNEL.id not in self.DISC_CHANNELS_MINT):					
 					print ( "DISCORD BOT:eXode bot [EXODE-ALERT] connected to {guild_name}".format(guild_name=discord_guild.name) )
-					await DISC_CHANNEL.send("eXode BOT [EXODE-ALERT] is connected here!")
+					await DISC_CHANNEL.send("*eXode BOT [EXODE-ALERT] is connected here!*")
 					
 						
 			DISC_CHANNEL = discord.utils.get(discord_guild.channels, name=self.DISC_CHANNEL_PING_NAME)
 			if ( DISC_CHANNEL != None ):
 				DISC_CHANNELS_PING_TMP.append(DISC_CHANNEL.id)
 						
-				if ( DISC_CHANNEL.id not in DISC_CHANNELS_PING):					
+				if ( DISC_CHANNEL.id not in self.DISC_CHANNELS_PING):					
 					print ( "DISCORD BOT:eXode bot [PING] connected to {guild_name}".format(guild_name=discord_guild.name) )
-					await DISC_CHANNEL.send("eXode BOT [PING] is connected here!")
+					await DISC_CHANNEL.send("*eXode BOT [PING] is connected here!*")
 
 		self.DISC_CHANNELS_MARKET = DISC_CHANNELS_MARKET_TMP
-		self.DISC_CHANNELS_PING   = DISC_CHANNELS_MINT_TMP
-		self.DISC_CHANNELS_MINT   = DISC_CHANNELS_PING_TMP
+		self.DISC_CHANNELS_MINT   = DISC_CHANNELS_MINT_TMP
+		self.DISC_CHANNELS_PING   = DISC_CHANNELS_PING_TMP 
 		
 	async def disc_send_msg_list(self, msg_list, CHANNEL_LIST):
 	
 		if ( not self.fDoDiscord ):
 			return
 	
-		for DISCORD_CHANNEL in CHANNEL_LIST:
+		for DISCORD_CHANNEL_id in CHANNEL_LIST:
+			DISC_CHANNEL = DISC_CLIENT.get_channel(DISCORD_CHANNEL_id)
 			for msg in msg_list:
 				await DISC_CHANNEL.send(msg)	
 				
@@ -2073,7 +2129,8 @@ class my_eXode_bot(discord.Client):
 		if ( not self.fDoDiscord ):
 			return
 	
-		for DISCORD_CHANNEL in CHANNEL_LIST:
+		for DISCORD_CHANNEL_id in CHANNEL_LIST:
+			DISC_CHANNEL = DISC_CLIENT.get_channel(DISCORD_CHANNEL_id)
 			await DISC_CHANNEL.send(msg)	
 		
 	######################################################################################	
@@ -2112,7 +2169,7 @@ class my_eXode_bot(discord.Client):
 		self.DISC_CHANNELS_MINT = []
 		
 		
-		while self.fFirstBlock + 1000 < iLastBlock or self.fFast:
+		while self.fFirstBlock + 2000 < iLastBlock or self.fFast:
 		
 			self.fReBuildDataBase = True
 			self.fFast = False
@@ -2120,6 +2177,8 @@ class my_eXode_bot(discord.Client):
 			# Load exode history to build the database
 			acc = Account("exodegame")
 			self.fLoadExodeGame = True
+			
+			c_last_block_chain = bBlockC.get_current_block_num()
 			
 			# Load only cancel transaction			
 			c_block = int(db_Cancel_GetLastBlock())	
@@ -2182,11 +2241,11 @@ class my_eXode_bot(discord.Client):
 					if( tType != 'custom_json' and tType != 'transfer' ):
 						continue
 						
-					print("Read transaction in block: ", tBlock)
+					print("Read transaction in block: ", tBlock,"/",c_last_block)
 					
-					lOut = await self.ProcessTransaction( hTransaction )
+					lOut = await self.ProcessTransaction( tType, tBlock, hTransaction )
 					
-					if ( lOut < 0 ):
+					if ( lOut == excst.ALERT_KILL ):
 						print("Quit...")
 						return
 											
@@ -2195,6 +2254,16 @@ class my_eXode_bot(discord.Client):
 					
 					iIterator = iIterator + 1
 			
+			if ( c_last_block_chain > c_last_block ):
+				print("Last block registered is: ", c_last_block_chain )
+				
+				c_last_block_exode = c_last_block_chain
+				with open('logs/file_block_fast.json', 'w') as f:
+					json.dump( c_last_block_chain, f ) 
+			else:
+				print("Last block registered is: ", c_last_block )
+				c_last_block_exode = c_last_block
+				
 			self.fLoadExodeGame = False
 			
 			# Load player history to build sell database	
@@ -2218,17 +2287,28 @@ class my_eXode_bot(discord.Client):
 								
 				if ( c_block < iMinimumBlock ):
 					c_block = iMinimumBlock
+				
+				hTransactionList = []	
 					
+				for hTransaction in acc.history_reverse(start=c_last_block_exode+1,batch_size=1):			
+					tBlock = hTransaction['block']
 					
-				for hTransaction in acc.history_reverse(batch_size=1):			
-					c_last_block = hTransaction['block']
-					break
+					if ( tBlock < c_block+1 ):
+						break
+						
+					hTransactionList.insert(0, hTransaction)
+					
+				
+				print("Scan player account: ", player_name, "(", iPlayer, "/", len(m_players),")"," transactions")
+				iPlayer = iPlayer + 1
 				
 				c_block_cur = 0
-				print("Scan player account: ", player_name, "(", iPlayer, "/", len(m_players),")"," transactions from block: ", c_block+1," to ",c_last_block)
-				iPlayer = iPlayer + 1
-				if ( (c_block+1) < c_last_block ):
-					for hTransaction in acc.history(start=c_block+1, stop=c_last_block, use_block_num=True ):
+				
+				#if ( (c_block+1) < c_last_block ):
+					#for hTransaction in acc.history(start=c_block+1, stop=c_last_block, use_block_num=True ):				
+				if ( len(c_last_transaction) > 0 ):
+					for hTransaction in hTransactionList:
+					
 						#print(hTransaction)
 						tType  = hTransaction['type']
 						tBlock = hTransaction['block']
@@ -2239,15 +2319,16 @@ class my_eXode_bot(discord.Client):
 						if( tType != 'custom_json' ):
 							continue
 							
-						lOut = await self.ProcessTransaction( hTransaction )
+						lOut = await self.ProcessTransaction(tType, tBlock, hTransaction )
 						
-						if ( lOut < 0 ):
+						if ( lOut == excst.ALERT_KILL ):
 							print("Quit...")
 							return
 						
 						iIterator = iIterator + 1
 						c_block_cur = tBlock
-						
+				
+				hTransactionList.clear() 	
 				db_Player_SetLastBlock(player_name,c_last_block)
 			self.fLoadPlayerMarket = False
 				
@@ -2256,23 +2337,41 @@ class my_eXode_bot(discord.Client):
 			if ( os.path.isfile('logs/file_block_fast.json') ):
 				with open('logs/file_block_fast.json', 'r') as f:
 					self.fFirstBlock = json.load(f) 
-			
-		self.fReBuildDataBase = False
 		
+		# Change flag	
+		self.fReBuildDataBase = False
+		self.fDoDiscord       = True
+		
+		# Initialize iterator
 		iIterator = 0
-
+		
+		# It's running! 
 		while True:
 		
+			# Get first block
+			iFirstBlock = 0
 			if ( os.path.isfile('logs/file_block_fast.json') ):
 				with open('logs/file_block_fast.json', 'r') as f:
 					iFirstBlock = json.load(f) 
 			
+			if ( iFirstBlock < iMinimumBlock ):
+				iFirstBlock = iMinimumBlock
+			
+			# Get last block
+			iLastBlock = bBlockC.get_current_block_num()
+			
+			while iLastBlock < iFirstBlock+1:
+				print("sleeping...")
+				time.sleep(3.)
+				iLastBlock = bBlockC.get_current_block_num()
 			
 			# Loop over blocks
-			for iBlock in range(iFirstBlock,iLastBlock):
+			for iBlock in range(iFirstBlock+1,iLastBlock):
 				
 				# Check if need to reconnect or to ping
-				if ( iIterator % 1000 == 0 ):
+				if ( iIterator % 1000 == 0 ):	
+				
+					print("Discord: reconnect")
 					# Reconnect
 					await self.disc_connect()
 					
@@ -2280,8 +2379,27 @@ class my_eXode_bot(discord.Client):
 					db_Player_CompleteList()
 					db_Player_SetLastBlock_all(iBlock-1)
 					
+					msg = "Listing :blue_square:, unlisting :purple_square:, and buy :green_square: alert messages are displayed in this channel.\n**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_MARKET)
+					msg = "**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
+					
+					iIterator = 0
+					
 						
-				if ( iIterator % 100 == 0 ):
+				if ( iIterator % 100 == 0 ):			
+					
+					if ( os.path.isfile('stop.order') ):
+						os.remove('stop.order')
+						msg = ":zap: Killing order received, going to shutdown... :zap:"
+						await self.disc_send_msg(msg, self.DISC_CHANNELS_MARKET)
+						await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
+						await self.disc_send_msg(msg, self.DISC_CHANNELS_PING)
+						
+						print("shutdown")
+						return
+						
+					print("Discord: ping")
 					# Ping
 					msg = "[PING] Reading block {block}".format(block=iBlock)
 					await self.disc_send_msg(msg, self.DISC_CHANNELS_PING)
@@ -2294,15 +2412,28 @@ class my_eXode_bot(discord.Client):
 					
 				for tTrans in tTransList:
 				
-					print(tTrans)
+					#print(tTrans)
+					tOperationList = tTrans['operations']
+				
+					for tOperation in tOperationList:
+				
+						tType = tOperation['type']
+				
+						if( tType != 'custom_json_operation' and tType != 'transfer_operation' ):
+							continue	
 						
-					return
+						#print ( tOperation )
+						lOut = await self.ProcessTransaction( tType, iBlock+1, tOperation['value'] )
+						
+						if ( lOut == excst.ALERT_KILL ):
+							print("Quit...")
+							return
 			
 											
 				with open('logs/file_block_fast.json', 'w') as f:
 					json.dump( iBlock, f ) 
 
-		
+			
 	@read_exode.before_loop
 	async def read_exode_preparation(self):
 		await self.wait_until_ready() # wait until the bot logs in
