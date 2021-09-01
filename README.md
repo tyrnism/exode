@@ -77,6 +77,7 @@ CREATE TABLE `exode_pack` (
 CREATE TABLE `exode_cards` (
   `id` int NOT NULL AUTO_INCREMENT,
   `type` varchar(100) NOT NULL,
+  `num` mediumint DEFAULT (0),
   `uid` varchar(100) NOT NULL,
   `owner` varchar(100) NOT NULL,
   `burn` tinyint DEFAULT NULL,
