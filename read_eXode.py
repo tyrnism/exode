@@ -1752,7 +1752,7 @@ class my_eXode_bot(discord.Client):
 						
 				pack_name                               = asset_name
 				
-				lOut = ":blue_square: {seller} listed {nb} **{name}** on the market for **${price}** (average sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller, nb=len(l_asset_uids), name=pack_name, price=l_sale_price)
+				lOut = ":blue_square: {seller} listed {nb} **{name}** on the market for **${price}** (average sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller, nb=len(l_asset_uids), name=pack_name, price=l_sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 				tMSGOut.append(lOut)
 							
 			else:
