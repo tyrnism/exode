@@ -41,7 +41,7 @@ except mysql.connector.Error as err:
 ##############################################################################################
 
 def ex_IsPack( mID ):
-	(is_pack, asset_name, asset_rank) = ex_GetAssetDetails( mID )
+	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails( mID )
 		
 	return is_pack
 	
@@ -54,450 +54,451 @@ def ex_GetAssetDetails( mID ):
 	# 3 -> legendary
 	
 	if ( mID == "exode_alpha_booster" ):
-		return (True, "Alpha booster",					0)
+		return (True, "Alpha booster",					0, 0)
 		
 	if ( mID == "exode_alpha_support_vega" ):
-		return (True, "Alpha Escort Pack [Vega]",				0)
+		return (True, "Alpha Escort Pack [Vega]",				0, 0)
 	if ( mID == "exode_alpha_support_ionguards" ):
-		return (True, "Alpha Escort Pack [Ion Guards]",			0)
+		return (True, "Alpha Escort Pack [Ion Guards]",			0, 0)
 	if ( mID == "exode_alpha_support_tom" ):
-		return (True, "Alpha Support Pack [TOM Essentials]",			0)
+		return (True, "Alpha Support Pack [TOM Essentials]",			0, 0)
 		
 		
 	if ( mID == "exode_alpha_starter_4" ):
-		return (True, "Triple Alpha Starter Set",				0)
+		return (True, "Triple Alpha Starter Set",				0, 0)
 	if ( mID == "exode_alpha_starter_3" ):
-		return (True, "Alpha Starter [Elected Leader]",			0)
+		return (True, "Alpha Starter [Elected Leader]",			0, 0)
 	if ( mID == "exode_alpha_starter_2" ):
-		return (True, "Alpha Starter [Ark Scientist]",			0)
+		return (True, "Alpha Starter [Ark Scientist]",			0, 0)
 	if ( mID == "exode_alpha_starter_1" ):
 	
-		return (True, "Alpha Starter [Navy Lieutenant]",			0)
+		return (True, "Alpha Starter [Navy Lieutenant]",			0, 0)
 	if ( mID == "exode_alpha_contract_tom" ):
-		return (True, "Alpha Contract [TOM Settler PREMIUM BUDDIER]", 	0)
+		return (True, "Alpha Contract [TOM Settler PREMIUM BUDDIER]", 	0, 0)
 	if ( mID == "exode_alpha_contract_rekatron" ):
-		return (True, "Alpha Contract [WEAPON DROPS BY REKATRON]", 		0)
+		return (True, "Alpha Contract [WEAPON DROPS BY REKATRON]", 		0, 0)
 	if ( mID == "exode_alpha_contract_syndicate" ):
-		return (True, "Alpha Contract [SYNDICATE SPONSORSHIP]", 		0)
+		return (True, "Alpha Contract [SYNDICATE SPONSORSHIP]", 		0, 0)
 		
 	if ( mID == "exode_alpha_pack_crew_kb119" ):
-		return (True, "Alpha Crew Pack [Kilbot-119]",				0)
+		return (True, "Alpha Crew Pack [Kilbot-119]",				0, 0)
 	if ( mID == "exode_alpha_pack_crew_galvin4" ):
-		return (True, "Alpha Crew Pack [Galvin 4]",				0)
+		return (True, "Alpha Crew Pack [Galvin 4]",				0, 0)
 		
 	if ( mID == "exode_alpha_character_pack_nomad" ):
-		return (True, "Alpha Promo Character Pack [Nomad Navigator]", 	0)
+		return (True, "Alpha Promo Character Pack [Nomad Navigator]", 	0, 0)
 	if ( mID == "exode_alpha_character_pack_genetician" ):
-		return (True, "Alpha Promo Character Pack [Genetician Scientist]",	0)
+		return (True, "Alpha Promo Character Pack [Genetician Scientist]",	0, 0)
 	if ( mID == "exode_alpha_character_pack_suntek" ):
-		return (True, "Alpha Promo Character Pack [Suntek Survivor]",	0)
+		return (True, "Alpha Promo Character Pack [Suntek Survivor]",	0, 0)
 	if ( mID == "exode_alpha_character_pack_drachian" ):
-		return (True, "Alpha Promo Character Pack [Drachian Colonel]",	0)
+		return (True, "Alpha Promo Character Pack [Drachian Colonel]",	0, 0)
 		
 	if ( mID == "exode_card_001_originNavy" 			or mID == "exode_card_E001_originNavy" ):
-		return (False, "Navy Lieutenant [Origin]", 2)	
+		return (False, "Navy Lieutenant [Origin]", 				2, 	1)	
 	if ( mID == "exode_card_002_shipArcheon" 			or mID == "exode_card_E002_shipArcheon" ):
-		return (False, "Military Frigate (\"Archeon Class\")", 2)	
+		return (False, "Military Frigate (\"Archeon Class\")", 		2,	2)	
 	if ( mID == "exode_card_003_officerComms" 			or mID == "exode_card_E003_officerComms" ):
-		return (False, "Communications Officer", 1)
+		return (False, "Communications Officer", 				1,	3)
 	if ( mID == "exode_card_004_officerWeapons" 			or mID == "exode_card_E004_officerWeapons" ):
-		return (False, "Weapons Officer", 1)		
+		return (False, "Weapons Officer", 					1,	4)		
 	if ( mID == "exode_card_005_officerTactical" 			or mID == "exode_card_E005_officerTactical" ):
-		return (False, "Tactical Officer", 1)		
+		return (False, "Tactical Officer", 					1,	5)		
 	if ( mID == "exode_card_006_crewPilot" 			or mID == "exode_card_E006_crewPilot" ):
-		return (False, "Pilot (Crew)", 1)		
+		return (False, "Pilot (Crew)", 					1,	6)		
 	if ( mID == "exode_card_007_crewSRT" 				or mID == "exode_card_E007_crewSRT" ):
-		return (False, "Signals Specialist (Crew)", 1)		
+		return (False, "Signals Specialist (Crew)", 				1,	7)		
 	if ( mID == "exode_card_008_crewDefense"			or mID == "exode_card_E008_crewDefense" ):
-		return (False, "Defense Specialist (Crew)", 1)		
+		return (False, "Defense Specialist (Crew)", 				1,	8)		
 	if ( mID == "exode_card_009_crewTrooper" 			or mID == "exode_card_E009_crewTrooper" ):
-		return (False, "Trooper (Crew)", 0)		
+		return (False, "Trooper (Crew)", 					0,	9)		
 	if ( mID == "exode_card_010_crewEngineer" 			or mID == "exode_card_E010_crewEngineer" ):
-		return (False, "Military Engineer (Crew)", 0)			
+		return (False, "Military Engineer (Crew)", 				0,	10)			
 	if ( mID == "exode_card_011_setFMR17" 			or mID == "exode_card_E011_setFMR17" ):
-		return (False, "FMR-17 \'Atonis\' (x3)", 2)		
+		return (False, "FMR-17 \'Atonis\' (x3)", 				2,	11)		
 	if ( mID == "exode_card_012_setSuitMilitaryC" 		or mID == "exode_card_E012_setSuitMilitaryC" ):
-		return (False, "Military Suit Class C (x3)", 1)		
+		return (False, "Military Suit Class C (x3)", 				1,	12)		
 	if ( mID == "exode_card_013_originArk" 			or mID == "exode_card_E013_originArk" ):
-		return (False, "Ark Scientist [Origin]", 2)		
+		return (False, "Ark Scientist [Origin]", 				2,	13)		
 	if ( mID == "exode_card_014_shipOrwell1" 			or mID == "exode_card_E014_shipOrwell1" ):
-		return (False, "Ark Ship \"Orwell 1\"", 2)		
+		return (False, "Ark Ship \"Orwell 1\"", 				2,	14)		
 	if ( mID == "exode_card_015_officerResearch" 			or mID == "exode_card_E015_officerResearch" ):
-		return (False, "Research Officer", 1)		
+		return (False, "Research Officer", 					1,	15)		
 	if ( mID == "exode_card_016_officerExploration" 		or mID == "exode_card_E016_officerExploration" ):
-		return (False, "Exploration Officer", 1)	
+		return (False, "Exploration Officer", 				1,	16)	
 	if ( mID == "exode_card_017_officerPreservation" 		or mID == "exode_card_E017_officerPreservation" ):
-		return (False, "Preservation Officer", 1)	
+		return (False, "Preservation Officer", 				1,	17)	
 	if ( mID == "exode_card_018_crewSurgeon" 			or mID == "exode_card_E018_crewSurgeon" ):
-		return (False, "Space Surgeon", 1)	
+		return (False, "Space Surgeon", 					1,	18)	
 	if ( mID == "exode_card_019_crewXenoAnalyst" 			or mID == "exode_card_E019_crewXenoAnalyst" ):
-		return (False, "Xeno Analyst", 1)	
+		return (False, "Xeno Analyst", 					1,	19)	
 	if ( mID == "exode_card_020_crewBioScientist" 		or mID == "exode_card_E020_crewBioScientist" ):
-		return (False, "Space Bioscientist", 1)	
+		return (False, "Space Bioscientist", 					1,	20)	
 	if ( mID == "exode_card_021_crewAnimalHandler" 		or mID == "exode_card_E021_crewAnimalHandler" ):
-		return (False, "Animal Handler (Crew)", 0)	
+		return (False, "Animal Handler (Crew)", 				0,	21)	
 	if ( mID == "exode_card_022_crewLifeSearcher" 		or mID == "exode_card_E022_crewLifeSearcher" ):
-		return (False, "Life Searcher (Crew)", 0)	
+		return (False, "Life Searcher (Crew)", 				0,	22)	
 	if ( mID == "exode_card_023_crewLabScientist" 		or mID == "exode_card_E023_crewLabScientist" ):
-		return (False, "Lab Scientist (Crew)", 0)	
+		return (False, "Lab Scientist (Crew)", 				0,	23)	
 	if ( mID == "exode_card_024_setRarePlants" 			or mID == "exode_card_E024_setRarePlants" ):
-		return (False, "Rare Plants Collection (x6)", 2)	
+		return (False, "Rare Plants Collection (x6)", 			2,	24)	
 	if ( mID == "exode_card_025_setSuitResearchC" 		or mID == "exode_card_E025_setSuitResearchC" ):
-		return (False, "Research Suits Class C (x3)", 1)	
+		return (False, "Research Suits Class C (x3)", 			1,	25)	
 	if ( mID == "exode_card_026_originLeader" 			or mID == "exode_card_E026_originLeader" ):
-		return (False, "Elected Leader [Origin]", 2)	
+		return (False, "Elected Leader [Origin]", 				2,	26)	
 	if ( mID == "exode_card_027_shipDiplomatic" 			or mID == "exode_card_E027_shipDiplomatic" ):
-		return (False, "Diplomatic Corvette \"Amarasia\"", 2)	
+		return (False, "Diplomatic Corvette \"Amarasia\"", 			2,	27)	
 	if ( mID == "exode_card_028_officerAdministrative" 		or mID == "exode_card_E028_officerAdministrative" ):
-		return (False, "Administrative Officer", 1)	
+		return (False, "Administrative Officer", 				1,	28)	
 	if ( mID == "exode_card_029_officerSecurity" 			or mID == "exode_card_E029_officerSecurity" ):
-		return (False, "Security Officer", 1)	
+		return (False, "Security Officer", 					1,	29)	
 	if ( mID == "exode_card_030_crewPropaganda"			or mID == "exode_card_E030_crewPropaganda" ):
-		return (False, "Propaganda Specialist", 1)	
+		return (False, "Propaganda Specialist", 				1,	30)	
 	if ( mID == "exode_card_031_crewPopulation" 			or mID == "exode_card_E031_crewPopulation" ):
-		return (False, "Population Analyst", 1)	
+		return (False, "Population Analyst", 					1,	31)	
 	if ( mID == "exode_card_032_crewEntertainment" 		or mID == "exode_card_E032_crewEntertainment" ):
-		return (False, "Welfare Specialist", 1)	
+		return (False, "Welfare Specialist", 					1,	32)	
 	if ( mID == "exode_card_033_crewMaintenance" 			or mID == "exode_card_E033_crewMaintenance" ):
-		return (False, "Maintenance Staff (Crew)", 0)	
+		return (False, "Maintenance Staff (Crew)", 				0,	33)	
 	if ( mID == "exode_card_034_crewPilotCivilian" 		or mID == "exode_card_E034_crewPilotCivilian" ):
-		return (False, "Civilian Pilot (Crew)", 0)	
+		return (False, "Civilian Pilot (Crew)", 				0,	34)	
 	if ( mID == "exode_card_035_crewSecurity" 			or mID == "exode_card_E035_crewSecurity" ):
-		return (False, "Security Guard (Crew)", 0)	
+		return (False, "Security Guard (Crew)", 				0,	35)	
 	if ( mID == "exode_card_036_setLuxury" 			or mID == "exode_card_E036_setLuxury" ):
-		return (False, "Diplomatic Gifts", 2)	
+		return (False, "Diplomatic Gifts", 					2,	36)	
 	if ( mID == "exode_card_037_setDatabase" 			or mID == "exode_card_E037_setDatabase" ):
-		return (False, "Federal Database", 2)	
+		return (False, "Federal Database", 					2,	37)	
 		
 		
 	if ( mID == "exode_card_046_Rekatron_defensiveAmmo" 		or mID == "exode_card_E046_Rekatron_defensiveAmmo" ):
-		return (False, "DEFENSIVE AMMO", 0)
+		return (False, "DEFENSIVE AMMO",	 				0,	46)
 	if ( mID == "exode_card_047_Rekatron_firetalkerPistol" 	or mID == "exode_card_E047_Rekatron_firetalkerPistol" ):
-		return (False, "FIRETALKER", 0)
+		return (False, "FIRETALKER", 						0,	47)
 	if ( mID == "exode_card_048_Rekatron_karperPistol" 		or mID == "exode_card_E048_Rekatron_karperPistol" ):
-		return (False, "KARPER Heavy", 1)
+		return (False, "KARPER Heavy", 					1,	48)
 	if ( mID == "exode_card_049_Rekatron_explanatorRifle" 	or mID == "exode_card_E049_Rekatron_explanatorRifle" ):
-		return (False, "EXPLANATOR", 1)
+		return (False, "EXPLANATOR", 						1,	49)
 	if ( mID == "exode_card_050_Rekatron_rsdRifle" 		or mID == "exode_card_E050_Rekatron_rsdRifle" ):
-		return (False, "REKATRON SD", 1)
+		return (False, "REKATRON SD", 					1,	50)
 	if ( mID == "exode_card_051_Rekatron_goodMorningPistol" 	or mID == "exode_card_E051_Rekatron_goodMorningPistol" ):
-		return (False, "GOOD MORNING", 1)
+		return (False, "GOOD MORNING", 					1,	51)
 	if ( mID == "exode_card_052_Rekatron_jugdmentDayRifle" 	or mID == "exode_card_E052_Rekatron_jugdmentDayRifle" ):
-		return (False, "JUDGEMENT DAY", 2)
+		return (False, "JUDGEMENT DAY", 					2,	52)
 	if ( mID == "exode_card_053_Rekatron_galacticPeacemaker" 	or mID == "exode_card_E053_Rekatron_galacticPeacemaker" ):
-		return (False, "GALACTIC PEACEMAKER", 2)
+		return (False, "GALACTIC PEACEMAKER", 				2,	53)
 	if ( mID == "exode_card_054_Rekatron_ammoGuided" 		or mID == "exode_card_E054_Rekatron_ammoGuided" ):
-		return (False, "AUTOGUIDED AMMO", 1)
+		return (False, "AUTOGUIDED AMMO", 					1,	54)
 	if ( mID == "exode_card_055_Rekatron_ammoParty" 		or mID == "exode_card_E055_Rekatron_ammoParty" ):
-		return (False, "PARTY AMMO", 2)
+		return (False, "PARTY AMMO", 						2,	55)
 	if ( mID == "exode_card_056_Tom_SmootyAllInOne" 		or mID == "exode_card_E056_Tom_SmootyAllInOne" ):
-		return (False, "SMOOTY All-In-One Ammo", 0)
+		return (False, "SMOOTY All-In-One Ammo", 				0,	56)
 	if ( mID == "exode_card_057_Tom_FoodieMoodie" 		or mID == "exode_card_E057_Tom_FoodieMoodie" ):
-		return (False, "Strategic FOODIE-MOODIE", 0)
+		return (False, "Strategic FOODIE-MOODIE", 				0,	57)
 	if ( mID == "exode_card_058_Tom_FriendlyEyes" 		or mID == "exode_card_E058_Tom_FriendlyEyes" ):
-		return (False, "Friendly Eyes XY-6", 0)
+		return (False, "Friendly Eyes XY-6", 					0,	58)
 	if ( mID == "exode_card_059_Tom_BuddyPinger" 			or mID == "exode_card_E059_Tom_BuddyPinger" ):
-		return (False, "BUDDY Pinger", 1)
+		return (False, "BUDDY Pinger", 					1,	59)
 	if ( mID == "exode_card_060_Tom_VehicleLittleBuddy" 		or mID == "exode_card_E060_Tom_VehicleLittleBuddy" ):
-		return (False, "LITTLE Buddy", 1)
+		return (False, "LITTLE Buddy", 					1,	60)
 	if ( mID == "exode_card_061_Tom_Custom" 			or mID == "exode_card_E061_Tom_Custom" ):
-		return (False, "TOM Custom", 1)
+		return (False, "TOM Custom", 						1,	61)
 	if ( mID == "exode_card_062_Tom_WHCConverter" 		or mID == "exode_card_E062_Tom_WHCConverter" ):
-		return (False, "WHC Unit", 1)
+		return (False, "WHC Unit", 						1,	62)
 	if ( mID == "exode_card_063_Tom_Explorator" 			or mID == "exode_card_E063_Tom_Explorator" ):
-		return (False, "TOM Explorator X4", 2)
+		return (False, "TOM Explorator X4", 					2,	63)
 	if ( mID == "exode_card_064_Tom_ShelterHappyFive" 		or mID == "exode_card_E064_Tom_ShelterHappyFive" ):
-		return (False, "SHELTER \"Happy Five\"", 2)
+		return (False, "SHELTER \"Happy Five\"", 				2,	64)
 		
 	if ( mID == "exode_card_066_SyndicateEquipment_Chip" 	or mID == "exode_card_E066_SyndicateEquipment_Chip" ):
-		return (False, "Syndicate Chip", 0)
+		return (False, "Syndicate Chip", 					0,	66)
 	if ( mID == "exode_card_067_SyndicateEquipment_DrugHolidays"	or mID == "exode_card_E067_SyndicateEquipment_DrugHolidays" ):
-		return (False, "\'Holidays\'", 0)
+		return (False, "\'Holidays\'", 					0,	67)
 	if ( mID == "exode_card_068_SyndicateEquipment_DrugNPrime"	or mID == "exode_card_E068_SyndicateEquipment_DrugNPrime" ):
-		return (False, "\'N-Prime\'", 0)
+		return (False, "\'N-Prime\'", 					0,	68)
 	if ( mID == "exode_card_069_SyndicateShipBlackLotus" 	or mID == "exode_card_E069_SyndicateShipBlackLotus" ):
-		return (False, "\"Black Lotus\"", 2)
+		return (False, "\"Black Lotus\"", 					2,	69)
 	if ( mID == "exode_card_070_SyndicateEquipmentAutoBlaster"	or mID == "exode_card_E070_SyndicateEquipmentAutoBlaster" ):
-		return (False, "Syndicate Auto Blaster", 1)	
+		return (False, "Syndicate Auto Blaster", 				1,	70)	
 	if ( mID == "exode_card_071_SyndicateEquipment_NarcoWarfare"	or mID == "exode_card_E071_SyndicateEquipment_NarcoWarfare" ):
-		return (False, "Narco-Warfare", 1)
+		return (False, "Narco-Warfare", 					1,	71)
 	if ( mID == "exode_card_072_SyndicateEquipmentSet_Genefactory" 
 									or mID == "exode_card_E072_SyndicateEquipmentSet_Genefactory" ):
-		return (False, "Nacrotics Genefactory", 2)			
+		return (False, "Nacrotics Genefactory", 				2,	72)			
 	if ( mID == "exode_card_073_SyndicateHacker" 			or mID == "exode_card_E073_SyndicateHacker" ):
-		return (False, "Syndicate Hacker", 1)
+		return (False, "Syndicate Hacker", 					1,	73)
 	if ( mID == "exode_card_074_SyndicateLeader" 			or mID == "exode_card_E074_SyndicateLeader" ):
-		return (False, "Syndicate Squad Leader", 1)		
+		return (False, "Syndicate Squad Leader", 				1,	74)		
 	if ( mID == "exode_card_075_SyndicateTransactor" 		or mID == "exode_card_E075_SyndicateTransactor" ):
-		return (False, "Programmed Transactor", 1)	
+		return (False, "Programmed Transactor", 				1,	75)	
 	if ( mID == "exode_card_076_SyndicateTrooper" 		or mID == "exode_card_E076_SyndicateTrooper" ):
-		return (False, "Syndicate Trooper", 1)
+		return (False, "Syndicate Trooper", 					1,	76)
 	if ( mID == "exode_card_077_SyndicateAyumi" 			or mID == "exode_card_E077_SyndicateAyumi" ):
-		return (False, "Ayumi", 2)
+		return (False, "Ayumi", 						2,	77)
 	if ( mID == "exode_card_078_SyndicateYakuzaNoble" 		or mID == "exode_card_E078_SyndicateYakuzaNoble" ):
-		return (False, "Battle-Trained Socialite", 2)
+		return (False, "Battle-Trained Socialite", 				2,	78)
 	if ( mID == "exode_card_079_SyndicateYakuzaSniper" 		or mID == "exode_card_E079_SyndicateYakuzaSniper" ):
-		return (False, "Camouflaged Sniper", 2)
+		return (False, "Camouflaged Sniper", 					2,	79)
 	if ( mID == "exode_card_080_TheKumicho" 			or mID == "exode_card_E080_TheKumicho" ):
-		return (False, "The Kumicho", 3)
+		return (False, "The Kumicho", 					3,	80)
 	if ( mID == "exode_card_081_RebelGeneral" 			or mID == "exode_card_E081_RebelGeneral" ):
-		return (False, "Rebel General", 3)
+		return (False, "Rebel General", 					3,	81)
 	if ( mID == "exode_card_082_AlannaVos" 			or mID == "exode_card_E082_AlannaVos" ):
-		return (False, "Alanna Vös, Federal Marshal", 3)
+		return (False, "Alanna Vös, Federal Marshal", 			3,	82)
 	if ( mID == "exode_card_083_Sh4rken" 				or mID == "exode_card_E083_Sh4rken" ):
-		return (False, "Sh4rken", 3)
+		return (False, "Sh4rken", 						3,	83)
 	if ( mID == "exode_card_084_TheAI" 				or mID == "exode_card_E084_TheAI" ):
-		return (False, "Mysterious AI", 3)
+		return (False, "Mysterious AI", 					3, 	84)
 	if ( mID == "exode_card_085_Apprentice" 			or mID == "exode_card_E085_Apprentice" ):
-		return (False, "Mysterious Robot", 3)
+		return (False, "Mysterious Robot", 					3,	85)
 	if ( mID == "exode_card_086_Cranium" 				or mID == "exode_card_E086_Cranium" ):
-		return (False, "Captain Cranium", 3)
+		return (False, "Captain Cranium", 					3,	86)
 	if ( mID == "exode_card_087_Cryptoeater" 			or mID == "exode_card_E087_Cryptoeater" ):
-		return (False, "\"Crypto-Eater\"", 3)
+		return (False, "\"Crypto-Eater\"", 					3,	87)
 	if ( mID == "exode_card_088_originRepentantPirate" 		or mID == "exode_card_E088_originRepentantPirate" ):
-		return (False, "Repentant Pirate [Origin]", 3)
+		return (False, "Repentant Pirate [Origin]", 				3,	88)
 	if ( mID == "exode_card_089_shipColombus" 			or mID == "exode_card_E089_shipColombus" ):
-		return (False, "\"The Colombus\" (circa 2113)", 3)
+		return (False, "\"The Colombus\" (circa 2113)", 			3,	89)
 	if ( mID == "exode_card_090_shipQuantumSupreme"		or mID == "exode_card_E090_shipQuantumSupreme" ):
-		return (False, "\"Quantum\" Class Supreme", 3)
+		return (False, "\"Quantum\" Class Supreme", 				3,	90)
 	if ( mID == "exode_card_091_vehicleVelvetStorm" 		or mID == "exode_card_E091_vehicleVelvetStorm" ):
-		return (False, "\"Velvet Storm\"", 3)
+		return (False, "\"Velvet Storm\"", 					3,	91)
 	if ( mID == "exode_card_092_vehicleVanguard" 			or mID == "exode_card_E092_vehicleVanguard" ):
-		return (False, "\"Vanguard\"", 3)
+		return (False, "\"Vanguard\"", 					3,	92)
 	if ( mID == "exode_card_093_equipmentSuitArena" 		or mID == "exode_card_E093_equipmentSuitArena" ):
-		return (False, "Arena Powersuit (signed by Kurban Ko)", 3)
+		return (False, "Arena Powersuit (signed by Kurban Ko)", 		3,	93)
 		
 	if ( mID == "exode_card_101_originSecretAgent" 		or mID == "exode_card_E101_originSecretAgent" ):
-		return (False, "Secret Agent [Origin]", 2)
+		return (False, "Secret Agent [Origin]", 				2,	101)
 	if ( mID == "exode_card_102_originStrandedTrader" 		or mID == "exode_card_E102_originStrandedTrader" ):
-		return (False, "Stranded Trader [Origin]", 2)
+		return (False, "Stranded Trader [Origin]", 				2,	102)
 	if ( mID == "exode_card_103_originCruiseShipCaptain" 	or mID == "exode_card_E103_originCruiseShipCaptain" ):
-		return (False, "Cruise Ship Captain [Origin]", 2)
+		return (False, "Cruise Ship Captain [Origin]", 			2,	103)
 	if ( mID == "exode_card_104_shipArkLifesavior" 		or mID == "exode_card_E104_shipArkLifesavior" ):
-		return (False, "Ark Ship \"Orwell 2\" Lifesavior", 2)
+		return (False, "Ark Ship \"Orwell 2\" Lifesavior", 			2,	104)
 	if ( mID == "exode_card_105_shipCargoKormen" 			or mID == "exode_card_E105_shipCargoKormen" ):
-		return (False, "\"Kormen\" Class (Cargo)", 2)
+		return (False, "\"Kormen\" Class (Cargo)", 				2,	105)
 	if ( mID == "exode_card_106_shipRhino" 			or mID == "exode_card_E106_shipRhino" ):
-		return (False, "\"Rhino\" Heavy Attack Frigate", 2)
+		return (False, "\"Rhino\" Heavy Attack Frigate", 			2,	106)
 	if ( mID == "exode_card_107_shipCargoTaurus" 			or mID == "exode_card_E107_shipCargoTaurus" ):
-		return (False, "\"Taurus\" Class Transport", 2)
+		return (False, "\"Taurus\" Class Transport", 				2,	107)
 	if ( mID == "exode_card_108_shipMyrmidon" 			or mID == "exode_card_E108_shipMyrmidon" ):
-		return (False, "\"Myrmidon\" Assault Transport", 2)
+		return (False, "\"Myrmidon\" Assault Transport", 			2,	108)
 	if ( mID == "exode_card_109_shipAkhen" 			or mID == "exode_card_E109_shipAkhen" ):
-		return (False, "\"Akhen\" Cannon", 2)
+		return (False, "\"Akhen\" Cannon", 					2,	109)
 	if ( mID == "exode_card_110_shipCoetus" 			or mID == "exode_card_E110_shipCoetus" ):
-		return (False, "\"Coetus\" Class Science Vessel", 2)
+		return (False, "\"Coetus\" Class Science Vessel", 			2,	110)
 	if ( mID == "exode_card_111_setGeneticianConsole" 		or mID == "exode_card_E111_setGeneticianConsole" ):
-		return (False, "Genetician Console", 2)
+		return (False, "Genetician Console", 					2,	111)
 	if ( mID == "exode_card_112_setMilitaryClassA" 		or mID == "exode_card_E112_setMilitaryClassA" ):
-		return (False, "Military Suits Class A (x3)", 2)
+		return (False, "Military Suits Class A (x3)", 			2,	112)
 	if ( mID == "exode_card_113_setEisenSuits" 			or mID == "exode_card_E113_setEisenSuits" ):
-		return (False, "Eisen Suits (x3)", 2)
+		return (False, "Eisen Suits (x3)", 					2,	113)
 	if ( mID == "exode_card_114_vehicleAcheanRacer" 		or mID == "exode_card_E114_vehicleAcheanRacer" ):
-		return (False, "Archean Racer", 2)
+		return (False, "Archean Racer", 					2,	114)
 	if ( mID == "exode_card_115_crewSpaceMarshal"			or mID == "exode_card_E115_crewSpaceMarshal" ):
-		return (False, "Space Federal Marshal", 2)
+		return (False, "Space Federal Marshal", 				2,	115)
 	if ( mID == "exode_card_116_officerEliza" 			or mID == "exode_card_E116_officerEliza" ):
-		return (False, "Eliza", 2)
+		return (False, "Eliza", 						2,	116)
 	if ( mID == "exode_card_117_crewOksana" 			or mID == "exode_card_E117_crewOksana" ):
-		return (False, "Oksana", 2)
+		return (False, "Oksana", 						2,	117)
 	if ( mID == "exode_card_118_officerNorah" 			or mID == "exode_card_E118_officerNorah" ):
-		return (False, "Norah", 2)
+		return (False, "Norah", 						2,	118)
 	if ( mID == "exode_card_119_officerShen" 			or mID == "exode_card_E119_officerShen" ):
-		return (False, "Shen", 2)
+		return (False, "Shen", 						2,	119)
 	if ( mID == "exode_card_120_officerStug" 			or mID == "exode_card_E120_officerStug" ):
-		return (False, "Stug", 2)
+		return (False, "Stug", 						2,	120)
 	if ( mID == "exode_card_121_crewTyron" 			or mID == "exode_card_E121_crewTyron" ):
-		return (False, "Tyron", 2)
+		return (False, "Tyron", 						2,	121)
 	if ( mID == "exode_card_122_officerAdmiralValro" 		or mID == "exode_card_E122_officerAdmiralValro" ):
-		return (False, "Admiral Valro", 2)
+		return (False, "Admiral Valro", 					2,	122)
 	if ( mID == "exode_card_123_officerNash" 			or mID == "exode_card_E123_officerNash" ):
-		return (False, "Nash, \"The Expert\"", 2)
+		return (False, "Nash, \"The Expert\"", 				2,	123)
 	if ( mID == "exode_card_124_crewSpecialInfiltrationAgent" 	or mID == "exode_card_E124_crewSpecialInfiltrationAgent" ):
-		return (False, "Special Infiltration Agent", 2)
+		return (False, "Special Infiltration Agent", 				2,	124)
 	if ( mID == "exode_card_125_crewScarletSarah" 		or mID == "exode_card_E125_crewScarletSarah" ):
-		return (False, "\'Scarlet Sarah\'", 2)
+		return (False, "\'Scarlet Sarah\'", 					2,	125)
 	if ( mID == "exode_card_126_passengerNuclearFamily" 		or mID == "exode_card_E126_passengerNuclearFamily" ):
-		return (False, "Nuclear Family", 2)
+		return (False, "Nuclear Family", 					2,	126)
 	if ( mID == "exode_card_127_installationOctohome" 		or mID == "exode_card_E127_installationOctohome" ):
-		return (False, "Octohome", 2)
+		return (False, "Octohome", 						2,	127)
 	if ( mID == "exode_card_128_installationOrbitalShield" 	or mID == "exode_card_E128_installationOrbitalShield" ):
-		return (False, "Orbital Shield", 2)
+		return (False, "Orbital Shield", 					2,	128)
 	if ( mID == "exode_card_129_installationDreamsphere" 	or mID == "exode_card_E129_installationDreamsphere" ):
-		return (False, "Dreamsphere", 2)
+		return (False, "Dreamsphere", 					2,	129)
 	if ( mID == "exode_card_130_installationGenerator100"	or mID == "exode_card_E130_installationGenerator100" ):
-		return (False, "X-Gen TR100", 2)
+		return (False, "X-Gen TR100", 					2,	130)
 	if ( mID == "exode_card_131_equipmentFactionCorporate" 	or mID == "exode_card_E131_equipmentFactionCorporate" ):
-		return (False, "Corporate License (Level S+)", 2)
+		return (False, "Corporate License (Level S+)", 			2,	131)
 	if ( mID == "exode_card_132_equipmentSuitRacer" 		or mID == "exode_card_E132_equipmentSuitRacer" ):
-		return (False, "Racer Mech-Suit", 2)
+		return (False, "Racer Mech-Suit", 					2,	132)
 	if ( mID == "exode_card_133_equipmentSuitSpartan" 		or mID == "exode_card_E133_equipmentSuitSpartan" ):
-		return (False, "Spartan Elite Suit", 2)
+		return (False, "Spartan Elite Suit", 					2,	133)
 	if ( mID == "exode_card_134_equipmentFactionRebellion" 	or mID == "exode_card_E134_equipmentFactionRebellion" ):
-		return (False, "The Rebellion Secrets ||\"They knew\"||", 2)
+		return (False, "The Rebellion Secrets ||\"They knew\"||", 		2,	134)
 	if ( mID == "exode_card_135_escortSabre" 			or mID == "exode_card_E135_escortSabre" ):
-		return (False, "Sabre Regiment", 2)
+		return (False, "Sabre Regiment", 					2,	135)
 	if ( mID == "exode_card_136_crewFleshCultLeader" 		or mID == "exode_card_E136_crewFleshCultLeader" ):
-		return (False, "Flesh Cult Leader", 2)
+		return (False, "Flesh Cult Leader", 					2,	136)
 	if ( mID == "exode_card_137_installationDefensiveBunker" 	or mID == "exode_card_E137_installationDefensiveBunker" ):
-		return (False, "Defensive Bunker", 2)
+		return (False, "Defensive Bunker", 					2,	137)
 		
 	if ( mID == "exode_card_151_officerDrachianColonel" 		or mID == "exode_card_E151_officerDrachianColonel" ):
-		return (False, "Drachian Colonel", 2)
+		return (False, "Drachian Colonel", 					2,	151)
 	if ( mID == "exode_card_152_crewNomadNavigator" 		or mID == "exode_card_E152_crewNomadNavigator" ):
-		return (False, "Nomad Navigator", 2)
+		return (False, "Nomad Navigator", 					2,	152)
 	if ( mID == "exode_card_153_crewGeneticianScientist" 	or mID == "exode_card_E153_crewGeneticianScientist" ):
-		return (False, "Genetician Scientist", 2)
+		return (False, "Genetician Scientist", 				2,	153)
 	if ( mID == "exode_card_154_crewSuntekSurvivor" 		or mID == "exode_card_E154_crewSuntekSurvivor" ):
-		return (False, "Suntek Collector", 2)
+		return (False, "Suntek Collector", 					2,	154)
 	if ( mID == "exode_card_155_crewKilbot" 			or mID == "exode_card_E155_crewKilbot" ):
-		return (False, "KB-119 \'Kilbot\'", 2)
+		return (False, "KB-119 \'Kilbot\'", 					2,	155)
 	if ( mID == "exode_card_156_crewGalvin" 			or mID == "exode_card_E156_crewGalvin" ):
-		return (False, "Galvin-4, Social Robot", 2)
+		return (False, "Galvin-4, Social Robot", 				2,	156)
 	if ( mID == "exode_card_157_escortVega" 			or mID == "exode_card_E157_escortVega" ):
-		return (False, "Vega Elite Squadron", 2)
+		return (False, "Vega Elite Squadron", 				2,	157)
 	if ( mID == "exode_card_158_escortIonguards" 			or mID == "exode_card_E158_escortIonguards" ):
-		return (False, "Ionguard Defense Fleet", 2)
+		return (False, "Ionguard Defense Fleet", 				2,	158)
 	if ( mID == "exode_card_159_suntekSphere" 			or mID == "exode_card_E159_suntekSphere" ):
-		return (False, "Suntek Energy Sphere", 2)
+		return (False, "Suntek Energy Sphere", 				2,	159)
 		
 		
 	if ( mID == "exode_card_181_escortLongswords" 		or mID == "exode_card_E181_escortLongswords" ):
-		return (False, "Longsword Squadron", 1)
+		return (False, "Longsword Squadron", 					1,	181)
 	if ( mID == "exode_card_182_escortCruiserTaskForce" 		or mID == "exode_card_E182_escortCruiserTaskForce" ):
-		return (False, "Cruiser Task Force", 1)
+		return (False, "Cruiser Task Force", 					1,	182)
 	if ( mID == "exode_card_183_escortStarsystemGarrison" 	or mID == "exode_card_E183_escortStarsystemGarrison" ):
-		return (False, "Starsystem Garrison", 0)
+		return (False, "Starsystem Garrison", 				0,	183)
 	if ( mID == "exode_card_184_shipBaldie" 			or mID == "exode_card_E184_shipBaldie" ):
-		return (False, "\'Baldie\' Shuttle", 0)
+		return (False, "\'Baldie\' Shuttle", 					0,	184)
 	if ( mID == "exode_card_185_shipClaymoreHyperfighter" 	or mID == "exode_card_E185_shipClaymoreHyperfighter" ):
-		return (False, "\"Claymore\" Hyperfighter", 1)
+		return (False, "\"Claymore\" Hyperfighter", 				1,	185)
 	if ( mID == "exode_card_186_shipDrachianMantis" 		or mID == "exode_card_E186_shipDrachianMantis" ):
-		return (False, "Drachian \"Mantis\"", 1)
+		return (False, "Drachian \"Mantis\"", 				1,	186)
 	if ( mID == "exode_card_187_vehicleSalazar" 			or mID == "exode_card_E187_vehicleSalazar" ):
-		return (False, "\"Salazar\" Space Cab", 0)
+		return (False, "\"Salazar\" Space Cab", 				0,	187)
 	if ( mID == "exode_card_188_vehicleTraveler2" 		or mID == "exode_card_E188_vehicleTraveler2" ):
-		return (False, "Traveler-2", 0)
+		return (False, "Traveler-2", 						0,	188)
 	if ( mID == "exode_card_189_vehicleSupplyDropship" 		or mID == "exode_card_E189_vehicleSupplyDropship" ):
-		return (False, "Supply Dropship", 0)
+		return (False, "Supply Dropship", 					0,	189)
 	if ( mID == "exode_card_190_vehicleExplorationDropship" 	or mID == "exode_card_E190_vehicleExplorationDropship" ):
-		return (False, "Exploration Dropship", 1)
+		return (False, "Exploration Dropship", 				1,	190)
 	if ( mID == "exode_card_191_vehicleZandratti" 		or mID == "exode_card_E191_vehicleZandratti" ):
-		return (False, "\"Zandratti\"", 1)
+		return (False, "\"Zandratti\"", 					1,	191)
 	if ( mID == "exode_card_192_vehicleSecurityDrone" 		or mID == "exode_card_E192_vehicleSecurityDrone" ):
-		return (False, "Security Drone", 1)
+		return (False, "Security Drone", 					1,	192)
 	if ( mID == "exode_card_193_vehiclePantherBike" 		or mID == "exode_card_E193_vehiclePantherBike" ):
-		return (False, "Pather Bike", 1)
+		return (False, "Pather Bike", 					1,	193)
+		
 	if ( mID == "exode_card_201_setMedicalBay" 			or mID == "exode_card_E201_setMedicalBay" ):
-		return (False, "Medical Bay", 1)
+		return (False, "Medical Bay", 					1,	201)
 	if ( mID == "exode_card_202_equipmentRoboticParts" 		or mID == "exode_card_E202_equipmentRoboticParts" ):
-		return (False, "Robotic Parts", 0)
+		return (False, "Robotic Parts", 					0,	202)
 	if ( mID == "exode_card_203_equipmentEnergyCells" 		or mID == "exode_card_E203_equipmentEnergyCells" ):
-		return (False, "Energy Cells", 0)
+		return (False, "Energy Cells", 					0,	203)
 	if ( mID == "exode_card_204_equipmentShipConstructionParts"	or mID == "exode_card_E204_equipmentShipConstructionParts" ):
-		return (False, "Ship Construction Parts", 0)
+		return (False, "Ship Construction Parts", 				0,	204)
 	if ( mID == "exode_card_205_equipmentUniversalFixer" 	or mID == "exode_card_E205_equipmentUniversalFixer" ):
-		return (False, "\"Universal Fixer\" Suit", 0)
+		return (False, "\"Universal Fixer\" Suit", 				0,	205)
 	if ( mID == "exode_card_206_equipmentLonestar" 		or mID == "exode_card_E206_equipmentLonestar" ):
-		return (False, "\"Lonestar\" Spacesuit", 0)
+		return (False, "\"Lonestar\" Spacesuit", 				0,	206)
 	if ( mID == "exode_card_207_equipmentChipsAndData" 		or mID == "exode_card_E207_equipmentChipsAndData" ):
-		return (False, "Chips and Data", 0)
+		return (False, "Chips and Data", 					0,	207)
 	if ( mID == "exode_card_208_equipmentCorporate" 		or mID == "exode_card_E208_equipmentCorporate" ):
-		return (False, "Corporate License", 1)
+		return (False, "Corporate License", 					1,	208)
 	if ( mID == "exode_card_209_equipmentEisenSuit" 		or mID == "exode_card_E209_equipmentEisenSuit" ):
-		return (False, "Eisen Suit - Artic Edition", 1)
+		return (False, "Eisen Suit - Artic Edition", 				1,	209)
 	if ( mID == "exode_card_210_equipmentDrachianSuit" 		or mID == "exode_card_E210_equipmentDrachianSuit" ):
-		return (False, "Drachian Scarab Armor", 1)
+		return (False, "Drachian Scarab Armor", 				1,	210)
 	if ( mID == "exode_card_211_equipmentMilitarySuit" 		or mID == "exode_card_E211_equipmentMilitarySuit" ):
-		return (False, "Military Suit Class A", 1)
+		return (False, "Military Suit Class A", 				1,	211)
 	if ( mID == "exode_card_212_equipmentPlanetscan" 		or mID == "exode_card_E212_equipmentPlanetscan" ):
-		return (False, "Planetscan VX", 1)
+		return (False, "Planetscan VX", 					1,	212)
 	if ( mID == "exode_card_213_equipmentRimscan" 		or mID == "exode_card_E213_equipmentRimscan" ):
-		return (False, "Rimscan Software", 1)
+		return (False, "Rimscan Software", 					1,	213)
 	if ( mID == "exode_card_214_equipmentDesigner" 		or mID == "exode_card_E214_equipmentDesigner" ):
-		return (False, "Diamondstar Designer", 1)
+		return (False, "Diamondstar Designer", 				1,	214)
 	if ( mID == "exode_card_215_equipmentIdentificationMatrix" 	or mID == "exode_card_E215_equipmentIdentificationMatrix" ):
-		return (False, "Identification Matrix", 0)
+		return (False, "Identification Matrix", 				0,	215)
 		
 	if ( mID == "exode_card_221_crewDrachianCommissar" 		or mID == "exode_card_E221_crewDrachianCommissar" ):
-		return (False, "Drachian Commissar", 1)
+		return (False, "Drachian Commissar", 					1,	221)
 	if ( mID == "exode_card_222_crewFederalAgent" 		or mID == "exode_card_E222_crewFederalAgent" ):
-		return (False, "Federal Agent", 1)
+		return (False, "Federal Agent", 					1,	222)
 	if ( mID == "exode_card_223_crewCorporateBodyguard" 		or mID == "exode_card_E223_crewCorporateBodyguard" ):
-		return (False, "Corporate Bodyguard", 1)
+		return (False, "Corporate Bodyguard", 				1,	223)
 	if ( mID == "exode_card_224_crewFederalMarine" 		or mID == "exode_card_E224_crewFederalMarine" ):
-		return (False, "Federal Marine", 1)
+		return (False, "Federal Marine", 					1,	224)
 	if ( mID == "exode_card_225_crewFederalPolice" 		or mID == "exode_card_E225_crewFederalPolice" ):
-		return (False, "Federal Government Police", 1)
+		return (False, "Federal Government Police", 				1,	225)
 	if ( mID == "exode_card_226_crewDrachianTrooper" 		or mID == "exode_card_E226_crewDrachianTrooper" ):
-		return (False, "Drachian Assault Trooper", 1)
+		return (False, "Drachian Assault Trooper", 				1,	226)
 	if ( mID == "exode_card_227_crewCorneredRebelAgent" 		or mID == "exode_card_E227_crewCorneredRebelAgent" ):
-		return (False, "Cornered Rebel Agent", 1)
+		return (False, "Cornered Rebel Agent", 				1,	227)
 	if ( mID == "exode_card_228_passengerDangerous" 		or mID == "exode_card_E228_passengerDangerous" ):
-		return (False, "Dangerous Passenger", 1)
+		return (False, "Dangerous Passenger", 				1,	228)
 	if ( mID == "exode_card_229_passengerUnstable" 		or mID == "exode_card_E229_passengerUnstable" ):
-		return (False, "Unstable Genius", 0)
+		return (False, "Unstable Genius", 					0,	229)
 	if ( mID == "exode_card_230_crewMaintenanceDroid" 		or mID == "exode_card_E230_crewMaintenanceDroid" ):
-		return (False, "Maintenance Droid", 0)
+		return (False, "Maintenance Droid", 					0,	230)
 	if ( mID == "exode_card_231_passengerScienceStudent" 	or mID == "exode_card_E231_passengerScienceStudent" ):
-		return (False, "Science student", 0)
+		return (False, "Science student", 					0,	231)
 	if ( mID == "exode_card_232_passengerSocialite" 		or mID == "exode_card_E232_passengerSocialite" ):
-		return (False, "Socialite", 0)
+		return (False, "Socialite", 						0,	232)
 	if ( mID == "exode_card_233_passengerTechExpert" 		or mID == "exode_card_E233_passengerTechExpert" ):
-		return (False, "Tech Expert", 0)
+		return (False, "Tech Expert", 					0,	233)
 		
 	if ( mID == "exode_card_235_crewTriskan" 			or mID == "exode_card_E235_crewTriskan" ):
-		return (False, "Triskan Fighter", 1)
+		return (False, "Triskan Fighter", 					1,	235)
 	if ( mID == "exode_card_236_crewFleshCult"			or mID == "exode_card_E236_crewFleshCult" ):
-		return (False, "Flesh Cult Recruiter", 1)
+		return (False, "Flesh Cult Recruiter", 				1,	236)
 	if ( mID == "exode_card_237_crewFleshCultScientist" 		or mID == "exode_card_E237_crewFleshCultScientist" ):
-		return (False, "Magna Cultist", 1)
+		return (False, "Magna Cultist", 					1,	237)
 		
 	if ( mID == "exode_card_241_installationDrillingMachine" 	or mID == "exode_card_E241_installationDrillingMachine" ):
-		return (False, "Drilling Machine", 0)
+		return (False, "Drilling Machine", 					0,	241)
 	if ( mID == "exode_card_242_installationRadarArray" 		or mID == "exode_card_E242_installationRadarArray" ):
-		return (False, "Radar Array", 0)
+		return (False, "Radar Array", 					0,	242)
 	if ( mID == "exode_card_243_installationGenerator20" 	or mID == "exode_card_E243_installationGenerator20" ):
-		return (False, "X-Gen TR20", 0)
+		return (False, "X-Gen TR20", 						0,	243)
 	if ( mID == "exode_card_244_installationTomStarter" 		or mID == "exode_card_E244_installationTomStarter" ):
-		return (False, "TOM STARTER", 0)
+		return (False, "TOM STARTER", 					0,	244)
 	if ( mID == "exode_card_245_installationLiveBlock" 		or mID == "exode_card_E245_installationLiveBlock" ):
-		return (False, "Life Block", 0)
+		return (False, "Life Block", 						0,	245)
 	if ( mID == "exode_card_246_installationBiodomes" 		or mID == "exode_card_E246_installationBiodomes" ):
-		return (False, "Biodomes", 0)
+		return (False, "Biodomes", 						0,	246)
 	if ( mID == "exode_card_247_installationTurret" 		or mID == "exode_card_E247_installationTurret" ):
-		return (False, "AA/AT Automatic Turret", 0)
+		return (False, "AA/AT Automatic Turret", 				0,	247)
 	if ( mID == "exode_card_248_layoutProtectionWalls" 		or mID == "exode_card_E248_layoutProtectionWalls" ):
-		return (False, "Protection Walls", 0)
+		return (False, "Protection Walls", 					0,	248)
 	if ( mID == "exode_card_249_layoutUnderground" 		or mID == "exode_card_E249_layoutUnderground" ):
-		return (False, "Underground Construction", 0)
+		return (False, "Underground Construction", 				0,	249)
 	if ( mID == "exode_card_250_interiorLabEquipment" 		or mID == "exode_card_E250_interiorLabEquipment" ):
-		return (False, "Lab Equipment", 0)
+		return (False, "Lab Equipment", 					0,	250)
 	if ( mID == "exode_card_251_interiorManagementConsole" 	or mID == "exode_card_E251_interiorManagementConsole" ):
-		return (False, "Management Console", 0)
+		return (False, "Management Console", 					0,	251)
 	if ( mID == "exode_card_252_interiorComputerRoom" 		or mID == "exode_card_E252_interiorComputerRoom" ):
-		return (False, "Computer Room",1)
+		return (False, "Computer Room",					1,	252)
 	if ( mID == "exode_card_253_installationMultipurpose" 	or mID == "exode_card_E253_installationMultipurpose" ):
-		return (False, "Multipurpose Prefab", 0)
+		return (False, "Multipurpose Prefab", 				0,	253)
 	if ( mID == "exode_card_254_installationCommunicationArray"	or mID == "exode_card_E254_installationCommunicationArray" ):
-		return (False, "Communication Array", 1)
+		return (False, "Communication Array", 				1,	254)
 	if ( mID == "exode_card_255_interiorCuves" 			or mID == "exode_card_E255_interiorCuves" ):
-		return (False, "Chemical Cuves", 1)
+		return (False, "Chemical Cuves", 					1,	255)
 	if ( mID == "exode_card_256_installationPreservationDome"	or mID == "exode_card_E256_installationPreservationDome" ):
-		return (False, "Preservation Dome", 0)
+		return (False, "Preservation Dome", 					0,	256)
 	if ( mID == "exode_card_257_installationStorage" 		or mID == "exode_card_E257_installationStorage" ):
-		return (False, "Storage Building", 0)
+		return (False, "Storage Building", 					0,	257)
 	if ( mID == "exode_card_258_equipmentTomEssentialsHappyFood"	or mID == "exode_card_E258_equipmentTomEssentialsHappyFood" ):
-		return (False, "Soup and Cook", 2)
+		return (False, "Soup and Cook", 					2,	258)
 	if ( mID == "exode_card_259_equipmentTomEssentialsHappyAir"	or mID == "exode_card_E259_equipmentTomEssentialsHappyAir" ):
-		return (False, "TOM Beauty Air", 2)
+		return (False, "TOM Beauty Air", 					2,	259)
 	if ( mID == "exode_card_260_equipmentTomEssentialsSurvivor"	or mID == "exode_card_E260_equipmentTomEssentialsSurvivor" ):
-		return (False, "TOM Survivor CO5", 2)
+		return (False, "TOM Survivor CO5", 					2,	260)
 	if ( mID == "exode_card_261_actionImmediateOrder"		or mID == "exode_card_E261_actionImmediateOrder" ):
-		return (False, "Emergency Order!", 0)
+		return (False, "Emergency Order!", 					0,	261)
 	
 		
-	return (False, mID, -1)
+	return (False, mID, -1, 0)
 
 #########################################################################################
 
@@ -804,17 +805,17 @@ def db_Card_GetNMintTot( card_id, card_elite ):
 	
 	return card_ntot_mint
 	
-def db_Card_Mint( card_owner, card_id, card_uid, card_mint, card_elite, card_bound, card_block ):
+def db_Card_Mint( card_owner, card_id, card_num, card_uid, card_mint, card_elite, card_bound, card_block ):
 
 	cursor = mSQLConnector.cursor()
 	
 	card_burn = 0
 	
 	query = ("INSERT INTO exode_cards "
-		"(type, uid, owner, burn, bound, elite, mint_num, block, block_update, minter) "
-		"VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+		"(type, num, uid, owner, burn, bound, elite, mint_num, block, block_update, minter) "
+		"VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 				
-	cursor.execute(query, (card_id, card_uid, card_owner, card_burn, card_bound, card_elite, card_mint, card_block, card_block, card_owner) )
+	cursor.execute(query, (card_id, card_num, card_uid, card_owner, card_burn, card_bound, card_elite, card_mint, card_block, card_block, card_owner) )
 	mSQLConnector.commit()
 	
 	cursor.reset()
@@ -888,9 +889,10 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 	else:
 		card_mint = db_Card_GetNMintTot( card_id, card_elite ) + 1
 	
-	db_Card_Mint( card_owner, card_id, card_uid, card_mint, card_elite, card_bound, card_block )
+	(is_pack, card_name, card_rank, card_num) = ex_GetAssetDetails(card_id)
 	
-	(is_pack, card_name, card_rank) = ex_GetAssetDetails(card_id)
+	db_Card_Mint( card_owner, card_id, card_num, card_uid, card_mint, card_elite, card_bound, card_block )
+	
 	
 	if ( (card_mint > 0 and card_mint <= 10) or (card_rank == 2 and int(card_elite) == 1) or card_rank == 3 ):
 		if ( int(card_elite) == 1 ):
@@ -946,7 +948,7 @@ def db_Card_Apply_Burn( card_burner, card_id, card_uid, card_block, tx_id, bypas
 	
 	card_mint = cInfo[1]
 	card_elite = cInfo[4]
-	(is_pack, card_name, card_rank) = ex_GetAssetDetails(card_id)
+	(is_pack, card_name, card_rank, card_num) = ex_GetAssetDetails(card_id)
 	if ( (card_mint > 0 and card_mint <= 10) or (card_rank == 2 and card_elite == 1) or card_rank == 3 ):
 		if ( card_elite == 1 ):
 			msg_elite = "an **Elite "
@@ -1109,7 +1111,7 @@ def db_Sale_Cancel( asset_uid, sale_seller, sale_block, sale_fix=False ):
 def db_Sale_Apply_New( sale_seller, asset_id, asset_uid, sale_block, sale_tx, sale_price, sale_sold, sale_buyer, sale_update, bypass = False ):
 
 	# Check asset
-	(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(asset_id)
+	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(asset_id)
 	if ( not is_pack ):
 		cInfo = db_Card_IsTransferable( sale_seller, "market", asset_id, asset_uid, sale_block, sale_tx, "sale", sale_update )
 		if ( not cInfo[0] and not bypass ):
@@ -1152,7 +1154,7 @@ def db_Sale_Apply_New( sale_seller, asset_id, asset_uid, sale_block, sale_tx, sa
 def db_Sale_Apply_Cancel( sale_seller, asset_id, asset_uid, sale_block, sale_tx, sale_update, transfert_cancel=False ):
 
 	# Check asset
-	(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(asset_id)
+	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(asset_id)
 	if ( not is_pack and not sale_update and not transfert_cancel ):
 		cInfo = db_Card_IsTransferable( sale_seller, "market", asset_id, asset_uid, sale_block, sale_tx, "sale-cancel" )
 		if ( not cInfo[0] ):
@@ -1190,7 +1192,7 @@ def db_Sale_Apply_Cancel( sale_seller, asset_id, asset_uid, sale_block, sale_tx,
 def db_Sale_Apply_Sold( sale_seller, asset_id, asset_uid, sale_block, sale_tx, sale_sold, sale_buyer ):
 
 	# Check asset
-	(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(asset_id)
+	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(asset_id)
 	if ( not is_pack ):
 		cInfo = db_Card_IsTransferable( sale_seller, sale_buyer, asset_id, asset_uid, sale_block, sale_tx, "sale-sold" )
 		#if ( not cInfo[0] ):
@@ -1742,7 +1744,7 @@ class my_eXode_bot(discord.Client):
 			if ( not bOK ):
 				return [ excst.NO_ALERT, tMSGOut ]
 			
-			(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(l_asset_id) 
+			(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(l_asset_id) 
 			mSoldPrice = db_Sale_GetAverageSoldPrice(l_asset_id)
 			mLastPrice = db_Sale_GetLastSoldPrice(l_asset_id)
 
@@ -1775,7 +1777,7 @@ class my_eXode_bot(discord.Client):
 						card_elite = is_elite
 						
 				card_ntot_mint = db_Card_GetNMintTot( l_asset_id, card_elite )
-				(is_pack, card_name, card_rank) = ex_GetAssetDetails(card_id)
+				(is_pack, card_name, card_rank, asset_num) = ex_GetAssetDetails(card_id)
 																					
 				card_elite_msg = ""
 				if ( card_elite == 1 ):
@@ -1785,7 +1787,7 @@ class my_eXode_bot(discord.Client):
 					lOut = ":blue_square: {seller} listed 1 **{elite}{name}** (**{mint}**/{ntot_mint} *uid={muid})* for **${price}** (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller, 
 								name=card_name, mint=card_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=card_muid, price=l_sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 				else:						
-					lOut = ":blue_square: {seller} listed {nb} **{elite}{name}** for **${price}** (minimum mint listed is **{mint}**/{ntot_mint} *uid={muid}*) (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller,
+					lOut = ":blue_square: {seller} listed {nb} **{elite}{name}** for **${price}** (min. mint is **{mint}**/{ntot_mint} *uid={muid}*) (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller,
 								nb=len(l_asset_uids), elite=card_elite_msg, name=card_name, mint=card_mint, ntot_mint=card_ntot_mint, muid=card_muid,
 								price=l_sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 				tMSGOut.append(lOut)
@@ -1823,7 +1825,7 @@ class my_eXode_bot(discord.Client):
 			if ( not bOK ):
 				return [ excst.NO_ALERT, tMSGOut ]
 
-			(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(l_asset_id) 
+			(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(l_asset_id) 
 
 			if ( is_pack ):
 						
@@ -1924,7 +1926,7 @@ class my_eXode_bot(discord.Client):
 					if ( not bOK ):
 						return [ excst.NO_ALERT, tMSGOut ]	
 						
-					(is_pack, asset_name, asset_rank) = ex_GetAssetDetails(mID) 
+					(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(mID) 
 					mSoldPrice = db_Sale_GetAverageSoldPrice(mID)
 					
 					if ( is_pack ):
@@ -2367,31 +2369,22 @@ class my_eXode_bot(discord.Client):
 			
 			# Loop over blocks
 			for iBlock in range(iFirstBlock+1,iLastBlock):
-				
+										
 				# Check if need to reconnect or to ping
-				if ( iIterator % 1000 == 0 ):	
+				if ( iIterator % 100 == 0 ):					
 				
-					print("Discord: reconnect")
-					# Reconnect
-					await self.disc_connect()
-					
 					# Update player table
 					db_Player_CompleteList()
 					db_Player_SetLastBlock_all(iBlock-1)
 					
-					msg = "Listing :blue_square:, unlisting :purple_square:, and buy :green_square: alert messages are displayed in this channel.\n**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
-					await self.disc_send_msg(msg, self.DISC_CHANNELS_MARKET)
-					msg = "**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
-					await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
-					
-					iIterator = 0
-					
-						
-				if ( iIterator % 100 == 0 ):			
-					
 					if ( os.path.isfile('stop.order') ):
-						os.remove('stop.order')
+						
 						msg = ":zap: Killing order received, going to shutdown... :zap:"
+						with open('stop.order', "r") as f:
+							msg = msg + "\n Shutdown reason: " + f.read()
+							
+						os.remove('stop.order')
+						
 						await self.disc_send_msg(msg, self.DISC_CHANNELS_MARKET)
 						await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
 						await self.disc_send_msg(msg, self.DISC_CHANNELS_PING)
@@ -2399,11 +2392,26 @@ class my_eXode_bot(discord.Client):
 						print("shutdown")
 						return
 						
+					print("Discord: reconnect")
+					# Reconnect
+					await self.disc_connect()
+						
 					print("Discord: ping")
 					# Ping
 					msg = "[PING] Reading block {block}".format(block=iBlock)
 					await self.disc_send_msg(msg, self.DISC_CHANNELS_PING)
-										
+					
+				# Check if need to reconnect or to ping
+				if ( iIterator % 30000 == 0 ):	
+									
+					msg = "Listing :blue_square:, unlisting :purple_square:, and buy :green_square: alert messages are displayed in this channel.\n**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_MARKET)
+					msg = "**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
+					
+					iIterator = 0
+					
+													
 				# Increase Iterator
 				iIterator = iIterator + 1
 					
