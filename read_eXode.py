@@ -664,6 +664,30 @@ def db_Player_CompleteList():
 	cursor.reset()
 	cursor.close()
 	
+
+def db_Player_Add(mPlayer):
+
+	cursor = mSQLConnector.cursor()
+	
+	query = ("SELECT last_block FROM exode_player where player = %s ")
+		 
+	cursor.execute(query, (mPlayer,) )
+	m_out = cursor.fetchall()
+
+	if ( cursor.rowcount == 0 ):	
+		cursor.reset()
+		
+		query = ("INSERT INTO exode_player "
+		"(player) "
+		"VALUES (%s)") 
+		
+		cursor.execute(query, (mPlayer,) )
+		mSQLConnector.commit()
+	
+	cursor.reset()
+	cursor.close()
+		
+	
 #########################################################################################
 
 def db_Pack_GetDetails( pack_owner, pack_id ):
@@ -1033,15 +1057,15 @@ def db_Sale_Add( sale_seller, asset_id, asset_uid, sale_tx, sale_price, sale_sol
 	cursor.reset()
 	cursor.close()
 	
-def db_Sale_Sold( asset_uid, sale_tx, sale_sold, sale_buyer, sale_block ):
+def db_Sale_Sold( asset_uid, asset_id, sale_tx, sale_sold, sale_buyer, sale_block ):
 
 	cursor = mSQLConnector.cursor()
 	
 	query = ("UPDATE exode_sales "
-		"SET buyer = %s, sold = %s, block_update = %s "
+		"SET buyer = %s, sold = %s, asset_type = %s, block_update = %s "
 		"WHERE asset_uid = %s and sold = %s and block < %s") 
 		
-	cursor.execute(query, (sale_buyer, sale_sold, sale_block, asset_uid, 0, sale_block) )
+	cursor.execute(query, (sale_buyer, sale_sold, asset_id, sale_block, asset_uid, 0, sale_block) )
 	mSQLConnector.commit()
 	
 	cursor.reset()
@@ -1208,7 +1232,7 @@ def db_Sale_Apply_Sold( sale_seller, asset_id, asset_uid, sale_block, sale_tx, s
 			f.write("\n")
 		return [ False, "", 0.0 ]
 	else:
-		db_Sale_Sold( asset_uid, sale_tx, 1, sale_buyer, sale_block)
+		db_Sale_Sold( asset_uid, asset_id, sale_tx, 1, sale_buyer, sale_block)
 		
 	return [ True, sInfo['seller'], sInfo['price'] ]
 	
@@ -1257,6 +1281,55 @@ def db_Sale_GetLastSoldPrice(mID=""):
 	
 	return m_price
 	
+def db_Sale_Fix_Issues():
+
+	# Remove sale transfered
+	cursor = mSQLConnector.cursor()	
+	cursor.reset()
+	
+	query = ("SELECT exode_sales.id from exode_sales "
+		"WHERE exode_sales.sold = 0 and exists "
+		"(select * from exode_cards "
+		"where exode_cards.uid = exode_sales.asset_uid and exode_cards.owner <> exode_sales.seller "
+		"and exode_sales.block_update < exode_cards.block_update)")
+	
+	cursor.execute(query)
+	m_out = cursor.fetchall()
+	
+	print ( "Transfered: Going to remove", cursor.rowcount, " sales" )
+	
+	if (  cursor.rowcount != 0 ):
+		for iSale in range(len(m_out)):
+			
+			cursor.reset()
+			query = ("delete from exode_sales "
+				"WHERE sold = 0 and id = %s")
+			cursor.execute(query)
+			mSQLConnector.commit()
+	
+	cursor.reset()
+	
+	# Remove burn cards	
+	query = ("SELECT exode_sales.id from exode_sales "
+		"WHERE exode_sales.sold = 0 and exists "
+		"(select * from exode_cards "
+		"where exode_cards.uid = exode_sales.asset_uid and exode_cards.burn = 1 "
+		"and exode_sales.block_update < exode_cards.block_update)")
+		
+	cursor.execute(query)
+	m_out = cursor.fetchall()
+	
+	print ( "Burn: Going to remove", cursor.rowcount, " sales" )
+	if (  cursor.rowcount != 0 ):
+		for iSale in range(len(m_out)):
+			
+			cursor.reset()
+			query = ("delete from exode_sales "
+				"WHERE sold = 0 and id = %s")
+			cursor.execute(query)
+			mSQLConnector.commit()
+	
+	cursor.close()
 			
 #########################################################################################
 
@@ -1283,6 +1356,8 @@ def db_ExodePlayers_List():
 	cursor.close()
 
 	return m_player_out
+	
+	
 
 #########################################################################################
 
@@ -1737,8 +1812,19 @@ class my_eXode_bot(discord.Client):
 			else:
 				cInfo = db_Card_GetDetails( l_asset_uids[0] )
 				l_asset_id     = cInfo['id']
-		
-			print( 'sell', l_sale_txid, l_asset_seller, l_asset_id, l_asset_uids, l_sale_price )	
+				
+			tMarketType_Pack = False
+			if ( "market_type" in tInst ):
+				tMarketType_Pack = (tInst['market_type'] == "pack")
+					
+			tIDUnknown = False
+			if ( tMarketType_Pack and l_asset_id == "" ):
+				l_asset_id = "exode_alpha_booster"
+				tIDUnknown = True
+					
+			print( 'sell', l_sale_txid, l_asset_seller, l_asset_id, l_asset_uids, l_sale_price, tMarketType_Pack )	
+			
+			
 			
 			for iAsset in range(len(l_asset_uids)):
 				bOK = db_Sale_Apply_New( l_asset_seller, l_asset_id, l_asset_uids[iAsset], tBlock, l_sale_txid, l_sale_price, 0, "", self.fLoadPlayerMarket )
@@ -1753,6 +1839,9 @@ class my_eXode_bot(discord.Client):
 			if ( is_pack ):
 						
 				pack_name                               = asset_name
+				
+				if ( tIDUnknown ):
+					pack_name = pack_name + " (?)"
 				
 				lOut = ":blue_square: {seller} listed {nb} **{name}** on the market for **${price}** (average sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller, nb=len(l_asset_uids), name=pack_name, price=l_sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 				tMSGOut.append(lOut)
@@ -1986,8 +2075,17 @@ class my_eXode_bot(discord.Client):
 						f.write("\n")
 			
 				elif ( tMemo[1] == "exode_market_rewards" or tMemo[1] == "exode_market_sale" or tMemo[1] == "exode_market_sale_manual" ):			
-					#SKIP!
-					return [ excst.NO_ALERT, tMSGOut ]
+					#Add player to list, just in case
+					
+					mFrom = "market"
+					mUID  = tMemo[4]
+					mID   = tMemo[5]
+					mTxId = tMemo[8]
+					
+					if ( not self.CheckTransaction(tBlock, tMemo[1], mTxId, mUID, tTo, tFrom, tFrom, tMemo) ):
+						return [ excst.NO_ALERT, tMSGOut ]	
+						
+					db_Player_Add(tTo)
 			
 				else:	
 					with open('logs/log_unknown_transfert.log', 'a') as f:
@@ -2368,6 +2466,9 @@ class my_eXode_bot(discord.Client):
 		# Change flag	
 		self.fReBuildDataBase = False
 		self.fDoDiscord       = True
+		
+		# Fix sale
+		db_Sale_Fix_Issues()
 		
 		# Initialize iterator
 		iIterator = 0
