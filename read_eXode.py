@@ -9,6 +9,8 @@ import os.path
 import mysql.connector
 from timeit import default_timer as timer
 import time
+import traceback
+import datetime
 
 import discord
 from dotenv import load_dotenv
@@ -1218,7 +1220,7 @@ def db_Sale_GetAverageSoldPrice(mID=""):
 	cursor = mSQLConnector.cursor()
 	
 	query = ("SELECT AVG(price) from exode_sales "
-		"WHERE asset_type = %s and sold = %s")  
+		"WHERE asset_type = %s and sold = %s and price != 0. ")  
 		 
 	cursor.execute(query, (mID,1) )
 	m_out = cursor.fetchall()
@@ -1240,7 +1242,7 @@ def db_Sale_GetLastSoldPrice(mID=""):
 	cursor = mSQLConnector.cursor()
 	
 	query = ("SELECT price from exode_sales "
-		"WHERE asset_type = %s and sold = %s ORDER BY block_update DESC")  
+		"WHERE asset_type = %s and sold = %s and price != 0. ORDER BY block_update DESC")  
 		 
 	cursor.execute(query, (mID,1) )
 	m_out = cursor.fetchall()
@@ -1391,7 +1393,7 @@ def LoadHiveBlockChain():
 	return bHive		
 		
 ##############################################################################################
-
+	
 
 class my_eXode_bot(discord.Client):
 
@@ -1425,7 +1427,7 @@ class my_eXode_bot(discord.Client):
 		super().__init__(*args, **kwargs)
 		
 		# create the background task and run it in the background
-		self.read_exode.start()
+		self.read_exode_task.start()
 		
 	######################################################################################		
 
@@ -2138,6 +2140,29 @@ class my_eXode_bot(discord.Client):
 	######################################################################################	
 
 	@tasks.loop(seconds=60,count=1) # task runs every 60 seconds
+	async def read_exode_task(self):
+	
+		try:
+			await self.read_exode()
+					
+		except:
+
+			msg = ("%s: Exception occurred:\n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+			print(msg)
+			traceback.print_exc()
+			
+			msg = ("%s: Exception occurred, request assistance <@!232962122043228160> \n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+			await self.disc_connect()
+			await self.disc_send_msg(msg,self.DISC_CHANNELS_MARKET)
+			await self.disc_send_msg(msg,self.DISC_CHANNELS_MINT)
+			await self.disc_send_msg(msg,self.DISC_CHANNELS_PING)
+
+			
+	@read_exode_task.before_loop
+	async def read_exode_preparation(self):
+		await self.wait_until_ready() # wait until the bot logs in
+		
+	######################################################################################	
 	async def read_exode(self):
 	
 		print ( "DISCORD_BOT: read_exode" ) 
@@ -2440,17 +2465,12 @@ class my_eXode_bot(discord.Client):
 											
 				with open('logs/file_block_fast.json', 'w') as f:
 					json.dump( iBlock, f ) 
-
-			
-	@read_exode.before_loop
-	async def read_exode_preparation(self):
-		await self.wait_until_ready() # wait until the bot logs in
 	
 ##############################################################################################################################################		
-
 DISC_CLIENT = my_eXode_bot()
-
 DISC_CLIENT.run(BOT_TOKEN)
+
+	
 
 
 		
