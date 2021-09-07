@@ -15,6 +15,7 @@ https://discordpy.readthedocs.io/en/stable/
 The following package are needed (list is maybe incomplete):
 ```
 sudo apt install build-essential libssl-dev python-dev curl
+sudo apt install libffi-dev
 sudo apt install mysql-client-core-8.0
 sudo apt install mysql-server
 sudo mysql_secure_installation
