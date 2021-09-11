@@ -10,7 +10,8 @@ import mysql.connector
 from timeit import default_timer as timer
 import time
 import traceback
-import datetime
+from datetime import datetime
+from datetime import timedelta
 import ssl
 
 import discord
@@ -28,12 +29,16 @@ import exode_const as excst
 class DataBaseConnector():
 
 	mSQLConnector = mysql.connector.connect()
+	mLastConnect  = datetime.now()
 	
-	def db_Connect(self):
+	def db_Connect(self):    
+    
 		try:
 			self.mSQLConnector = mysql.connector.connect(user='exode', password=excst.DB_PASS,
 									host='127.0.0.1',
-									database='exode_db')
+									database=excst.DB_NAME)
+									
+			self.mLastConnect = datetime.now()
 									
 		except mysql.connector.Error as err:
 			if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -44,10 +49,19 @@ class DataBaseConnector():
 				print("MySQL: ", err)
 
 	def db_Cursor(self):
-
+	
+		mCurrentTime = datetime.now()
+		
+		print ( (mCurrentTime - self.mLastConnect).seconds )
+		if ( (mCurrentTime - self.mLastConnect).seconds > 10 ):
+			self.db_Close()
+			self.db_Connect()
+			
+			
 		try:
 			cursor = self.mSQLConnector.cursor()
 		except mysql.connector.Error as err:
+			print ( "reconnect" )
 			self.db_Connect()
 			cursor = self.mSQLConnector.cursor()
 			
@@ -56,6 +70,13 @@ class DataBaseConnector():
 	def db_Commit(self):
 	
 		self.mSQLConnector.commit()
+		
+	def db_Close(self):
+	
+		try:
+			self.mSQLConnector.close()
+		except mysql.connector.Error as err:
+			print ( "already close" )
 
 #############################################################################################
 # Initialise
@@ -1390,9 +1411,9 @@ def db_Pack_GetDetails( pack_id ):
 	cursor = myDB.db_Cursor()
 	
 	query = ("SELECT SUM(opened), SUM(nb) FROM exode_pack "
-			 "WHERE type = %s and player != %s" )	
+			 "WHERE type = %s and player != %s and player != %s" )	
 		
-	cursor.execute(query, (pack_id,"elindos"))
+	cursor.execute(query, (pack_id,"elindos","exolindos"))
 	m_output = cursor.fetchall()
 	
 	
@@ -1521,7 +1542,7 @@ def db_Sale_GetInfo(mID=""):
 	cursor = myDB.db_Cursor()
 	
 	query = ("SELECT price, block_update, time_update from exode_sales "
-		"WHERE asset_type = %s and sold = %s and price != 0. ")  
+		"WHERE asset_type = %s and sold = %s and price != 0. ORDER BY block_update")  
 	 
 	cursor.execute(query, (mID,1) )
 	m_out = cursor.fetchall()
@@ -1635,6 +1656,72 @@ def db_Card_Owners_Mint(mID, mMax):
 	
 	return (tCards, tCard_owners, tCard_mints, tCards_all)
 
+	
+def db_TransferTX_Last():
+
+	cursor = myDB.db_Cursor()	
+	
+	query = ("SELECT MAX(block_update) FROM exode_sales")
+		
+	cursor.execute(query)
+	m_out = cursor.fetchall()
+		
+	if ( m_out[0][0] != None ):
+		m_out_sale = int(m_out[0][0])
+	else: 
+		m_out_sale = 0
+		
+	cursor.reset()
+	
+	query = ("SELECT MAX(block_update) FROM exode_cards WHERE block != block_update")
+		
+	cursor.execute(query)
+	m_out = cursor.fetchall()
+		
+	if ( m_out[0][0] != None ):
+		m_out_card = int(m_out[0][0])
+	else: 
+		m_out_card = 0
+		
+	cursor.close()
+	
+	return max(m_out_sale,m_out_card)
+	
+def db_TransferTX_LastTX():
+
+	cursor = myDB.db_Cursor()	
+	
+	query = ("SELECT MAX(block) FROM exode_tx")
+		
+	cursor.execute(query)
+	m_out = cursor.fetchall()
+		
+	if ( m_out[0][0] != None ):
+		m_out_block = int(m_out[0][0])
+	else: 
+		m_out_block = 0
+		
+	cursor.reset()		
+	cursor.close()
+	
+	return m_out_block
+	
+def db_TransferTX_Remain(mBlock):
+
+	cursor = myDB.db_Cursor()	
+	
+	query = ("SELECT tx_block FROM exode_tx_transfer WHERE tx_block > %s")
+		
+	cursor.execute(query,(mBlock,))
+	cursor.fetchall()
+	
+	m_out = cursor.rowcount
+		
+	cursor.reset()		
+	cursor.close()
+	
+	return m_out
+
 def ArgToID(iArg, arg):
 
 	tID = ""
@@ -1666,13 +1753,6 @@ def ArgToID(iArg, arg):
 	return (tID, tElite)
 
 ##############################################################################################
-
-print ("HIVE: Loading blockchain")
-nodelist = NodeList()
-nodelist.update_nodes()
-nodes = nodelist.get_hive_nodes()
-bHive = Hive(node=nodes)
-print("Hive loaded?",bHive.is_hive)
 	
 DISC_BOT = commands.Bot(command_prefix="$")	
 
@@ -1688,11 +1768,17 @@ async def on_ready():
 			print ( "DISCORD BOT:eXode bot [MARKET-ANALYSER] connected to {guild_name}".format(guild_name=discord_guild.name) )
 			await DISC_CHANNEL.send("*eXode BOT [MARKET-ANALYSER] is connected here!*")    
     
+@DISC_BOT.event
+async def on_message(message):
+	if message.channel.name == excst.CHANNEL_ANALYSE_NAME:
+		await DISC_BOT.process_commands(message)
 ##############################################################################################
 
 @DISC_BOT.command(
-	help="Display the average sold price and the last sold price of the requested asset.\n Usage: $sales [elite] <asset id or asset name or card num>",
-	brief="Display the average and last sold prices"
+#	help="Display the average sold price and the last sold price of the requested asset.\n Usage: $sales [elite] <asset id or asset name or card num>",
+#	brief="Display the average and last sold prices"
+	help="Disabled",
+	brief="Disable"
 )
 async def sales(ctx, *arg):
 
@@ -1716,8 +1802,10 @@ async def sales(ctx, *arg):
 	
 	
 @DISC_BOT.command(
-	help="Display a graph showing the last sales of the requested asset. \n Usage: $graphsales [all/year/month/week] [elite] <asset id or asset name or card num>",
-	brief="Display a graph showing the last sales"
+#	help="Display a graph showing the last sales of the requested asset. \n Usage: $graphsales [all/year/month/week] [elite] <asset id or asset name or card num>",
+#	brief="Display a graph showing the last sales"
+	help="Disabled",
+	brief="Disable"
 )
 async def graphsales(ctx, *arg):
 
@@ -1746,8 +1834,8 @@ async def graphsales(ctx, *arg):
 		if ( sTime == "week" ):
 			iDay = 7			
 		
-		ts = datetime.datetime.now()
-		td = datetime.timedelta(days=iDay)
+		ts = datetime.now()
+		td = timedelta(days=iDay)
 		
 		
 		tTimeFirst = ts - td
@@ -1803,8 +1891,10 @@ async def graphsales(ctx, *arg):
 		
 
 	
-	msg = " **{elite}{name}** ({asset_id}) sales during {period} period were: ".format(elite=msg_elite,name=asset_name,period=sTime,asset_id=tID)
-	
+	if ( sTime != "all" ):
+		msg = " **{elite}{name}** ({asset_id}) sales during last {period} period were: ".format(elite=msg_elite,name=asset_name,period=sTime,asset_id=tID)
+	else:
+		msg = " **{elite}{name}** ({asset_id}) sales since the beginning of eXode were: ".format(elite=msg_elite,name=asset_name,period=sTime,asset_id=tID)
 
 	await ctx.channel.send(msg,file=discord.File("./plot_{asset_id}_{rnd}.png".format(asset_id=tID,rnd=nRnd)))
 	
@@ -1812,8 +1902,10 @@ async def graphsales(ctx, *arg):
 
 
 @DISC_BOT.command(
-	help="Display up to 10 players owning the requested card. \n Usage: $owners [elite] <card id or number>",
-	brief="Display a list of 10 players owning the card."
+#	help="Display up to 10 players owning the requested card. \n Usage: $owners [elite] <card id or number>",
+#	brief="Display a list of 10 players owning the card."
+	help="Disabled",
+	brief="Disable"
 )
 async def owners(ctx, *arg):
 
@@ -1965,8 +2057,10 @@ async def pack_details(ctx, *arg):
 
 
 @DISC_BOT.command(
-	help="Display list of owners for a pack. \n Usage: $pack_owners <pack id or name>",
-	brief="Display list of owners for a pack."
+#	help="Display list of owners for a pack. \n Usage: $pack_owners <pack id or name>",
+#	brief="Display list of owners for a pack."
+	help="Disabled",
+	brief="Disable"
 )
 async def pack_owners(ctx, *arg):
 
@@ -2037,6 +2131,28 @@ async def pack_open(ctx, *arg):
 		msg = msg + "**[Note]** distributed pack number is incorrect"
 		
 	await ctx.channel.send(msg)
+	
+	
+@DISC_BOT.command(
+	help="Display the status of the database. \n Usage: $database_status",
+	brief="Display the status of the database."
+)
+async def database_status(ctx):
+
+	print ("database_status")
+	m_last_block = 0
+	m_last_tx_block = 0
+	m_remains = 0
+	
+	m_last_block = db_TransferTX_Last()
+	m_last_tx_block = db_TransferTX_LastTX()
+	m_remains = db_TransferTX_Remain(m_last_block)
+	
+	print ( m_last_block, m_last_tx_block, m_remains )
+	
+	msg = "The sale and ownership database is build up to block **{block_last}** / **{block_real}**, still **{tx_rem}** transactions to process".format(block_last=m_last_block, block_real=m_last_tx_block, tx_rem=m_remains)		
+	await ctx.channel.send(msg)
+
 
 
 ##############################################################################################

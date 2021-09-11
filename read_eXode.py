@@ -26,7 +26,7 @@ class DataBaseConnector():
 		try:
 			self.mSQLConnector = mysql.connector.connect(user='exode', password=excst.DB_PASS,
 									host='127.0.0.1',
-									database='exode_db')
+									database=excst.DB_NAME)
 									
 		except mysql.connector.Error as err:
 			if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -570,9 +570,7 @@ def db_TX_Cancel( tx_id, tx_uid, tx_type, tx_target ):
 def db_TX_Add( tx_id, tx_uid, tx_type, tx_block, tx_player, tx_from, tx_auth ):
 
 	cursor = fDataBase.db_Cursor()
-	
-	pack_open = 0
-	
+		
 	query = ("INSERT INTO exode_tx "
 		"(tx_id, type, uid, block, player, player_from, auth) "
 		"VALUES (%s, %s, %s, %s, %s, %s, %s)")
@@ -603,12 +601,50 @@ def db_TX_GetLastBlock(mPlayer="exodegame"):
 	
 	return m_block
 	
-def db_TransferTX_Add( tx_auth, tx_type, tx_block, tx_id, player_from, player_to, card_id, card_uid, price=0.0 ):
+#########################################################################################
+
+def db_TransferTX_Reset():
 
 	cursor = fDataBase.db_Cursor()
 	
-	pack_open = 0
+	query = ("delete from exode_cards "
+		"where minter = 'no_source' ")
+		
+	cursor.execute(query)
+	fDataBase.db_Commit()
 	
+	cursor.reset()
+	
+	query = ("UPDATE exode_cards "
+		"SET owner = minter, burn = 0, block_update = block ")
+		
+	cursor.execute(query)
+	fDataBase.db_Commit()
+	
+	cursor.reset()
+	
+	
+	query = ("UPDATE exode_pack "
+		"SET nb = buy ")
+		
+	cursor.execute(query)
+	fDataBase.db_Commit()
+	
+	cursor.reset()
+	
+	query = ("truncate exode_sales ")
+		
+	cursor.execute(query)
+	fDataBase.db_Commit()
+	
+	cursor.reset()
+	cursor.close()
+
+
+def db_TransferTX_Add( tx_auth, tx_type, tx_block, tx_id, player_from, player_to, card_id, card_uid, price=0.0 ):
+
+	cursor = fDataBase.db_Cursor()
+		
 	tx_time = Block(tx_block).time()
 	
 	query = ("INSERT INTO exode_tx_transfer "
@@ -621,6 +657,64 @@ def db_TransferTX_Add( tx_auth, tx_type, tx_block, tx_id, player_from, player_to
 	cursor.reset()
 	cursor.close()
 
+def db_TransferTX_FixID( card_uid, card_id ):
+
+	cursor = fDataBase.db_Cursor()
+	
+	query = ("UPDATE exode_tx_transfer "
+		"SET card_id = %s WHERE card_uid = %s and card_id = ''")
+		
+	cursor.execute(query, (card_id, card_uid))
+	fDataBase.db_Commit()
+	
+	cursor.reset()
+	cursor.close()
+	
+	
+def db_TransferTX_Get(mBlock=0):
+
+	cursor = fDataBase.db_Cursor()
+	
+	query = ("SELECT tx_auth, tx_type, tx_block, tx_time, tx_id, player_from, player_to, card_id, card_uid, price FROM exode_tx_transfer where tx_block > %s ORDER BY tx_block")
+		
+	cursor.execute(query, (mBlock,))
+	m_out = cursor.fetchall()
+	
+	cursor.reset()
+	cursor.close()
+	
+	return m_out
+
+def db_TransferTX_Last():
+
+	cursor = fDataBase.db_Cursor()
+	
+	query = ("SELECT MAX(block_update) FROM exode_sales")
+		
+	cursor.execute(query)
+	m_out = cursor.fetchall()
+		
+	if ( m_out[0][0] != None ):
+		m_out_sale = int(m_out[0][0])
+	else: 
+		m_out_sale = 0
+		
+	cursor.reset()
+	
+	query = ("SELECT MAX(block_update) FROM exode_cards WHERE block != block_update")
+		
+	cursor.execute(query)
+	m_out = cursor.fetchall()
+		
+	if ( m_out[0][0] != None ):
+		m_out_card = int(m_out[0][0])
+	else: 
+		m_out_card = 0
+		
+	cursor.close()
+	
+	return max(m_out_sale,m_out_card)
+	
 #########################################################################################
 
 def db_Player_GetLastBlock(mPlayer): 
@@ -677,7 +771,7 @@ def db_Player_SetLastBlock_all(mBlock):
 	cursor.reset()
 	cursor.close()
 
-def db_Player_CompleteList():
+def db_Player_CompleteList(mFull=False):
 
 	cursor = fDataBase.db_Cursor()
 	
@@ -699,6 +793,31 @@ def db_Player_CompleteList():
 	cursor.execute(query)
 	fDataBase.db_Commit()
 	
+	if ( mFull ):
+	
+		cursor.reset()
+		
+		query = ("INSERT INTO exode_player (player) "
+			"SELECT exode_tx_transfer.player_from FROM exode_tx_transfer "
+			"WHERE exode_tx_transfer.player_from not in (select exode_player.player from exode_player) "
+			"and exode_tx_transfer.player_from != 'exodegame' and exode_tx_transfer.player_from != 'null' and exode_tx_transfer.player_from != 'market' and exode_tx_transfer.player_from != 'burn' and exode_tx_transfer.player_from != '' "
+			"GROUP BY exode_tx_transfer.player_from ") 
+		
+		cursor.execute(query)
+		fDataBase.db_Commit()		
+	
+		cursor.reset()
+		
+		query = ("INSERT INTO exode_player (player) "
+			"SELECT exode_tx_transfer.player_to FROM exode_tx_transfer "
+			"WHERE exode_tx_transfer.player_to not in (select exode_player.player from exode_player) "
+			"and exode_tx_transfer.player_to != 'exodegame' and exode_tx_transfer.player_to != 'null' and exode_tx_transfer.player_to != 'market' and exode_tx_transfer.player_to != 'burn' and exode_tx_transfer.player_to != '' "
+			"GROUP BY exode_tx_transfer.player_to ") 
+		
+		cursor.execute(query)
+		fDataBase.db_Commit()
+		
+			
 	cursor.reset()
 	cursor.close()
 	
@@ -754,29 +873,29 @@ def db_Pack_GetDetails( pack_owner, pack_id ):
 	
 	return output
 	
-def db_Pack_New( pack_owner, pack_id, pack_nb, pack_open ):
+def db_Pack_New( pack_owner, pack_id, pack_nb, pack_buy, pack_open ):
 
 	cursor = fDataBase.db_Cursor()
 		
 	query = ("INSERT INTO exode_pack "
-		"(player, type, nb, opened) "
-		"VALUES (%s, %s, %s, %s)")
+		"(player, type, nb, buy, opened) "
+		"VALUES (%s, %s, %s, %s, %s)")
 		
-	cursor.execute(query, (pack_owner, pack_id, pack_nb, pack_open))
+	cursor.execute(query, (pack_owner, pack_id, pack_nb, pack_buy, pack_open))
 	fDataBase.db_Commit()
 	
 	cursor.reset()
 	cursor.close()
 	
-def db_Pack_Update( pack_owner, pack_id, pack_nb, pack_open ):
+def db_Pack_Update( pack_owner, pack_id, pack_nb, pack_buy, pack_open ):
 
 	cursor = fDataBase.db_Cursor()
 	
 	query = ("UPDATE exode_pack "
-		"SET nb = nb + %s, opened = opened + %s "
+		"SET nb = nb + %s, buy = buy + %s, opened = opened + %s "
 		"WHERE player = %s and type = %s" )	
 		
-	cursor.execute(query, (pack_nb, pack_open, pack_owner, pack_id))
+	cursor.execute(query, (pack_nb, pack_buy, pack_open, pack_owner, pack_id))
 	fDataBase.db_Commit()
 	
 	cursor.reset()
@@ -793,11 +912,16 @@ def db_Pack_Apply_TransferAll( pack_prev_owner, pack_new_owner ):
 	m_output = cursor.fetchall()
 		
 	for iRow in range(cursor.rowcount):
+	
+		pack_id = m_output[iRow][0]
+		pack_nb = m_output[iRow][1]
+		db_Pack_Apply_Update(pack_new_owner, pack_id, pack_nb, 0)
+		
 		cursor.reset()
 		query = ("UPDATE exode_pack "
-			"SET nb = nb + %s "
+			"SET nb = 0 "
 			"WHERE player = %s AND type = %s") 					
-		cursor.execute(query, (m_output[iRow][1], pack_new_owner, m_output[iRow][0]) )
+		cursor.execute(query, (pack_prev_owner, pack_id) )
 		fDataBase.db_Commit()
 	
 	cursor.reset()
@@ -805,16 +929,16 @@ def db_Pack_Apply_TransferAll( pack_prev_owner, pack_new_owner ):
 	
 def db_Pack_Apply_Transfer( pack_prev_owner, pack_new_owner, pack_id, pack_nb ):
 	
-	db_Pack_Update( pack_prev_owner, pack_id, -1 * pack_nb, 0 )
-	db_Pack_Update( pack_new_owner, pack_id, pack_nb, 0 )	
+	db_Pack_Update( pack_prev_owner, pack_id, -1 * pack_nb, 0, 0 )
+	db_Pack_Update( pack_new_owner, pack_id, pack_nb, 0, 0 )	
 	
 def db_Pack_Apply_Update( pack_owner, pack_id, pack_nb, pack_open ):
 
 	pInfo = db_Pack_GetDetails( pack_owner, pack_id )
 	if ( pInfo['exist'] ):
-		db_Pack_Update( pack_owner, pack_id, pack_nb, pack_open )
+		db_Pack_Update( pack_owner, pack_id, pack_nb, pack_nb, pack_open )
 	else:
-		db_Pack_New( pack_owner, pack_id, pack_nb, pack_open )
+		db_Pack_New( pack_owner, pack_id, pack_nb, pack_nb, pack_open )
 	
 #########################################################################################
 
@@ -867,6 +991,57 @@ def db_Card_Mint( card_owner, card_id, card_num, card_uid, card_mint, card_elite
 	
 	cursor.reset()
 	cursor.close()
+	
+	
+def db_Card_Add_Missing( card_owner, card_id, card_uid, card_num, card_elite, card_block ):
+	
+	cursor = fDataBase.db_Cursor()
+		
+	query = ("INSERT INTO exode_cards_no_source "
+		"(card_owner, card_id, card_uid, card_num, card_elite, card_block) "
+		"VALUES (%s, %s, %s, %s, %s, %s)")
+				
+	cursor.execute(query, (card_owner, card_id, card_uid, card_num, card_elite, card_block) )
+	fDataBase.db_Commit()
+	
+	cursor.reset()
+	cursor.close()
+	
+def db_Card_Mint_Missing():
+
+	cursor = fDataBase.db_Cursor()
+		
+	query = ("SELECT card_owner, card_id, card_uid, card_num, card_elite, card_block FROM exode_cards_no_source where card_id != '' ")
+	
+	cursor.execute(query)
+	m_output = cursor.fetchall()
+	
+	
+	if ( cursor.rowcount != 0 ):	
+		
+		tCards = cursor.rowcount
+			
+		cursor.reset()
+		cursor.close()
+	
+		for iCard in range(tCards):
+		
+			card_owner  = m_output[iCard][0]
+			card_id     = m_output[iCard][1]
+			card_uid    = m_output[iCard][2]
+			card_num    = m_output[iCard][3]
+			card_elite  = m_output[iCard][4]
+			card_block  = m_output[iCard][5]
+			
+			card_mint   = -1
+			card_bound  = 0
+			card_minter = "no_source"
+		
+			db_Card_Mint( card_owner, card_id, card_num, card_uid, card_mint, card_elite, card_bound, card_block, card_minter )
+	else:
+		cursor.reset()
+		cursor.close()
+
 	
 def db_Card_Burn( card_uid, card_block, card_burn, card_burner ):
 
@@ -939,16 +1114,6 @@ def db_Card_Apply_TransferAll( card_prev_owner, card_owner, card_block ):
 def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, card_bound, card_block, tx_id, bypass=False ):
 	
 	msg = ""
-	#if ( not excst.RASPBERRY_PI ):
-	#	cInfo = db_Card_GetDetails( card_uid )
-	#	if ( cInfo['exist'] and card_uid != "none" ):
-	#		if ( not bypass and tx_id != "" ):
-	#			with open('logs/card_error.json', 'a') as f:
-	#				err_msg = { "card": { "id": card_id, "uid": card_uid }, "issue": "card_duplicate", 
-	#						"spotted": { "block": card_block, "tx_id": tx_id, "action": "mint", "issue_details": { "minter": card_owner } } }
-	#				json.dump( err_msg, f ) 
-	#				f.write("\n")
-	#		return msg	
 	
 	# Will be replaced one day...
 	if ( card_owner == "elindos" or card_owner == "exolindos" or card_uid == "none" ):
@@ -964,6 +1129,7 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 	
 	(is_pack, card_name, card_rank, card_num) = ex_GetAssetDetails(card_id)
 	
+	# Mint here
 	db_Card_Mint( card_owner, card_id, card_num, card_uid, card_mint, card_elite, card_bound, card_block, card_owner )
 	
 	
@@ -973,8 +1139,17 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 		else:
 			msg_elite = "a **"
 				
+								
+		msg_rarity = "Common"
+		if ( card_rank == 1 ):
+			msg_rarity = "Rare"
+		elif ( card_rank == 2 ):
+			msg_rarity = "Epic"
+		elif ( card_rank == 3 ):
+			msg_rarity = "Legendary"
 		
-		msg = ":tada: {player} found {elite}{name}** (**{mint}**/{mint} *uid={uid}*)".format(player=card_owner,elite=msg_elite,name=card_name, mint=card_mint, uid=card_uid)
+		msg = ":tada: {player} found {elite}{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid}*)".format(player=card_owner,rarity=msg_rarity, elite=msg_elite,name=card_name, 
+					mint=card_mint, uid=card_uid)
 	
 	return msg
 	
@@ -993,9 +1168,11 @@ def db_Card_IsTransferable( card_from, card_to, card_id, card_uid, card_block, t
 			(is_pack, card_name, card_rank, card_num) = ex_GetAssetDetails(card_id)
 			card_elite = ex_IsElite(card_id)
 			db_Card_Mint( card_from, card_id, card_num, card_uid, -1, card_elite, 0, card_block, "no_source" )
+			db_Card_Add_Missing( card_from, card_id, card_uid, card_num, card_elite, card_block )
 			
 			return [ True, -1, True, card_block, card_elite ]
 		else:
+			db_Card_Add_Missing( card_from, "", card_uid, 0, 0, card_block )
 			return [ False, cInfo['mint'], cInfo['exist'], cInfo['block'], cInfo['elite'] ]
 		
 	if ( cInfo['burn'] == 1 and not bypass ):
@@ -1022,7 +1199,7 @@ def db_Card_Apply_Burn( card_burner, card_id, card_uid, card_block, tx_id, bypas
 	cInfo = db_Card_IsTransferable( card_burner, "burn", card_id, card_uid, card_block, tx_id, "burn", bypass )
 	#if ( not cInfo[0] ):
 	#	return msg
-	if ( not cInfo[2] or card_block < cInfo[3] ):
+	if ( not cInfo[2] or int(card_block) < int(cInfo[3]) ):
 		return msg
 		
 	db_Card_Burn( card_uid, card_block, 1, card_burner )
@@ -1036,7 +1213,15 @@ def db_Card_Apply_Burn( card_burner, card_id, card_uid, card_block, tx_id, bypas
 		else:
 			msg_elite = "a **"
 				
-		msg = ":fire: {player} burn {elite}{name}** (**{mint}**/{mint} *uid={uid})*".format(player=card_burner,elite=msg_elite,name=card_name, mint=card_mint, uid=card_uid)
+		msg_rarity = "Common"
+		if ( card_rank == 1 ):
+			msg_rarity = "Rare"
+		elif ( card_rank == 2 ):
+			msg_rarity = "Epic"
+		elif ( card_rank == 3 ):
+			msg_rarity = "Legendary"
+			
+		msg = ":fire: {player} burn {elite}{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid})*".format(player=card_burner,elite=msg_elite,name=card_name, rarity=msg_rarity, mint=card_mint, uid=card_uid)
 	
 	return msg
 	
@@ -1051,7 +1236,7 @@ def db_Card_Apply_Transfer( card_prev_owner, card_new_owner, card_id, card_uid, 
 		cInfo = db_Card_IsTransferable( card_prev_owner, card_new_owner, card_id, card_uid, card_block, tx_id, "transfer", bypass )
 		#if ( not cInfo[0] ):
 		#	return False
-		if ( not cInfo[2] or card_block < cInfo[3] ):
+		if ( not cInfo[2] or int(card_block) < int(cInfo[3]) ):
 			return msg
 					
 		db_Card_Transfer( card_uid, card_block, card_new_owner )
@@ -1060,44 +1245,30 @@ def db_Card_Apply_Transfer( card_prev_owner, card_new_owner, card_id, card_uid, 
 	
 #########################################################################################
 
-def db_Sale_GetDetails( asset_uid, sale_sold, sale_block, sale_seller="", sale_fix=0 ):
+def db_Sale_GetDetails( asset_uid, sale_sold, sale_block, sale_seller="" ):
 
 	cursor = fDataBase.db_Cursor()
 	
-	if ( sale_fix == 1 ):
+	query = ("SELECT seller, price, sold, cancel FROM exode_sales "
+		 "WHERE asset_uid = %s and sold = %s and block < %s ORDER BY block DESC LIMIT 1" )	
 	
-		query = ("SELECT seller, price, sold FROM exode_sales "
-			 "WHERE seller = %s and asset_uid = %s and sold = %s and block > %s and block = block_update ORDER BY block_update LIMIT 1" )	
-			 
-		cursor.execute(query, (sale_seller, asset_uid,sale_sold,sale_block))
-		m_output = cursor.fetchall()
-	elif ( sale_fix == 2 ):
-	
-		query = ("SELECT seller, price, sold FROM exode_sales "
-			 "WHERE seller = %s and asset_uid = %s and sold = %s and block < %s and block_update > %s ORDER BY block_update LIMIT 1" )
-			 
-		cursor.execute(query, (sale_seller, asset_uid,sale_sold,sale_block, sale_block))
-		m_output = cursor.fetchall()
-	else:
-	
-		query = ("SELECT seller, price, sold FROM exode_sales "
-			 "WHERE asset_uid = %s and sold = %s and block < %s" )	
-	
-		cursor.execute(query, (asset_uid,sale_sold,sale_block))
-		m_output = cursor.fetchall()
+	cursor.execute(query, (asset_uid,sale_sold,sale_block))
+	m_output = cursor.fetchall()
 	
 	if ( cursor.rowcount != 0 ):	
 		sale_exist  = True
 		sale_seller = m_output[0][0]
 		sale_price  = float(m_output[0][1])
 		sale_sold   = int(m_output[0][2])
+		sale_cancel = int(m_output[0][3])
 	else:
 		sale_exist  = False
 		sale_seller = ""
 		sale_price  = 0.0
 		sale_sold   = 0
+		sale_cancel = 0
 		
-	output = { 'exist': sale_exist, 'seller': sale_seller, 'price': sale_price, 'sold': sale_sold }
+	output = { 'exist': sale_exist, 'seller': sale_seller, 'price': sale_price, 'sold': sale_sold, 'cancel': sale_cancel }
 			
 	cursor.reset()
 	cursor.close()
@@ -1132,140 +1303,68 @@ def db_Sale_Sold( asset_uid, asset_id, sale_tx, sale_sold, sale_buyer, sale_bloc
 	cursor.reset()
 	cursor.close()
 	
-def db_Sale_Fix( asset_uid, sale_tx, sale_seller, sale_price, sale_block ):
+def db_Sale_Cancel( asset_uid, sale_seller, sale_block, sale_time ):
 
 	cursor = fDataBase.db_Cursor()
 	
-	query = ("SELECT id from exode_sales "
-		"WHERE seller = %s and asset_uid = %s and sold = %s and block > %s and block = block_update ORDER BY block_update LIMIT 1 ")  
-	
-	cursor.execute(query, ("market",  asset_uid, 1, sale_block) )
-	m_output = cursor.fetchall()
+	query = ("UPDATE exode_sales "
+		"SET cancel = %s, block_update = %s, time_update = %s "
+		"WHERE seller = %s and asset_uid = %s and sold = %s and block < %s and block = block_update and cancel = %s")  	
 		
-	if ( cursor.rowcount != 0 ):	
-			
-		cursor.reset()
-		query = ("UPDATE exode_sales "
-			"SET price = %s, seller = %s, block = %s "
-			"WHERE id = %s")  
-	else:
-		print( " Mysql error, sale to fix not found " )
-	
-		
-	cursor.execute(query, (sale_price, sale_seller, sale_block, m_output[0][0]) )
+	cursor.execute(query, (1, sale_block, sale_time, sale_seller, asset_uid, 0, sale_block, 0) )
 	fDataBase.db_Commit()
 	
 	cursor.reset()
 	cursor.close()
 	
-def db_Sale_Cancel( asset_uid, sale_seller, sale_block, sale_fix=False ):
-
-	cursor = fDataBase.db_Cursor()
-	
-	query = ("delete from  exode_sales "
-		"WHERE seller = %s and asset_uid = %s and sold = %s and block < %s and block = block_update")  	
-		
-	cursor.execute(query, (sale_seller, asset_uid, 0, sale_block) )
-	fDataBase.db_Commit()
-	
-	if ( sale_fix ):
-	
-		cursor.reset()
-		
-		query = ("SELECT id from exode_sales "
-			"WHERE seller = %s and asset_uid = %s and sold = %s and block < %s and block_update > %s ORDER BY block_update LIMIT 1 ")  
-	
-		cursor.execute(query, (sale_seller,  asset_uid, 1, sale_block, sale_block) )
-		m_output = cursor.fetchall()
-		
-		if ( cursor.rowcount != 0 ):	
-			
-			cursor.reset()
-				
-			query = ("UPDATE exode_sales "
-				"SET price = %s, seller = %s, block = block_update "
-				"WHERE id = %s ")  
-			
-			cursor.execute(query, (0.0, "market",  m_output[0][0]) )
-			fDataBase.db_Commit()
-		else:
-			print( " Mysql error, sale to cancel not found " )
-		
-	
-	cursor.reset()
-	cursor.close()
-	
-def db_Sale_Apply_New( sale_seller, asset_id, asset_uid, sale_block, sale_time, sale_tx, sale_price, sale_sold, sale_buyer, sale_update, bypass = False ):
+def db_Sale_Apply_New( sale_seller, asset_id, asset_uid, sale_block, sale_time, sale_tx, sale_price, sale_sold, sale_buyer ):
 
 	# Check asset
 	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(asset_id)
 	if ( not is_pack ):
-		cInfo = db_Card_IsTransferable( sale_seller, "market", asset_id, asset_uid, sale_block, sale_tx, "sale", sale_update )
-		if ( not cInfo[0] and not bypass ):
+		cInfo = db_Card_IsTransferable( sale_seller, "market", asset_id, asset_uid, sale_block, sale_tx, "sale" )
+		if ( not cInfo[0] ):
 			return False
+		
+	sInfo = db_Sale_GetDetails( asset_uid, 0, sale_block )		
+	if ( sInfo['exist'] and sInfo['cancel'] == 0 ):
 	
-	if ( sale_update ):
-		sInfo = db_Sale_GetDetails( asset_uid, 1, sale_block, "market", 1 )
-		
-		if ( sInfo['exist'] ):
-			db_Sale_Fix( asset_uid, sale_tx, sale_seller, sale_price, sale_block )
-			return True
-			
-		sInfo = db_Sale_GetDetails( asset_uid, 1, sale_block, sale_seller, 2 )
-		
-		if ( sInfo['exist'] ):
-			# cancel previous... 
-			db_Sale_Cancel( asset_uid, sale_seller, sale_block, True )
-			
-		sInfo = db_Sale_GetDetails( asset_uid, 1, sale_block, "market", 1 )
-		
-		if ( sInfo['exist'] ):
-			db_Sale_Fix( asset_uid, sale_tx, sale_seller, sale_price, sale_block )
-			return True
-	
-	sInfo = db_Sale_GetDetails( asset_uid, 0, sale_block )
-		
-	if ( sInfo['exist'] and bypass ):	
-		sInfo = db_Sale_Apply_Sold( sale_seller, asset_id, asset_uid, sale_block, sale_time, sale_tx, 1, sale_buyer )
-		return sInfo
-	
-	elif ( sInfo['exist'] and sale_seller != sInfo['seller'] ):
-		with open('logs/sale_error.json', 'a') as f:
-			err_msg = { "sale": { "seller": sale_seller, "buyer": sale_buyer, "sold": sale_sold, "card": { "id": asset_id, "uid": asset_uid } }, "issue": "duplicate_sale", "spotted": {"action": "create_sale", "block": sale_block, "tx_id": sale_tx}, "current_seller": sInfo['seller'] } 
-			json.dump( err_msg, f ) 
-			f.write("\n")
-		return False
-	elif ( sInfo['exist'] and sale_seller != "market" ):
-		db_Sale_Cancel( asset_uid, sale_seller, sale_block )
+		if ( sale_seller != sInfo['seller'] ):
+			with open('logs/sale_error.json', 'a') as f:
+				err_msg = { "sale": { "seller": sale_seller, "buyer": sale_buyer, "sold": sale_sold, "card": { "id": asset_id, "uid": asset_uid } }, "issue": "duplicate_sale", "spotted": {"action": "create_sale", "block": sale_block, "tx_id": sale_tx}, "current_seller": sInfo['seller'] } 
+				json.dump( err_msg, f ) 
+				f.write("\n")
+			return False
+		elif( sale_seller != "market" ):
+			db_Sale_Cancel( asset_uid, sale_seller, sale_block, sale_time )
 	
 	db_Sale_Add( sale_seller, asset_id, asset_uid, sale_tx, sale_price, sale_sold, sale_buyer, sale_block, sale_time )
 		
 	return True
 	
-def db_Sale_Apply_Cancel( sale_seller, asset_id, asset_uid, sale_block, sale_tx, sale_update, transfert_cancel=False ):
+def db_Sale_Apply_Cancel( sale_seller, asset_id, asset_uid, sale_block, sale_time, sale_tx, transfert_cancel=False ):
 
 	# Check asset
 	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(asset_id)
-	if ( not is_pack and not sale_update and not transfert_cancel ):
+	if ( not is_pack and not transfert_cancel ):
 		cInfo = db_Card_IsTransferable( sale_seller, "market", asset_id, asset_uid, sale_block, sale_tx, "sale-cancel" )
 		if ( not cInfo[0] ):
 			return False
-	
-	if ( sale_update ):
-		sInfo = db_Sale_GetDetails( asset_uid, 1, sale_block, sale_seller, 2 )
 		
-		if ( sInfo['exist'] ):
-			db_Sale_Cancel( asset_uid, sale_seller, sale_block, True )
-			return True
-	
 	sInfo = db_Sale_GetDetails( asset_uid, 0, sale_block )
 	
-	if ( not sInfo['exist'] and transfert_cancel ):
+	if ( (not sInfo['exist'] or sInfo['cancel'] == 1) and transfert_cancel ):
 		#Skip
 		return True
 	elif ( not sInfo['exist'] ):
 		with open('logs/sale_error.json', 'a') as f:
 			err_msg = { "sale": { "seller": sale_seller, "buyer": "", "sold": 0, "card": { "id": asset_id, "uid": asset_uid } }, "issue": "unknown_sale", "spotted": {"action": "cancel_sale", "block": sale_block, "tx_id": sale_tx} } 
+			json.dump( err_msg, f ) 
+			f.write("\n")
+		return False
+	elif ( sInfo['cancel'] == 1 ):
+		with open('logs/sale_error.json', 'a') as f:
+			err_msg = { "sale": { "seller": sale_seller, "buyer": "", "sold": 0, "card": { "id": asset_id, "uid": asset_uid } }, "issue": "already_cancelled", "spotted": {"action": "cancel_sale", "block": sale_block, "tx_id": sale_tx} } 
 			json.dump( err_msg, f ) 
 			f.write("\n")
 		return False
@@ -1276,23 +1375,27 @@ def db_Sale_Apply_Cancel( sale_seller, asset_id, asset_uid, sale_block, sale_tx,
 			f.write("\n")
 		return False
 	else:
-		db_Sale_Cancel( asset_uid, sale_seller, sale_block )
+		db_Sale_Cancel( asset_uid, sale_seller, sale_block, sale_time )
 		
 	return True
 	
 def db_Sale_Apply_Sold( sale_seller, asset_id, asset_uid, sale_block, sale_time, sale_tx, sale_sold, sale_buyer ):
 
-	# Check asset
-	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(asset_id)
+	# Check asset, created it if needed
+	is_pack = ex_IsPack( asset_id )
 	if ( not is_pack ):
 		cInfo = db_Card_IsTransferable( sale_seller, sale_buyer, asset_id, asset_uid, sale_block, sale_tx, "sale-sold" )
-		#if ( not cInfo[0] ):
-		#	return [ False, "", 0.0 ]
 	
 	sInfo = db_Sale_GetDetails( asset_uid, 0, sale_block )
 	if ( not sInfo['exist'] ):
 		with open('logs/sale_error.json', 'a') as f:
 			err_msg = { "sale": { "seller": sale_seller, "buyer": sale_buyer, "sold": sale_sold, "card": { "id": asset_id, "uid": asset_uid } }, "issue": "unknown_sale", "spotted": {"action": "complete_sale", "block": sale_block, "tx_id": sale_tx} } 
+			json.dump( err_msg, f ) 
+			f.write("\n")
+		return [ False, "", 0.0 ]
+	elif ( sInfo['cancel'] == 1 ):
+		with open('logs/sale_error.json', 'a') as f:
+			err_msg = { "sale": { "seller": sale_seller, "buyer": "", "sold": 0, "card": { "id": asset_id, "uid": asset_uid } }, "issue": "already_cancelled", "spotted": {"action": "cancel_sale", "block": sale_block, "tx_id": sale_tx} } 
 			json.dump( err_msg, f ) 
 			f.write("\n")
 		return [ False, "", 0.0 ]
@@ -1310,7 +1413,7 @@ def db_Sale_GetAverageSoldPrice(mID=""):
 	cursor = fDataBase.db_Cursor()
 	
 	query = ("SELECT AVG(price) from exode_sales "
-		"WHERE asset_type = %s and sold = %s and price != 0. ")  
+		"WHERE asset_type = %s and sold = %s and price != 0.")  
 		 
 	cursor.execute(query, (mID,1) )
 	m_out = cursor.fetchall()
@@ -1347,63 +1450,13 @@ def db_Sale_GetLastSoldPrice(mID=""):
 	cursor.close()
 	
 	return m_price
-	
-def db_Sale_Fix_Issues():
-
-	# Remove sale transfered
-	cursor = fDataBase.db_Cursor()	
-	cursor.reset()
-	
-	query = ("SELECT exode_sales.id from exode_sales "
-		"WHERE exode_sales.sold = 0 and exists "
-		"(select * from exode_cards "
-		"where exode_cards.uid = exode_sales.asset_uid and exode_cards.owner <> exode_sales.seller "
-		"and exode_sales.block_update < exode_cards.block_update)")
-	
-	cursor.execute(query)
-	m_out = cursor.fetchall()
-	
-	print ( "Transfered: Going to remove", cursor.rowcount, " sales" )
-	
-	if (  cursor.rowcount != 0 ):
-		for iSale in range(len(m_out)):
-			
-			cursor.reset()
-			query = ("delete from exode_sales "
-				"WHERE sold = 0 and id = %s")
-			cursor.execute(query, (m_out[iSale][0],))
-			fDataBase.db_Commit()
-	
-	cursor.reset()
-	
-	# Remove burn cards	
-	query = ("SELECT exode_sales.id from exode_sales "
-		"WHERE exode_sales.sold = 0 and exists "
-		"(select * from exode_cards "
-		"where exode_cards.uid = exode_sales.asset_uid and exode_cards.burn = 1 "
-		"and exode_sales.block_update < exode_cards.block_update)")
-		
-	cursor.execute(query)
-	m_out = cursor.fetchall()
-	
-	print ( "Burn: Going to remove", cursor.rowcount, " sales" )
-	if (  cursor.rowcount != 0 ):
-		for iSale in range(len(m_out)):
-			
-			cursor.reset()
-			query = ("delete from exode_sales "
-				"WHERE sold = 0 and id = %s")
-			cursor.execute(query, (m_out[iSale][0],))
-			fDataBase.db_Commit()
-	
-	cursor.close()
 			
 #########################################################################################
 
 def db_ExodePlayers_List():
 	
 	#Complete list first
-	db_Player_CompleteList()
+	db_Player_CompleteList(True)
 	
 	cursor = fDataBase.db_Cursor()
 		
@@ -1546,11 +1599,10 @@ class my_eXode_bot(discord.Client):
 	
 	# Parameters:
 	fFast            = True
-	fDoDiscord       = False
+	fDoDiscord       = True
 	
 	# Variables
 	fFirstBlock       = 0
-	fLastTransaction  = "0000"
 	
 	#
 	fLoadExodeGame    = False
@@ -1591,8 +1643,120 @@ class my_eXode_bot(discord.Client):
 			return False
 		
 		return True
+		
+	######################################################################################
 	
-	def CheckJSON_Transfer( tVId, tVSJSON, tBlock, tVAuth):
+	def MakeMessage_List(self, sale_seller, asset_id, asset_nb, asset_uid, asset_mint, asset_elite, sale_price):
+		
+		msg = ""
+				
+		(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(asset_id)
+		
+		if ( self.fLoadPlayerMarket ):
+			mSoldPrice = 0.0
+			mLastPrice = 0.0
+		else:
+			mSoldPrice = db_Sale_GetAverageSoldPrice(asset_id)
+			mLastPrice = db_Sale_GetLastSoldPrice(asset_id)
+				
+		if ( is_pack ):
+		
+			msg = ":blue_square: {seller} listed {nb} **{name}** on the market for **${price}** (average sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller, 
+					nb=asset_nb, name=asset_name, price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
+		else:
+			card_ntot_mint = excst.MINT_NUM[ asset_id ]								
+					
+			card_elite_msg = ""
+			if ( asset_elite == 1 ):
+				card_elite_msg = "Elite "
+					
+			msg_rarity = "Common"
+			if ( asset_rank == 1 ):
+				msg_rarity = "Rare"
+			elif ( asset_rank == 2 ):
+				msg_rarity = "Epic"
+			elif ( asset_rank == 3 ):
+				msg_rarity = "Legendary"
+			
+			print ( "mint", asset_mint, "uid", asset_uid)		
+							
+			if ( asset_nb == 1 ):
+				msg = ":blue_square: {seller} listed 1 **{elite}{name}** [*{rarity}*]  (**{mint}**/{ntot_mint} *uid={muid})* for **${price}** (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller, 
+							name=asset_name, rarity=msg_rarity, mint=asset_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=asset_uid, price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
+			else:						
+				msg = ":blue_square: {seller} listed {nb} **{elite}{name}** [*{rarity}*] for **${price}** (min. mint is **{mint}**/{ntot_mint} *uid={muid}*) (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller,
+							nb=asset_nb, elite=card_elite_msg, name=asset_name, rarity=msg_rarity, mint=asset_mint, ntot_mint=card_ntot_mint, muid=asset_uid,
+							price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
+		return msg
+		
+	######################################################################################
+	
+	def ProcessTransfer( self, tx_auth, tx_type, tx_block, tx_time, tx_id, player_from, player_to, card_id, card_uid, price ):
+	
+		
+		if ( card_id == "" ):
+			cInfo = db_Card_GetDetails( card_uid )
+			card_id = cInfo['id']
+			if ( card_id != "" ):
+				print ("Fixing card_id to", card_id )
+				card_id_fix = "?" + card_id
+				db_TransferTX_FixID( card_uid, card_id_fix )
+		else:	
+			#Remove flag
+			if ( card_id[0] == "?" ):
+				card_id = card_id[1:]
+		
+	
+		print ( "Process transfer from", tx_auth, tx_type, int(tx_block), player_from, player_to, card_id, card_uid, price )
+		if ( tx_auth == "exodegame" ):
+			# Exodegame
+			
+			if ( tx_type == "exode_extinguish_flames" ):
+				#Do nothing for now
+				msg = ""				
+				#db_Card_Burn( card_uid, tx_block, 0, player_to )
+				
+			elif ( tx_type == "exode_upgrade_confirmed" ):
+				db_Card_Apply_Burn( player_from, card_id, card_uid, tx_block, tx_id, True )	
+		
+			elif ( tx_type == "exode_transfer" ):
+				
+				# Cancel sale if any
+				db_Sale_Apply_Cancel( player_from, card_id, card_uid, tx_block, tx_time, tx_id,  True )
+						
+				is_pack = ex_IsPack(card_id)
+				if ( is_pack ):
+					db_Pack_Apply_Transfer( player_from, player_to, card_id, 1 )
+				else:
+					msg = db_Card_Apply_Transfer( player_from, player_to, card_id, card_uid, tx_block, tx_id, True )
+		
+			elif ( tx_type == "exode_market_purchase" ):
+				db_Sale_Apply_Sold( player_from, card_id, card_uid, tx_block, tx_time, tx_id, 1, player_to )
+				
+				is_pack = ex_IsPack(card_id)
+				
+				if ( is_pack ):
+					db_Pack_Apply_Transfer( player_from, player_to, card_id, 1 )							
+				else:
+					msg = db_Card_Apply_Transfer( player_from, player_to, card_id, card_uid, tx_block, tx_id, True )
+		
+		else:
+			# Players
+			if ( tx_type == "exode_market_sell" ):
+				db_Sale_Apply_New( player_from, card_id, card_uid, tx_block, tx_time, tx_id, price, 0, "" )
+			
+			elif ( tx_type == "exode_market_cancel_sell" ):
+				db_Sale_Apply_Cancel( player_from, card_id, card_uid, tx_block, tx_time, tx_id )
+			elif ( tx_type == "confirm_transfer_packs" ):
+				db_Pack_Apply_Transfer( player_from, player_to, card_id, int(price) )	
+			elif ( tx_type == "confirm_transfer_account" ):
+				db_Pack_Apply_TransferAll( player_from, player_to )
+				db_Card_Apply_TransferAll( player_from, player_to, tx_block )
+				
+	
+	def CheckJSON_Transfer( self, tVId, tVJSON, tBlock, tVAuth):
+		
+		tMSGOut = []
 	
 		if ( tVId == "exode_extinguish_flames" ):
 			
@@ -1610,11 +1774,10 @@ class my_eXode_bot(discord.Client):
 			l_card_id = tInst['sourceid']
 			l_card_nb = int(tInst['receivedcardnb'])
 			
-			if ( self.fLoadMintOnly ):
-				for iCard in range( l_card_nb ):
-					db_TransferTX_Add( tVAuth, tVId, tBlock, mTxId, tVAuth, l_owner, l_card_id, "none", 0.0 )
+			for iCard in range( l_card_nb ):
+				db_TransferTX_Add( tVAuth, tVId, tBlock, mTxId, tVAuth, l_owner, l_card_id, "none", 0.0 )
 			
-			else:				
+			if ( not self.fLoadMintOnly ):			
 				for iCard in range( l_card_nb ):
 					lOut = db_Card_Apply_Mint( l_owner, l_card_id, "none", 0, 0, 0, tBlock, mTxId, self.CheckByPass( tBlock ) )					
 					if ( lOut != "" ):
@@ -1644,10 +1807,10 @@ class my_eXode_bot(discord.Client):
 								
 			#print( 'burn', mTxId, l_card_owner, l_card_uid, l_card_id,  l_card_burn_uids )					
 			
-			if ( self.fLoadMintOnly ):
-				for iCard in range( len(l_card_burn_uids) ):
-					db_TransferTX_Add( tVAuth, tVId, tBlock, mTxId, l_card_owner, "burn", l_card_id, l_card_burn_uids[iCard], 0.0 )
-			else:
+			for iCard in range( len(l_card_burn_uids) ):
+				db_TransferTX_Add( tVAuth, tVId, tBlock, mTxId, l_card_owner, "burn", l_card_id, l_card_burn_uids[iCard], 0.0 )
+				
+			if ( not self.fLoadMintOnly ):
 				for iCard in range( len(l_card_burn_uids) ):
 					lOut = db_Card_Apply_Burn( l_card_owner, l_card_id, l_card_burn_uids[iCard], tBlock, mTxId, self.CheckByPass( tBlock ) )					
 					if ( lOut != "" ):
@@ -1658,9 +1821,13 @@ class my_eXode_bot(discord.Client):
 		else:	
 			with open('logs/log_unknown.log', 'a') as f:
 				f.write("Type: {del_type}, Block: {block}, transaction: {del_txt}\n".format(del_type=tVId,block=tBlock,del_txt=tVJSON) )
+				
+		return [ excst.NO_ALERT, tMSGOut ]
 	
-	def CheckJSON_Player( tVId, tValue, tBlock, tVAuth ):
-					
+	def CheckJSON_Player( self, tVId, tValue, tBlock, tVAuth ):
+				
+		tMSGOut = []
+			
 		if ( tVId == "exode_market_sell" ):
 			# Get JSON to add new market sell			
 			tVJSON  =  json.loads(tValue['json'])					
@@ -1669,10 +1836,8 @@ class my_eXode_bot(discord.Client):
 			tInst   = tVJSON
 			
 			if ( "tx_id" in tInst ):
-				self.fLastTransaction = tInst['tx_id']
 				l_sale_txid    = tInst['tx_id']
 			elif ( "txid" in tInst ):
-				self.fLastTransaction = tInst['txid']
 				l_sale_txid    = tInst['txid']
 			else:
 				return [ excst.NO_ALERT, tMSGOut ]			
@@ -1692,91 +1857,103 @@ class my_eXode_bot(discord.Client):
 				l_asset_uids = tInst['uniqueids'].split(',')				
 			else:			
 				l_asset_uids = tInst['uniqueid'].split(',')
-				
+			
+			l_asset_id = ""	
 			if ( "id" in tInst ):	
-				l_asset_id     = tInst['id']
-			else:
-				cInfo = db_Card_GetDetails( l_asset_uids[0] )
-				l_asset_id     = cInfo['id']
+				l_asset_id = tInst['id']
 				
 			tMarketType_Pack = False
 			if ( "market_type" in tInst ):
 				tMarketType_Pack = (tInst['market_type'] == "pack")
 					
 			tIDUnknown = False
-			if ( tMarketType_Pack and l_asset_id == "" ):
-				l_asset_id = "exode_alpha_booster"
-				tIDUnknown = True
+			
+			l_asset_ids   = []
+			l_asset_elite = []
+			l_asset_mint  = []
+			
+			if ( tMarketType_Pack ):
+				if ( l_asset_id == "" ):
+					l_asset_id = "exode_alpha_booster"
+					tIDUnknown = True
 					
-			print( 'sell', l_sale_txid, l_asset_seller, l_asset_id, l_asset_uids, l_sale_price, tMarketType_Pack )	
+				for iAsset in range(len(l_asset_uids)):
+					l_asset_ids.append(l_asset_id)
+			else:		
+				for iAsset in range(len(l_asset_uids)):
+				
+					cInfo = db_Card_GetDetails( l_asset_uids[iAsset] )
+					# Fix card_id if possible
+					if ( cInfo['id'] == "" and l_asset_id != "" ):
+						cInfo['id'] = l_asset_id
+					
+					l_asset_ids.append(cInfo['id'])
+					l_asset_elite.append(cInfo['elite'])
+					l_asset_mint.append(cInfo['mint'])
+					
+			print( 'sell', l_sale_txid, l_asset_seller, l_asset_ids, l_asset_uids, l_sale_price, tMarketType_Pack )	
 			
 			bOK = False
-			if ( self.fLoadMintOnly ):
-				for iAsset in range(len(l_asset_uids)):
-					db_TransferTX_Add( tVAuth, tVId, tBlock, l_sale_txid, l_asset_seller, "market", l_asset_id, l_asset_uids[iAsset], l_sale_price )
-			else:
+			for iAsset in range(len(l_asset_uids)):
+				db_TransferTX_Add( tVAuth, tVId, tBlock, l_sale_txid, l_asset_seller, "market", l_asset_ids[iAsset], l_asset_uids[iAsset], l_sale_price )
+			if ( not self.fLoadMintOnly ):
 				tTime = Block(tBlock).time()
 				for iAsset in range(len(l_asset_uids)):
-					bOK = db_Sale_Apply_New( l_asset_seller, l_asset_id, l_asset_uids[iAsset], tBlock, tTime, l_sale_txid, l_sale_price, 0, "", self.fLoadPlayerMarket )
+					bOK = db_Sale_Apply_New( l_asset_seller, l_asset_ids[iAsset], l_asset_uids[iAsset], tBlock, tTime, l_sale_txid, l_sale_price, 0, "" )
 
 			if ( not bOK ):
 				return [ excst.NO_ALERT, tMSGOut ]
 			
-			(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(l_asset_id) 
+			(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(l_asset_ids[0]) 
 			
-			if ( self.fLoadPlayerMarket ):
-				mSoldPrice = 0.0
-				mLastPrice = 0.0
-			else:
-				mSoldPrice = db_Sale_GetAverageSoldPrice(l_asset_id)
-				mLastPrice = db_Sale_GetLastSoldPrice(l_asset_id)
 
 			if ( is_pack ):
-						
-				pack_name                               = asset_name
-				
+										
+				pack_name = asset_name
 				if ( tIDUnknown ):
 					pack_name = pack_name + " (?)"
 				
-				lOut = ":blue_square: {seller} listed {nb} **{name}** on the market for **${price}** (average sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller, nb=len(l_asset_uids), name=pack_name, price=l_sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
+				lOut = self.MakeMessage_List(l_asset_seller, l_asset_ids[0], len(l_asset_uids), "", -1, 0, l_sale_price)
 				tMSGOut.append(lOut)
 							
 			else:
-						
-				card_name  = asset_name
-				card_elite = 0
-				card_mint = -1
-				card_muid = -1
-				card_id   = 0
-				for iAsset in range(len(l_asset_uids)):
-								
-					cInfo = db_Card_GetDetails( l_asset_uids[iAsset] )
-					
-					is_elite   = cInfo['elite']
-					n_mint     = cInfo['mint']
-					card_id    = cInfo['id']
-						
-					if ( n_mint < card_mint or card_mint == -1 ):
-						card_muid = l_asset_uids[iAsset]
-						card_mint = n_mint
-					if ( is_elite == 1 ):
-						card_elite = is_elite
-						
-				card_ntot_mint                             = excst.MINT_NUM[ l_asset_id ]
-				(is_pack, card_name, card_rank, asset_num) = ex_GetAssetDetails(card_id)
-																					
-				card_elite_msg = ""
-				if ( card_elite == 1 ):
-					card_elite_msg = "Elite "
+									
+				card_nb = 0
+				prev_id = ""
 				
-				if ( len(l_asset_uids) == 1 ):
-					lOut = ":blue_square: {seller} listed 1 **{elite}{name}** (**{mint}**/{ntot_mint} *uid={muid})* for **${price}** (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller, 
-								name=card_name, mint=card_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=card_muid, price=l_sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
-				else:						
-					lOut = ":blue_square: {seller} listed {nb} **{elite}{name}** for **${price}** (min. mint is **{mint}**/{ntot_mint} *uid={muid}*) (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=l_asset_seller,
-								nb=len(l_asset_uids), elite=card_elite_msg, name=card_name, mint=card_mint, ntot_mint=card_ntot_mint, muid=card_muid,
-								price=l_sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
-				tMSGOut.append(lOut)
+				card_nb    = 0
+				prev_id    = ""
+				card_elite = 0
+				card_mint  = -1
+				
+				card_mint_low = 0
+				card_uid_low  = ""
+				
+				for iAsset in range(len(l_asset_uids)):
+				
+					if ( card_nb > 0 and prev_id != l_asset_ids[iAsset] ):
+						
+						lOut = self.MakeMessage_List(l_asset_seller, prev_id, card_nb, card_uid_low, card_mint_low, card_elite, l_sale_price)
+						tMSGOut.append(lOut)
+						
+						card_nb = 0
+						card_mint_low = 0
+						card_uid_low  = ""
+					
+					
+					card_nb    = card_nb + 1
+					prev_id    = l_asset_ids[iAsset]
+					card_elite = l_asset_elite[iAsset]
+					card_mint  = l_asset_mint[iAsset]
+					card_muid  = l_asset_uids[iAsset]
+					
+					if ( card_nb == 1 or (card_mint > 0 and (card_mint < card_mint_low or card_mint_low <= 0)) ):
+						card_mint_low = card_mint
+						card_uid_low = card_muid
+				
+				if ( card_nb > 0 ):
+					lOut = self.MakeMessage_List(l_asset_seller, prev_id, card_nb, card_uid_low, card_mint_low, card_elite, l_sale_price)
+					tMSGOut.append(lOut)
 			
 			return [ excst.ALERT_MARKET, tMSGOut ]
 							
@@ -1787,7 +1964,6 @@ class my_eXode_bot(discord.Client):
 			#print("[DEBUG] New sell from : ", tVAuth, tVJSON)
 						
 			tInst   = tVJSON			
-			self.fLastTransaction = tInst['txid']
 				
 			l_sale_txid    = tInst['txid']
 			l_asset_seller = tVAuth
@@ -1809,10 +1985,11 @@ class my_eXode_bot(discord.Client):
 			print( 'cancelsell', l_sale_txid, l_asset_seller, l_asset_id, l_asset_uid )
 			
 			bOK = False
-			if ( self.fLoadMintOnly ):
-				db_TransferTX_Add( tVAuth, tVId, tBlock, l_sale_txid, l_asset_seller, l_asset_seller, l_asset_id, l_asset_uids[iAsset], 0.0 )
-			else: 		
-				bOK = db_Sale_Apply_Cancel( l_asset_seller, l_asset_id, l_asset_uid, tBlock, l_sale_txid, self.fLoadPlayerMarket )
+			db_TransferTX_Add( tVAuth, tVId, tBlock, l_sale_txid, l_asset_seller, l_asset_seller, l_asset_id, l_asset_uid, 0.0 )
+			
+			if ( not self.fLoadMintOnly ):	
+				tTime = Block(tBlock).time()
+				bOK = db_Sale_Apply_Cancel( l_asset_seller, l_asset_id, l_asset_uid, tBlock, tTime, l_sale_txid )
 				
 			if ( not bOK ):
 				return [ excst.NO_ALERT, tMSGOut ]
@@ -1839,9 +2016,17 @@ class my_eXode_bot(discord.Client):
 				card_elite_msg = ""
 				if ( card_elite == 1 ):
 					card_elite_msg = "Elite "
+					
+				msg_rarity = "Common"
+				if ( asset_rank == 1 ):
+					msg_rarity = "Rare"
+				elif ( asset_rank == 2 ):
+					msg_rarity = "Epic"
+				elif ( asset_rank == 3 ):
+					msg_rarity = "Legendary"
 				
-				lOut = ":purple_square: {seller} unlisted 1 **{elite}{name}** (**{mint}**/{ntot_mint} *uid={muid}*)".format(seller=l_asset_seller, 
-								name=card_name, mint=card_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=card_muid)
+				lOut = ":purple_square: {seller} unlisted 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint} *uid={muid}*)".format(seller=l_asset_seller, 
+								name=card_name, rarity=msg_rarity, mint=card_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=card_muid)
 				tMSGOut.append(lOut)
 						
 			return [ excst.ALERT_MARKET, tMSGOut ]
@@ -1849,7 +2034,9 @@ class my_eXode_bot(discord.Client):
 							
 		elif ( tVId == "exode_market_transfer" ):
 			# Ownership is set by exodegame, ignore
-			return [ excst.NO_ALERT, tMSGOut ]	
+			return [ excst.NO_ALERT, tMSGOut ]
+			
+		return [ excst.NO_ALERT, tMSGOut ]		
 	
 	
 	def CheckTransaction( self, mBlock, mType, mTxId, mUId, mPlayer, mFrom, mAuth, mTransaction, mCancel=False ):
@@ -1887,7 +2074,7 @@ class my_eXode_bot(discord.Client):
 		
 		tMSGOut    = [ ]
 		#Get user (player or exodegame) and transaction type
-		tVId    = tValue['id']	
+		tVId    = tValue['id']
 		tVAuth  = tValue['required_posting_auths'][0]
 		
 		if ( tVAuth == "exodegame" ):
@@ -1924,7 +2111,7 @@ class my_eXode_bot(discord.Client):
 				
 				l_pack_ids   = tInst['receivedpackids'].split(',')
 				
-				l_source_id  = tInst['sourceid'] 
+				l_source_id  = tInst['sourceid']
 				
 				iPack_nb = 0
 				
@@ -2030,7 +2217,7 @@ class my_eXode_bot(discord.Client):
 						
 				#print( 'pack', mTxId, tInst['recipient'], tInst['typeids'].split(','), tInst['typenbs'].split(',') ) 
 				
-				l_player  = tInst['recipient']
+				l_player  = mPlayer
 				l_pack_id = tInst['typeids'].split(',')
 				l_pack_nb = tInst['typenbs'].split(',')
 				
@@ -2060,9 +2247,9 @@ class my_eXode_bot(discord.Client):
 				return [ excst.NO_ALERT, tMSGOut ]
 			else:
 				#Deal with burn
-				self.CheckJSON_Transfer( tVId, tVJSON, tBlock, tVAuth)
+				return self.CheckJSON_Transfer( tVId, tVJSON, tBlock, tVAuth)
 		else:
-			self.CheckJSON_Player( tVId, tValue, tBlock, tVAuth )
+			return self.CheckJSON_Player( tVId, tValue, tBlock, tVAuth )
 				
 		return [ excst.NO_ALERT, tMSGOut ]
 
@@ -2074,6 +2261,7 @@ class my_eXode_bot(discord.Client):
 		tFrom   = tValue['from']
 		tTo     = tValue['to']
 		tMemo   = tValue['memo'].split(":")
+		tAuth   = "exodegame" # For CheckTransaction mass transfers, in order to avoid missing player transaction later
 		
 		
 		#if (	   tFrom == "elindos"   or tTo == "elindos" 
@@ -2084,7 +2272,9 @@ class my_eXode_bot(discord.Client):
 		if ( tFrom == "exodegame" ):
 			if ( tMemo[0] == "exodegame" ):
 			
-				if ( tMemo[1] == "exode_transfer" ):
+				tType = tMemo[1]
+			
+				if ( tType == "exode_transfer" ):
 					
 					mMemo = tMemo[2].split(" ")
 					mFrom = mMemo[-1]
@@ -2093,15 +2283,16 @@ class my_eXode_bot(discord.Client):
 					mTxId = tMemo[8]
 					
 					
-					if ( not self.CheckTransaction(tBlock, tMemo[1], mTxId, mUID, tTo, mFrom, tFrom, tMemo) ):
+					if ( not self.CheckTransaction(tBlock, tType, mTxId, mUID, tTo, mFrom, tAuth, tMemo) ):
 						return [ excst.NO_ALERT, tMSGOut ]	
 					
+					db_TransferTX_Add( tFrom, tType, tBlock, mTxId, mFrom, tTo, mID, mUID, 0.0 )
 					
-					if ( self.fLoadMintOnly ):
-						db_TransferTX_Add( tFrom, tMemo[1], tBlock, mTxId, mFrom, tTo, mID, mUID, 0.0 )
-					else: 
-						# Cancel sale if any
-						bOK = db_Sale_Apply_Cancel( mFrom, mID, mUID, tBlock, mTxId, False, True )
+					if ( not self.fLoadMintOnly ):
+						# Cancel sale if any			
+						tTime = Block(tBlock).time()
+						
+						bOK = db_Sale_Apply_Cancel( mFrom, mID, mUID, tBlock, tTime, mTxId, True )
 						
 						lOut = ""
 						is_pack = ex_IsPack(mID)
@@ -2117,35 +2308,28 @@ class my_eXode_bot(discord.Client):
 							tMSGOut.append(lOut)					
 					return [ excst.ALERT_MINT, tMSGOut ]
 					
-				elif ( tMemo[1] == "exode_market_purchase" ):
+				elif ( tType == "exode_market_purchase" ):
 					
 					mFrom = "market"
 					mUID  = tMemo[4]
 					mID   = tMemo[5]
 					mTxId = tMemo[8]
 					
-					if ( not self.CheckTransaction(tBlock, tMemo[1], mTxId, mUID, tTo, mFrom, tFrom, tMemo) ):
+					if ( not self.CheckTransaction(tBlock, tType, mTxId, mUID, tTo, mFrom, tAuth, tMemo) ):
 						return [ excst.NO_ALERT, tMSGOut ]	
 					
 					
-					if ( self.fLoadMintOnly ):
-						db_TransferTX_Add( tFrom, tMemo[1], tBlock, mTxId, mFrom, tTo, mID, mUID, 0.0 )
-					else:
-					
+					db_TransferTX_Add( tFrom, tType, tBlock, mTxId, mFrom, tTo, mID, mUID, 0.0 )
+						
+					if ( not self.fLoadMintOnly ):				
 						tTime = Block(tBlock).time()
 						(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails(mID) 
 					
-						if ( self.fLoadExodeGame ):
-							bOK = db_Sale_Apply_New( mFrom, mID, mUID, tBlock, tTime, mTxId, 0.0, 1, tTo, self.CheckByPass( tBlock ), True )
-							
-							asset_seller = "market"
-							asset_price  = 0.0
-						else:
-							sInfo = db_Sale_Apply_Sold( mFrom, mID, mUID, tBlock, tTime, mTxId, 1, tTo )
+						sInfo = db_Sale_Apply_Sold( mFrom, mID, mUID, tBlock, tTime, mTxId, 1, tTo )
 
-							bOK          = sInfo[0]
-							asset_seller = sInfo[1]
-							asset_price  = sInfo[2]
+						bOK          = sInfo[0]
+						asset_seller = sInfo[1]
+						asset_price  = sInfo[2]
 											
 						if ( not bOK ):
 							return [ excst.NO_ALERT, tMSGOut ]	
@@ -2181,16 +2365,24 @@ class my_eXode_bot(discord.Client):
 							card_elite_msg = ""
 							if ( card_elite == 1 ):
 								card_elite_msg = "Elite "
+								
+							msg_rarity = "Common"
+							if ( asset_rank == 1 ):
+								msg_rarity = "Rare"
+							elif ( asset_rank == 2 ):
+								msg_rarity = "Epic"
+							elif ( asset_rank == 3 ):
+								msg_rarity = "Legendary"
 												
-							lOut = ":green_square: {buyer} bought 1 **{elite}{name}** (**{mint}**/{ntot_mint}  *uid={muid}*) from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=card_name,
-										 elite=card_elite_msg, mint=card_mint, ntot_mint=card_ntot_mint, muid=mUID, seller=asset_seller, price=asset_price,sold_price=mSoldPrice)
+							lOut = ":green_square: {buyer} bought 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}  *uid={muid}*) from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=card_name,
+										 rarity=msg_rarity, elite=card_elite_msg, mint=card_mint, ntot_mint=card_ntot_mint, muid=mUID, seller=asset_seller, price=asset_price,sold_price=mSoldPrice)
 							if ( lOut != "" ):
 								tMSGOut.append(lOut)
 						
 					
 					return [ excst.ALERT_MARKET, tMSGOut ]
 					
-				elif ( tMemo[1] == "exode_delivery" or tMemo[1] == "exode_delivery_update" ):	
+				elif ( tType == "exode_delivery" or tType == "exode_delivery_update" ):	
 				
 					mTxId = ""
 					
@@ -2201,42 +2393,42 @@ class my_eXode_bot(discord.Client):
 					else: 
 						mUID = ""						
 					
-					if ( not self.CheckTransaction(tBlock, tMemo[1], mTxId, mUID, tTo, tFrom, tFrom, tMemo) ):
+					if ( not self.CheckTransaction(tBlock, tType, mTxId, mUID, tTo, tFrom, tAuth, tMemo) ):
 						return [ excst.NO_ALERT, tMSGOut ]	
 
 					# Stop writing logs for this						
 					#with open('logs/transaction_delivery.json', 'a') as f:
-					#	err_msg = { "transaction": { "type": tMemo[1], "block": tBlock, "tx_id": "" },  
+					#	err_msg = { "transaction": { "type": tType, "block": tBlock, "tx_id": "" },  
 					#		"transaction_details": tMemo[2:] }
 					#	json.dump( err_msg, f ) 
 					#	f.write("\n")
 			
-				elif ( tMemo[1] == "exode_market_rewards" or tMemo[1] == "exode_market_sale" ):			
+				elif ( tType == "exode_market_rewards" or tType == "exode_market_sale" ):			
 					#Add player to list, just in case
 					mFrom = "market"
 					mUID  = tMemo[4]
 					mID   = tMemo[5]
 					mTxId = tMemo[8]
 					
-					if ( not self.CheckTransaction(tBlock, tMemo[1], mTxId, mUID, tTo, tFrom, tFrom, tMemo) ):
+					if ( not self.CheckTransaction(tBlock, tType, mTxId, mUID, tTo, tFrom, tAuth, tMemo) ):
 						return [ excst.NO_ALERT, tMSGOut ]	
 						
 					db_Player_Add(tTo)
 			
-				elif ( tMemo[1] == "exode_market_sale_manual" ):			
+				elif ( tType == "exode_market_sale_manual" ):			
 					#Add player to list, just in case
 					mFrom = "market"
 					mUID  = tMemo[2]
 					mID   = tMemo[3]
 					mTxId = tMemo[0]
 					
-					if ( not self.CheckTransaction(tBlock, tMemo[1], mTxId, mUID, tTo, tFrom, tFrom, tMemo) ):
+					if ( not self.CheckTransaction(tBlock, tType, mTxId, mUID, tTo, tFrom, tAuth, tMemo) ):
 						return [ excst.NO_ALERT, tMSGOut ]	
 						
 					db_Player_Add(tTo)
 				else:	
 					with open('logs/log_unknown_transfert.log', 'a') as f:
-						f.write("From: {del_from}, To: {del_to}, Type: {del_type}, Block: {block}, memo: {del_txt}\n".format(del_from=tFrom, del_to=tTo,del_type=tMemo[1],block=tBlock,del_txt=tMemo[2:]) )
+						f.write("From: {del_from}, To: {del_to}, Type: {del_type}, Block: {block}, memo: {del_txt}\n".format(del_from=tFrom, del_to=tTo,del_type=tType,block=tBlock,del_txt=tMemo[2:]) )
 			
 			else:
 				with open('logs/log_unknown_transfert.log', 'a') as f:
@@ -2244,36 +2436,44 @@ class my_eXode_bot(discord.Client):
 			
 		else: 
 			tnMemo = tMemo[0].split("|")
+			tType = tnMemo[0].strip()
 			
-			if ( tnMemo[0] == "confirm_transfer_packs" ):
+			if ( tType == "confirm_transfer_packs" ):
 			
-				mTo = tnMemo[3]
+				mTo = tnMemo[3].strip()
 			
-				if ( not self.CheckTransaction(tBlock, tnMemo[0], tBlock, "", mTo, tFrom, tFrom, tnMemo) ):
+				if ( not self.CheckTransaction(tBlock, tType, tBlock, "", mTo, tFrom, tAuth, tnMemo) ):
 					return [ excst.NO_ALERT, tMSGOut ]	
+					
+				pack_id = tnMemo[1].strip()
+				pack_nb = int(tnMemo[2])
+				
 						
-				print( 'mass-transfer-pack', 0, tFrom, tnMemo[3], tnMemo[1], tnMemo[2] )		
+				print( 'mass-transfer-pack', 0, tFrom, mTo, pack_id, pack_nb )		
 				
-				db_Pack_Apply_Transfer( tFrom, mTo, tnMemo[1], tnMemo[2] )
+				db_TransferTX_Add( tFrom, tType, tBlock, "", tFrom, mTo, pack_id, "", pack_nb )
 				
-			elif ( tnMemo[0] == "confirm_transfer_account" ):
+				if ( not self.fLoadMintOnly ):
+					db_Pack_Apply_Transfer( tFrom, mTo, pack_id, pack_nb )
+				
+			elif ( tType == "confirm_transfer_account" ):
 			
-				mTo = tnMemo[1]
+				mTo = tnMemo[1].strip()
 				
 				# fix
 				if ( mTo == "birdbeak" ):
 					mTo = "birdbeaksd"
 					
-				if ( not self.CheckTransaction(tBlock, tnMemo[0], tBlock, "", mTo, tFrom, tFrom, tnMemo) ):
+				if ( not self.CheckTransaction(tBlock, tType, tBlock, "", mTo, tFrom, tAuth, tnMemo) ):
 					return [ excst.NO_ALERT, tMSGOut ]	
 					
 				print( 'mass-transfer-account', 0, tFrom, mTo )
 				
-				db_Pack_Apply_TransferAll( tFrom, mTo )
 				
-				if ( self.fLoadMintOnly ):
-					db_TransferTX_Add( tFrom, tnMemo[0], tBlock, mTxId, tFrom, mTo, "", "", 0.0 )
-				else:
+				db_TransferTX_Add( tFrom, tType, tBlock, "", tFrom, mTo, "", "", 0.0 )
+				
+				if ( not self.fLoadMintOnly ):
+					db_Pack_Apply_TransferAll( tFrom, mTo )
 					db_Card_Apply_TransferAll( tFrom, mTo, tBlock )
 			else:
 				with open('logs/log_unknown_transfert.log', 'a') as f:
@@ -2445,10 +2645,16 @@ class my_eXode_bot(discord.Client):
 		# Compute card mint numbers:
 		db_Card_LoadMint()
 		
-		while (self.fFirstBlock + 2000 < iLastBlock or self.fFast) and not excst.RASPBERRY_PI:
+		MintMissingDone = False
+		
+		while (self.fFirstBlock + 2000 < iLastBlock and not ( self.fFast or excst.RASPBERRY_PI )):
 		
 			self.fReBuildDataBase = True
-			self.fFast = False
+			
+			if ( not MintMissingDone ):
+				db_TransferTX_Reset()
+				db_Card_Mint_Missing()
+				MintMissingDone = True
 		
 			# Load exode history to build the database
 			acc = Account("exodegame")
@@ -2552,7 +2758,8 @@ class my_eXode_bot(discord.Client):
 			iPlayer   = 0
 			for player_name in m_players:
 			
-				
+				iPlayer = iPlayer + 1
+					
 				try:
 					acc = Account(player_name)
 				except bexceptions.AccountDoesNotExistsException:
@@ -2567,9 +2774,12 @@ class my_eXode_bot(discord.Client):
 				if ( c_block < excst.EXODE_BLOCK_MIN ):
 					c_block = excst.EXODE_BLOCK_MIN
 				
+				c_player_block_bot = c_last_block+1
+				c_player_block_top = c_last_block+1
+				
 				hTransactionList = []	
 				
-				print ("Get last transactions from ", player_name, " starting from", c_last_block+1, " to ", c_block   )
+				print ("Get last transactions from", player_name, "starting from", c_last_block+1, "to", c_block   )
 					
 				for hTransaction in acc.history_reverse(start=c_last_block+1):			
 					tBlock = hTransaction['block']
@@ -2582,10 +2792,9 @@ class my_eXode_bot(discord.Client):
 						break
 						
 					hTransactionList.insert(0, hTransaction)
-					
+					c_player_block_bot = tBlock
 				
-				print("Scan player account: ", player_name, "(", iPlayer, "/", len(m_players),")"," transactions")
-				iPlayer = iPlayer + 1
+				print("Scan player account: ", player_name, "(", iPlayer, "/", len(m_players),")"," transactions from", c_player_block_bot, "to", c_player_block_top)
 				
 				c_block_cur = 0
 				
@@ -2614,29 +2823,40 @@ class my_eXode_bot(discord.Client):
 						c_block_cur = tBlock
 				
 				hTransactionList.clear() 	
-				db_Player_SetLastBlock(player_name,c_last_block)
+				db_Player_SetLastBlock(player_name,c_last_block)			
 				
 			self.fLoadPlayerMarket = False
-			
-			self.fLoadMintOnly = False
-			# Rebuild sale/transfer
-			# Not yet ready
-			quit()
-			
-				
+							
+			print ( "Build loop done" )								
 			iLastBlock = bBlockC.get_current_block_num()
 		
-			# Fix sale
-			db_Sale_Fix_Issues()
-
 			if ( os.path.isfile('logs/file_block_fast.json') ):
 				with open('logs/file_block_fast.json', 'r') as f:
 					self.fFirstBlock = json.load(f) 
 		
+		#self.fLoadMintOnly    = True
+		if ( self.fLoadMintOnly ):
+			self.fReBuildDataBase = True
+			
+			# Rebuild sale/transfer
+			print ( "Reset transfer database" )
+			db_TransferTX_Reset()	
+			print ( "Add known missing mint" )
+			db_Card_Mint_Missing()
+			print ( "Get last transfer tx block" )	
+			c_last_block = db_TransferTX_Last()	
+			print ("Load transfer from: ", c_last_block )
+			mTransferTX = db_TransferTX_Get(c_last_block)
+			for mRow in mTransferTX:
+			
+				self.ProcessTransfer( tx_auth=mRow[0], tx_type=mRow[1], tx_block=mRow[2], tx_time=mRow[3], tx_id=mRow[4], 
+							player_from=mRow[5], player_to=mRow[6], card_id=mRow[7], card_uid=mRow[8], price=mRow[9] )							
+						
+		
 		# Change flag	
 		self.fFast            = False
 		self.fReBuildDataBase = False
-		self.fDoDiscord       = False
+		self.fLoadMintOnly    = False
 		
 		# Initialize iterator
 		iIterator = 0
