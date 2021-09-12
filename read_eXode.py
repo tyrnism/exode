@@ -213,7 +213,7 @@ def ex_GetAssetDetails( mID ):
 	if ( mID == "exode_card_055_Rekatron_ammoParty" 		or mID == "exode_card_E055_Rekatron_ammoParty" ):
 		return (False, "PARTY AMMO", 						2,	55)
 	if ( mID == "exode_card_056_Tom_SmootyAllInOne" 		or mID == "exode_card_E056_Tom_SmootyAllInOne" ):
-		return (False, "SMOOTY All-In-One Ammo", 				0,	56)
+		return (False, "SMOOTY All-In-One", 					0,	56)
 	if ( mID == "exode_card_057_Tom_FoodieMoodie" 		or mID == "exode_card_E057_Tom_FoodieMoodie" ):
 		return (False, "Strategic FOODIE-MOODIE", 				0,	57)
 	if ( mID == "exode_card_058_Tom_FriendlyEyes" 		or mID == "exode_card_E058_Tom_FriendlyEyes" ):
@@ -1088,6 +1088,19 @@ def db_Card_LoadMint():
 		tCards = cursor.rowcount
 		for iCard in range(tCards):
 			excst.MINT_NUM[ m_output[iCard][0] ] = int(m_output[iCard][1])
+			
+		
+	cursor.reset()	
+	query = ("SELECT type, COUNT(*) FROM exode_cards "
+		 "WHERE minter = 'no_source'  and owner != 'elindos' and owner != 'exolindos' GROUP BY type ")	
+		 
+	cursor.execute(query)
+	m_output = cursor.fetchall()
+	if ( cursor.rowcount != 0 ):	
+		
+		tCards = cursor.rowcount
+		for iCard in range(tCards):
+			excst.MINT_NUM_NOSOURCE[ m_output[iCard][0] ] = int(m_output[iCard][1])
 	
 	cursor.reset()
 	cursor.close()
@@ -1167,8 +1180,14 @@ def db_Card_IsTransferable( card_from, card_to, card_id, card_uid, card_block, t
 		if ( excst.MINT_IFNOSOURCE and card_id != "" and card_id != "none" ):
 			(is_pack, card_name, card_rank, card_num) = ex_GetAssetDetails(card_id)
 			card_elite = ex_IsElite(card_id)
-			db_Card_Mint( card_from, card_id, card_num, card_uid, -1, card_elite, 0, card_block, "no_source" )
+			db_Card_Mint( card_from, card_id, card_num, card_uid, -1, card_elite, 0, card_block, "no_source" )	
 			db_Card_Add_Missing( card_from, card_id, card_uid, card_num, card_elite, card_block )
+			
+			if ( card_from != "elindos" and card_from != "exolindos" ):
+				if ( card_id in excst.MINT_NUM_NOSOURCE ):
+					excst.MINT_NUM_NOSOURCE[card_id] = excst.MINT_NUM_NOSOURCE[card_id] + 1
+				else:
+					excst.MINT_NUM_NOSOURCE[card_id] = 1
 			
 			return [ True, -1, True, card_block, card_elite ]
 		else:
@@ -1678,14 +1697,19 @@ class my_eXode_bot(discord.Client):
 			elif ( asset_rank == 3 ):
 				msg_rarity = "Legendary"
 			
+			msg_missing_mint=""
+			if ( asset_id in excst.MINT_NUM_NOSOURCE ):
+				if ( excst.MINT_NUM_NOSOURCE[asset_id] > 0 ):
+					msg_missing_mint = "(+{nb_missing})".format(nb_missing=excst.MINT_NUM_NOSOURCE[asset_id])
+			
 			print ( "mint", asset_mint, "uid", asset_uid)		
 							
 			if ( asset_nb == 1 ):
-				msg = ":blue_square: {seller} listed 1 **{elite}{name}** [*{rarity}*]  (**{mint}**/{ntot_mint} *uid={muid})* for **${price}** (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller, 
-							name=asset_name, rarity=msg_rarity, mint=asset_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=asset_uid, price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
+				msg = ":blue_square: {seller} listed 1 **{elite}{name}** [*{rarity}*]  (**{mint}**/{ntot_mint}{missing_mint} *uid={muid})* for **${price}** (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller, 
+							name=asset_name, rarity=msg_rarity, mint=asset_mint, missing_mint=msg_missing_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=asset_uid, price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 			else:						
-				msg = ":blue_square: {seller} listed {nb} **{elite}{name}** [*{rarity}*] for **${price}** (min. mint is **{mint}**/{ntot_mint} *uid={muid}*) (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller,
-							nb=asset_nb, elite=card_elite_msg, name=asset_name, rarity=msg_rarity, mint=asset_mint, ntot_mint=card_ntot_mint, muid=asset_uid,
+				msg = ":blue_square: {seller} listed {nb} **{elite}{name}** [*{rarity}*] for **${price}** (min. mint is **{mint}**/{ntot_mint}{missing_mint} *uid={muid}*) (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller,
+							nb=asset_nb, elite=card_elite_msg, missing_mint=msg_missing_mint, name=asset_name, rarity=msg_rarity, mint=asset_mint, ntot_mint=card_ntot_mint, muid=asset_uid,
 							price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 		return msg
 		
@@ -2012,7 +2036,12 @@ class my_eXode_bot(discord.Client):
 				card_elite     = cInfo['elite']
 				card_mint      = cInfo['mint']	
 				card_ntot_mint = excst.MINT_NUM[ l_asset_id ]
-																											
+										
+				msg_missing_mint=""
+				if ( l_asset_id in excst.MINT_NUM_NOSOURCE ):
+					if ( excst.MINT_NUM_NOSOURCE[l_asset_id] > 0 ):
+						msg_missing_mint = "(+{nb_missing})".format(nb_missing=excst.MINT_NUM_NOSOURCE[l_asset_id])	
+																						
 				card_elite_msg = ""
 				if ( card_elite == 1 ):
 					card_elite_msg = "Elite "
@@ -2025,8 +2054,9 @@ class my_eXode_bot(discord.Client):
 				elif ( asset_rank == 3 ):
 					msg_rarity = "Legendary"
 				
-				lOut = ":purple_square: {seller} unlisted 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint} *uid={muid}*)".format(seller=l_asset_seller, 
-								name=card_name, rarity=msg_rarity, mint=card_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=card_muid)
+				lOut = ":purple_square: {seller} unlisted 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint} *uid={muid}*)".format(seller=l_asset_seller, 
+								name=card_name, rarity=msg_rarity, mint=card_mint, missing_mint=msg_missing_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, 
+								muid=card_muid)
 				tMSGOut.append(lOut)
 						
 			return [ excst.ALERT_MARKET, tMSGOut ]
@@ -2362,6 +2392,11 @@ class my_eXode_bot(discord.Client):
 												
 							db_Card_Apply_Transfer( asset_seller, tTo, mID, mUID, tBlock, mTxId, self.CheckByPass( tBlock ) )
 													
+							msg_missing_mint=""
+							if ( mID in excst.MINT_NUM_NOSOURCE ):
+								if ( excst.MINT_NUM_NOSOURCE[mID] > 0 ):
+									msg_missing_mint = "(+{nb_missing})".format(nb_missing=excst.MINT_NUM_NOSOURCE[mID])	
+									
 							card_elite_msg = ""
 							if ( card_elite == 1 ):
 								card_elite_msg = "Elite "
@@ -2374,8 +2409,8 @@ class my_eXode_bot(discord.Client):
 							elif ( asset_rank == 3 ):
 								msg_rarity = "Legendary"
 												
-							lOut = ":green_square: {buyer} bought 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}  *uid={muid}*) from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=card_name,
-										 rarity=msg_rarity, elite=card_elite_msg, mint=card_mint, ntot_mint=card_ntot_mint, muid=mUID, seller=asset_seller, price=asset_price,sold_price=mSoldPrice)
+							lOut = ":green_square: {buyer} bought 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint}  *uid={muid}*) from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=card_name,
+										 rarity=msg_rarity, elite=card_elite_msg, mint=card_mint, ntot_mint=card_ntot_mint, missing_mint=msg_missing_mint, muid=mUID, seller=asset_seller, price=asset_price,sold_price=mSoldPrice)
 							if ( lOut != "" ):
 								tMSGOut.append(lOut)
 						
