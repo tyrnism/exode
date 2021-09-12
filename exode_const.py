@@ -8,6 +8,7 @@ MINT_IFNOSOURCE = True
 
 # Store Max Mint
 MINT_NUM = {}
+MINT_NUM_NOSOURCE = {}
 
 # Block
 EXODE_BLOCK_MIN        = 42233330
@@ -23,7 +24,7 @@ DB_NAME            = "exode_db"
 RASPBERRY_PI = False
 
 # Channel names
-"""
+
 CHANNEL_MARKET_NAME  = "exode-market-preprod"
 CHANNEL_MINT_NAME    = "new-mints-preprod"
 CHANNEL_PING_NAME    = "exode-bot-ping-preprod"
@@ -33,7 +34,7 @@ CHANNEL_MARKET_NAME  = "exode-market"
 CHANNEL_MINT_NAME    = "new-mints"
 CHANNEL_PING_NAME    = "exode-bot-ping"
 CHANNEL_ANALYSE_NAME = "exode-market-data"
-
+"""
 # Message level
 NO_ALERT     = 0
 ALERT_MARKET = 1
