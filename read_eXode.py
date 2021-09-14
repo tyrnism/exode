@@ -1146,7 +1146,7 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 	db_Card_Mint( card_owner, card_id, card_num, card_uid, card_mint, card_elite, card_bound, card_block, card_owner )
 	
 	
-	if ( (card_mint > 0 and card_mint <= 10) or (card_rank == 2 and int(card_elite) == 1) or card_rank == 3 ):
+	if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) ):
 		if ( int(card_elite) == 1 ):
 			msg_elite = "an **Elite "
 		else:
