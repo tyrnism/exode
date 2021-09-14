@@ -2567,36 +2567,48 @@ class my_eXode_bot(discord.Client):
 	
 		if ( not self.fDoDiscord ):
 			return
-		
-		DISC_CHANNELS_MARKET_TMP = []
-		DISC_CHANNELS_MINT_TMP   = []
+			
 		DISC_CHANNELS_PING_TMP   = []
+		with open('channel/ch_ping.list', 'r') as f:
+			for line in f:
+				if ( line[0] == "#" ):
+					continue
 				
-		for discord_guild in self.guilds:
-			DISC_CHANNEL = discord.utils.get(discord_guild.channels, name=self.DISC_CHANNEL_MARKET_NAME)
-			if ( DISC_CHANNEL != None ):
-				DISC_CHANNELS_MARKET_TMP.append(DISC_CHANNEL.id)
+				ch_id = int(line)
+				DISC_CHANNELS_PING_TMP.append(ch_id)
+				
+				if ( ch_id not in self.DISC_CHANNELS_PING):
+					DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)								
+					print ( "DISCORD BOT:eXode bot [PING] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
+					await DISC_CHANNEL.send("*eXode BOT [PING] is connected here!*")
+					
+		DISC_CHANNELS_MINT_TMP   = []			
+		with open('channel/ch_mint.list', 'r') as f:
+			for line in f:
+				if ( line[0] == "#" ):
+					continue
+				
+				ch_id = int(line)
+				DISC_CHANNELS_MINT_TMP.append(ch_id)
 						
-				if ( DISC_CHANNEL.id not in self.DISC_CHANNELS_MARKET):					
-					print ( "DISCORD BOT:eXode bot [MARKET-ALERT] connected to {guild_name}".format(guild_name=discord_guild.name) )
-					await DISC_CHANNEL.send("*eXode BOT [MARKET-ALERT] is connected here!*")
-							
-			DISC_CHANNEL = discord.utils.get(discord_guild.channels, name=self.DISC_CHANNEL_MINT_NAME)
-			if ( DISC_CHANNEL != None ):
-				DISC_CHANNELS_MINT_TMP.append(DISC_CHANNEL.id)
-						
-				if ( DISC_CHANNEL.id not in self.DISC_CHANNELS_MINT):					
-					print ( "DISCORD BOT:eXode bot [EXODE-ALERT] connected to {guild_name}".format(guild_name=discord_guild.name) )
+				if ( ch_id not in self.DISC_CHANNELS_MINT):	
+					DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)							
+					print ( "DISCORD BOT:eXode bot [EXODE-ALERT] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
 					await DISC_CHANNEL.send("*eXode BOT [EXODE-ALERT] is connected here!*")
 					
+		DISC_CHANNELS_MARKET_TMP   = []			
+		with open('channel/ch_market.list', 'r') as f:
+			for line in f:
+				if ( line[0] == "#" ):
+					continue
+				
+				ch_id = int(line)
+				DISC_CHANNELS_MARKET_TMP.append(ch_id)
 						
-			DISC_CHANNEL = discord.utils.get(discord_guild.channels, name=self.DISC_CHANNEL_PING_NAME)
-			if ( DISC_CHANNEL != None ):
-				DISC_CHANNELS_PING_TMP.append(DISC_CHANNEL.id)
-						
-				if ( DISC_CHANNEL.id not in self.DISC_CHANNELS_PING):					
-					print ( "DISCORD BOT:eXode bot [PING] connected to {guild_name}".format(guild_name=discord_guild.name) )
-					await DISC_CHANNEL.send("*eXode BOT [PING] is connected here!*")
+				if ( ch_id not in self.DISC_CHANNELS_MARKET):	
+					DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)				
+					print ( "DISCORD BOT:eXode bot [MARKET-ALERT] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
+					await DISC_CHANNEL.send("*eXode BOT [MARKET-ALERT] is connected here!*")
 
 		self.DISC_CHANNELS_MARKET = DISC_CHANNELS_MARKET_TMP
 		self.DISC_CHANNELS_MINT   = DISC_CHANNELS_MINT_TMP

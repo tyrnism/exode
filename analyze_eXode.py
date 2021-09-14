@@ -1817,6 +1817,9 @@ async def graphsales(ctx, *arg):
 	sTime = "all"
 	tTimeCut = ""
 	
+	tTimeFirst = datetime(2020,1,1,0,0)
+	tTimeLast  = datetime.now()
+	
 	tElite = 0	
 	if ( arg[iArg].lower() == "all" ):
 		iArg = iArg + 1
@@ -1863,7 +1866,7 @@ async def graphsales(ctx, *arg):
 	tMaxPrice = 0.
 	
 	for iSale in range(len(tSale_prices)):
-		if ( tSale_prices[iSale] > tMaxPrice ):
+		if ( tSale_prices[iSale] > tMaxPrice and tSale_times[iSale] > tTimeFirst and tSale_times[iSale] < tTimeLast ):
 			tMaxPrice = tSale_prices[iSale]
 			
 	print ("max price: ", tMaxPrice)
