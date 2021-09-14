@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 # Flag
 RASPBERRY_PI    = False
 MINT_IFNOSOURCE = True
+DO_DISCORD      = True
 
 # Store Max Mint
 MINT_NUM = {}

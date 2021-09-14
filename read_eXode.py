@@ -1226,7 +1226,7 @@ def db_Card_Apply_Burn( card_burner, card_id, card_uid, card_block, tx_id, bypas
 	card_mint = cInfo[1]
 	card_elite = cInfo[4]
 	(is_pack, card_name, card_rank, card_num) = ex_GetAssetDetails(card_id)
-	if ( (card_mint > 0 and card_mint <= 10) or card_rank == 2 or card_rank == 3 ):
+	if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) ):
 		if ( card_elite == 1 ):
 			msg_elite = "an **Elite "
 		else:
@@ -1618,7 +1618,7 @@ class my_eXode_bot(discord.Client):
 	
 	# Parameters:
 	fFast            = True
-	fDoDiscord       = True
+	fDoDiscord       = excst.DO_DISCORD
 	
 	# Variables
 	fFirstBlock       = 0
@@ -1635,12 +1635,7 @@ class my_eXode_bot(discord.Client):
 	DISC_CHANNELS_MARKET = []
 	DISC_CHANNELS_PING   = []
 	DISC_CHANNELS_MINT   = []
-	
-	DISC_CHANNEL_MARKET_NAME = excst.CHANNEL_MARKET_NAME
-	DISC_CHANNEL_MINT_NAME   = excst.CHANNEL_MINT_NAME
-	DISC_CHANNEL_PING_NAME   = excst.CHANNEL_PING_NAME
 		
-	
 	######################################################################################	
 
 	def __init__(self, *args, **kwargs):
