@@ -187,7 +187,7 @@ def ex_GetAssetDetails( mID ):
 	if ( mID == "exode_card_035_crewSecurity" 			or mID == "exode_card_E035_crewSecurity" ):
 		return (False, "Security Guard (Crew)", 				0,	35)	
 	if ( mID == "exode_card_036_setLuxury" 			or mID == "exode_card_E036_setLuxury" ):
-		return (False, "Diplomatic Gifts", 					2,	36)	
+		return (False, "Diplomatic Gifts", 					1,	36)	
 	if ( mID == "exode_card_037_setDatabase" 			or mID == "exode_card_E037_setDatabase" ):
 		return (False, "Federal Database", 					2,	37)	
 		
@@ -1041,6 +1041,42 @@ def db_Card_Mint_Missing():
 	else:
 		cursor.reset()
 		cursor.close()
+		
+def db_Card_Mint_Missing_New():
+
+	cursor = fDataBase.db_Cursor()
+		
+	query = ("SELECT card_owner, card_id, card_uid, card_num, card_elite, card_block FROM exode_cards_no_source where card_id != ''"
+		"and card_uid not in (SELECT uid from exode_cards)")
+	
+	cursor.execute(query)
+	m_output = cursor.fetchall()
+	
+	
+	if ( cursor.rowcount != 0 ):	
+		
+		tCards = cursor.rowcount
+			
+		cursor.reset()
+		cursor.close()
+	
+		for iCard in range(tCards):
+		
+			card_owner  = m_output[iCard][0]
+			card_id     = m_output[iCard][1]
+			card_uid    = m_output[iCard][2]
+			card_num    = m_output[iCard][3]
+			card_elite  = m_output[iCard][4]
+			card_block  = m_output[iCard][5]
+			
+			card_mint   = -1
+			card_bound  = 0
+			card_minter = "no_source"
+		
+			db_Card_Mint( card_owner, card_id, card_num, card_uid, card_mint, card_elite, card_bound, card_block, card_minter )
+	else:
+		cursor.reset()
+		cursor.close()
 
 	
 def db_Card_Burn( card_uid, card_block, card_burn, card_burner ):
@@ -1678,7 +1714,8 @@ class my_eXode_bot(discord.Client):
 			msg = ":blue_square: {seller} listed {nb} **{name}** on the market for **${price}** (average sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller, 
 					nb=asset_nb, name=asset_name, price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 		else:
-			card_ntot_mint = excst.MINT_NUM[ asset_id ]								
+			if ( asset_id in excst.MINT_NUM ):
+				card_ntot_mint = excst.MINT_NUM[ asset_id ]								
 					
 			card_elite_msg = ""
 			if ( asset_elite == 1 ):
@@ -2633,21 +2670,45 @@ class my_eXode_bot(discord.Client):
 	@tasks.loop(seconds=60,count=1) # task runs every 60 seconds
 	async def read_exode_task(self):
 	
+		bRestart = False
+	
 		try:
-			await self.read_exode()
+			await self.read_exode()			
+			bRestart = True
+			self.read_exode_task.restart()
 					
-		except:
-
-			msg = ("%s: Exception occurred:\n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-			print(msg)
-			traceback.print_exc()
-			
-			msg = ("%s: Exception occurred, request assistance <@!232962122043228160> \n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-			await self.disc_connect()
-			await self.disc_send_msg(msg,self.DISC_CHANNELS_MARKET)
-			await self.disc_send_msg(msg,self.DISC_CHANNELS_MINT)
-			await self.disc_send_msg(msg,self.DISC_CHANNELS_PING)
-
+		except ValueError as err:
+		
+			if ( err == "Could not receive dynamic_global_properties!" ):
+				# Restart
+				time.sleep(60)
+				LoadHiveBlockChain()
+				bRestart = True
+				self.read_exode_task.restart()
+				
+			else:
+				msg = ("%s: Exception occurred:\n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+				print(msg)
+				traceback.print_exc()
+				
+				msg = ("%s: Exception occurred, request assistance <@!232962122043228160> \n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+				await self.disc_connect()
+				await self.disc_send_msg(msg,self.DISC_CHANNELS_MARKET)
+				await self.disc_send_msg(msg,self.DISC_CHANNELS_MINT)
+				await self.disc_send_msg(msg,self.DISC_CHANNELS_PING)
+		else:
+			if ( bRestart ):
+				print("Restarting...")
+			else:
+				msg = ("%s: Exception occurred:\n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+				print(msg)
+				traceback.print_exc()
+				
+				msg = ("%s: Exception occurred, request assistance <@!232962122043228160> \n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+				await self.disc_connect()
+				await self.disc_send_msg(msg,self.DISC_CHANNELS_MARKET)
+				await self.disc_send_msg(msg,self.DISC_CHANNELS_MINT)
+				await self.disc_send_msg(msg,self.DISC_CHANNELS_PING)
 			
 	@read_exode_task.before_loop
 	async def read_exode_preparation(self):
@@ -2894,6 +2955,9 @@ class my_eXode_bot(discord.Client):
 				self.ProcessTransfer( tx_auth=mRow[0], tx_type=mRow[1], tx_block=mRow[2], tx_time=mRow[3], tx_id=mRow[4], 
 							player_from=mRow[5], player_to=mRow[6], card_id=mRow[7], card_uid=mRow[8], price=mRow[9] )							
 						
+		else:
+			print ( "Add known new missing mint" )
+			db_Card_Mint_Missing_New()
 		
 		# Change flag	
 		self.fFast            = False
