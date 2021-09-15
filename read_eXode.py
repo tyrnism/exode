@@ -2679,12 +2679,17 @@ class my_eXode_bot(discord.Client):
 					
 		except ValueError as err:
 		
-			if ( err == "Could not receive dynamic_global_properties!" ):
+			print(err)
+			if ( str(err) == "Could not receive dynamic_global_properties!" ):
 				# Restart
 				time.sleep(60)
 				LoadHiveBlockChain()
 				bRestart = True
 				self.read_exode_task.restart()
+				
+			elif ( str(err) == "stop_order" ):
+				print("Shuting down")
+				return
 				
 			else:
 				msg = ("%s: Exception occurred:\n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
@@ -3010,7 +3015,7 @@ class my_eXode_bot(discord.Client):
 						await self.disc_send_msg(msg, self.DISC_CHANNELS_PING)
 						
 						print("shutdown")
-						return
+						raise ValueError("stop_order")
 						
 					print("Discord: reconnect")
 					# Reconnect
