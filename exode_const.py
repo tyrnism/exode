@@ -26,4 +26,5 @@ DB_NAME            = "exode_db"
 NO_ALERT     = 0
 ALERT_MARKET = 1
 ALERT_MINT   = 2
+ALERT_GIFT   = 3
 ALERT_KILL   = -1

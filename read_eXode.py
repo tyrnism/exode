@@ -1691,6 +1691,7 @@ class my_eXode_bot(discord.Client):
 	DISC_CHANNELS_MARKET = []
 	DISC_CHANNELS_PING   = []
 	DISC_CHANNELS_MINT   = []
+	DISC_CHANNELS_GIFT   = []
 		
 	######################################################################################	
 
@@ -2390,7 +2391,7 @@ class my_eXode_bot(discord.Client):
 							
 						if ( lOut != "" ):
 							tMSGOut.append(lOut)					
-					return [ excst.ALERT_MINT, tMSGOut ]
+					return [ excst.ALERT_GIFT, tMSGOut ]
 					
 				elif ( tType == "exode_market_purchase" ):
 					
@@ -2613,6 +2614,14 @@ class my_eXode_bot(discord.Client):
 				await self.disc_send_msg_list( lOut[1], self.DISC_CHANNELS_MARKET )
 							
 							
+		elif ( lOut[0] == excst.ALERT_GIFT ):
+			if( len(lOut[1]) > 0 ):
+				for msg in lOut[1]:
+					print ( msg )	
+					
+				await self.disc_send_msg_list( lOut[1], self.DISC_CHANNELS_GIFT )
+							
+							
 		return int(lOut[0])
 				
 	######################################################################################							
@@ -2664,9 +2673,24 @@ class my_eXode_bot(discord.Client):
 					print ( "DISCORD BOT:eXode bot [MARKET-ALERT] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
 					await DISC_CHANNEL.send("*eXode BOT [MARKET-ALERT] is connected here!*")
 
+		DISC_CHANNELS_GIFT_TMP   = []			
+		with open('channel/ch_gift.list', 'r') as f:
+			for line in f:
+				if ( line[0] == "#" ):
+					continue
+				
+				ch_id = int(line)
+				DISC_CHANNELS_GIFT_TMP.append(ch_id)
+						
+				if ( ch_id not in self.DISC_CHANNELS_GIFT):	
+					DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)				
+					print ( "DISCORD BOT:eXode bot [GIFT-ALERT] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
+					await DISC_CHANNEL.send("*eXode BOT [GIFT-ALERT] is connected here!*")
+
 		self.DISC_CHANNELS_MARKET = DISC_CHANNELS_MARKET_TMP
 		self.DISC_CHANNELS_MINT   = DISC_CHANNELS_MINT_TMP
 		self.DISC_CHANNELS_PING   = DISC_CHANNELS_PING_TMP 
+		self.DISC_CHANNELS_GIFT   = DISC_CHANNELS_GIFT_TMP
 		
 	async def disc_send_msg_list(self, msg_list, CHANNEL_LIST):
 	
