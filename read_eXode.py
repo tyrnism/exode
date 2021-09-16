@@ -1295,6 +1295,26 @@ def db_Card_Apply_Transfer( card_prev_owner, card_new_owner, card_id, card_uid, 
 			return msg
 					
 		db_Card_Transfer( card_uid, card_block, card_new_owner )
+		
+		card_mint = cInfo[1]
+		card_elite = cInfo[4]
+		(is_pack, card_name, card_rank, card_num) = ex_GetAssetDetails(card_id)
+		if ( card_new_owner == "exoderewardspool" ):
+			if ( card_elite == 1 ):
+				msg_elite = "an **Elite "
+			else:
+				msg_elite = "a **"
+					
+			msg_rarity = "Common"
+			if ( card_rank == 1 ):
+				msg_rarity = "Rare"
+			elif ( card_rank == 2 ):
+				msg_rarity = "Epic"
+			elif ( card_rank == 3 ):
+				msg_rarity = "Legendary"
+				
+			msg = ":gift: {player} gave {elite}{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid})* to the EXODE Reward Pool (*@exoderewardspool*)! :tada:".format(player=card_prev_owner,elite=msg_elite,name=card_name, rarity=msg_rarity, mint=card_mint, uid=card_uid)
+		
 	
 	return msg
 	
@@ -2357,11 +2377,13 @@ class my_eXode_bot(discord.Client):
 						bOK = db_Sale_Apply_Cancel( mFrom, mID, mUID, tBlock, tTime, mTxId, True )
 						
 						lOut = ""
-						is_pack = ex_IsPack(mID)
+						(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails( mID )
 						if ( is_pack ):
 							print('pack-transfer', mTxId, mFrom, tTo, mID, mUID )
 							db_Pack_Apply_Transfer( mFrom, tTo, mID, 1 )
-								
+							
+							if ( tTo == "exoderewardspool" ):
+								lOut = ":gift: {giver} gave 1 **{name}** to the EXODE Reward Pool  (*@exoderewardspool*)! :tada:".format(giver=mFrom, name=asset_name)
 						else:
 							print('card-transfer', mTxId, mFrom, tTo, mID, mUID )						
 							lOut = db_Card_Apply_Transfer( mFrom, tTo, mID, mUID, tBlock, mTxId, self.CheckByPass( tBlock ) )
@@ -2976,10 +2998,11 @@ class my_eXode_bot(discord.Client):
 		while True:
 		
 			# Get first block
-			iFirstBlock = 0
+			iFirstBlock = 1
 			if ( os.path.isfile('logs/file_block_fast.json') ):
 				with open('logs/file_block_fast.json', 'r') as f:
-					iFirstBlock = json.load(f) 
+					iFirstBlock = json.load(f)+1  
+			#print("First block is",iFirstBlock)
 			
 			if ( iFirstBlock < excst.EXODE_BLOCK_MIN ):
 				iFirstBlock = excst.EXODE_BLOCK_MIN
@@ -2987,13 +3010,14 @@ class my_eXode_bot(discord.Client):
 			# Get last block
 			iLastBlock = bBlockC.get_current_block_num()
 			
-			while iLastBlock < iFirstBlock+1:
+			#print(iLastBlock, iFirstBlock)
+			while iLastBlock <= iFirstBlock:
 				print("sleeping...")
 				time.sleep(3.)
 				iLastBlock = bBlockC.get_current_block_num()
 			
 			# Loop over blocks
-			for iBlock in range(iFirstBlock+1,iLastBlock):
+			for iBlock in range(iFirstBlock,iLastBlock):
 										
 				# Check if need to reconnect or to ping
 				if ( iIterator % 100 == 0 ):					
