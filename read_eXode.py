@@ -2699,6 +2699,10 @@ class my_eXode_bot(discord.Client):
 	
 		for DISCORD_CHANNEL_id in CHANNEL_LIST:
 			DISC_CHANNEL = DISC_CLIENT.get_channel(DISCORD_CHANNEL_id)
+			
+			if ( DISC_CHANNEL == None ): 
+				continue
+				
 			for msg in msg_list:
 				await DISC_CHANNEL.send(msg)	
 				
@@ -2709,6 +2713,10 @@ class my_eXode_bot(discord.Client):
 	
 		for DISCORD_CHANNEL_id in CHANNEL_LIST:
 			DISC_CHANNEL = DISC_CLIENT.get_channel(DISCORD_CHANNEL_id)
+			
+			if ( DISC_CHANNEL == None ): 
+				continue
+				
 			await DISC_CHANNEL.send(msg)	
 		
 	######################################################################################	
