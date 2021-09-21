@@ -1758,27 +1758,39 @@ DISC_BOT = commands.Bot(command_prefix="$")
 
 ##############################################################################################
 
+DISC_CHANNELS = []
+
 @DISC_BOT.event
 async def on_ready():
 	print('Discord bot ready')
-    
-	for discord_guild in DISC_BOT.guilds:
-		DISC_CHANNEL = discord.utils.get(discord_guild.channels, name=excst.CHANNEL_ANALYSE_NAME)
-		if ( DISC_CHANNEL != None ):
-			print ( "DISCORD BOT:eXode bot [MARKET-ANALYSER] connected to {guild_name}".format(guild_name=discord_guild.name) )
-			await DISC_CHANNEL.send("*eXode BOT [MARKET-ANALYSER] is connected here!*")    
+	global DISC_CHANNELS
+	
+	DISC_CHANNELS_TMP   = []			
+	with open('channel/ch_analysis.list', 'r') as f:
+		for line in f:
+			if ( line[0] == "#" or line == "\n" ):
+				continue
+				
+			ch_id = int(line)
+			DISC_CHANNELS_TMP.append(ch_id)
+						
+			if ( ch_id not in DISC_CHANNELS):	
+				DISC_CHANNEL = DISC_BOT.get_channel(ch_id)				
+				print ( "DISCORD BOT:eXode bot [MARKET-ANALYSER] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
+				await DISC_CHANNEL.send("*eXode BOT [MARKET-ANALYSER] is connected here!*")    
+	DISC_CHANNELS = DISC_CHANNELS_TMP
     
 @DISC_BOT.event
 async def on_message(message):
-	if message.channel.name == excst.CHANNEL_ANALYSE_NAME:
+	if message.channel.id in DISC_CHANNELS:
 		await DISC_BOT.process_commands(message)
 ##############################################################################################
 
 @DISC_BOT.command(
-#	help="Display the average sold price and the last sold price of the requested asset.\n Usage: $sales [elite] <asset id or asset name or card num>",
-#	brief="Display the average and last sold prices"
-	help="Disabled",
-	brief="Disable"
+	help="Display the average sold price and the last sold price of the requested asset.\n Usage: $sales [elite] <asset id or asset name or card num>",
+	brief="Display the average and last sold prices"
+#	help="Disabled",
+#	brief="Disable"
 )
 async def sales(ctx, *arg):
 
@@ -1802,10 +1814,10 @@ async def sales(ctx, *arg):
 	
 	
 @DISC_BOT.command(
-#	help="Display a graph showing the last sales of the requested asset. \n Usage: $graphsales [all/year/month/week] [elite] <asset id or asset name or card num>",
-#	brief="Display a graph showing the last sales"
-	help="Disabled",
-	brief="Disable"
+	help="Display a graph showing the last sales of the requested asset. \n Usage: $graphsales [all/year/month/week] [elite] <asset id or asset name or card num>",
+	brief="Display a graph showing the last sales"
+#	help="Disabled",
+#	brief="Disable"
 )
 async def graphsales(ctx, *arg):
 
@@ -1905,10 +1917,10 @@ async def graphsales(ctx, *arg):
 
 
 @DISC_BOT.command(
-#	help="Display up to 10 players owning the requested card. \n Usage: $owners [elite] <card id or number>",
-#	brief="Display a list of 10 players owning the card."
-	help="Disabled",
-	brief="Disable"
+	help="Display up to 10 players owning the requested card. \n Usage: $owners [elite] <card id or number>",
+	brief="Display a list of 10 players owning the card."
+#	help="Disabled",
+#	brief="Disable"
 )
 async def owners(ctx, *arg):
 
@@ -2060,10 +2072,10 @@ async def pack_details(ctx, *arg):
 
 
 @DISC_BOT.command(
-#	help="Display list of owners for a pack. \n Usage: $pack_owners <pack id or name>",
-#	brief="Display list of owners for a pack."
-	help="Disabled",
-	brief="Disable"
+	help="Display list of owners for a pack. \n Usage: $pack_owners <pack id or name>",
+	brief="Display list of owners for a pack."
+#	help="Disabled",
+#	brief="Disable"
 )
 async def pack_owners(ctx, *arg):
 

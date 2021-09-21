@@ -1370,9 +1370,9 @@ def db_Sale_Sold( asset_uid, asset_id, sale_tx, sale_sold, sale_buyer, sale_bloc
 	
 	query = ("UPDATE exode_sales "
 		"SET buyer = %s, sold = %s, asset_type = %s, block_update = %s, time_update = %s "
-		"WHERE asset_uid = %s and sold = %s and block < %s") 
+		"WHERE asset_uid = %s and sold = %s and block < %s and cancel = %s") 
 		
-	cursor.execute(query, (sale_buyer, sale_sold, asset_id, sale_block, sale_time, asset_uid, 0, sale_block) )
+	cursor.execute(query, (sale_buyer, sale_sold, asset_id, sale_block, sale_time, asset_uid, 0, sale_block, 0) )
 	fDataBase.db_Commit()
 	
 	cursor.reset()
@@ -2634,7 +2634,7 @@ class my_eXode_bot(discord.Client):
 		DISC_CHANNELS_PING_TMP   = []
 		with open('channel/ch_ping.list', 'r') as f:
 			for line in f:
-				if ( line[0] == "#" ):
+				if ( line[0] == "#" or line == "\n" ):
 					continue
 				
 				ch_id = int(line)
@@ -2648,7 +2648,7 @@ class my_eXode_bot(discord.Client):
 		DISC_CHANNELS_MINT_TMP   = []			
 		with open('channel/ch_mint.list', 'r') as f:
 			for line in f:
-				if ( line[0] == "#" ):
+				if ( line[0] == "#" or line == "\n" ):
 					continue
 				
 				ch_id = int(line)
@@ -2662,7 +2662,7 @@ class my_eXode_bot(discord.Client):
 		DISC_CHANNELS_MARKET_TMP   = []			
 		with open('channel/ch_market.list', 'r') as f:
 			for line in f:
-				if ( line[0] == "#" ):
+				if ( line[0] == "#" or line == "\n" ):
 					continue
 				
 				ch_id = int(line)
@@ -2676,7 +2676,7 @@ class my_eXode_bot(discord.Client):
 		DISC_CHANNELS_GIFT_TMP   = []			
 		with open('channel/ch_gift.list', 'r') as f:
 			for line in f:
-				if ( line[0] == "#" ):
+				if ( line[0] == "#" or line == "\n" ):
 					continue
 				
 				ch_id = int(line)
@@ -3129,7 +3129,7 @@ class my_eXode_bot(discord.Client):
 ##############################################################################################################################################		
 DISC_CLIENT = my_eXode_bot()
 DISC_CLIENT.run(excst.BOT_TOKEN_ALERT)
-
+#print ( "Don't restart before Elindos go" )
 	
 
 
