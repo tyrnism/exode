@@ -1735,6 +1735,7 @@ class my_eXode_bot(discord.Client):
 			msg = ":blue_square: {seller} listed {nb} **{name}** on the market for **${price}** (average sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller, 
 					nb=asset_nb, name=asset_name, price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 		else:
+			card_ntot_mint = -1
 			if ( asset_id in excst.MINT_NUM ):
 				card_ntot_mint = excst.MINT_NUM[ asset_id ]								
 					
@@ -2755,6 +2756,20 @@ class my_eXode_bot(discord.Client):
 				await self.disc_send_msg(msg,self.DISC_CHANNELS_MARKET)
 				await self.disc_send_msg(msg,self.DISC_CHANNELS_MINT)
 				await self.disc_send_msg(msg,self.DISC_CHANNELS_PING)
+		except Exception as exception:
+			if ( bRestart ):
+				print("Restarting...")
+			else:
+				msg = ("%s: Exception occurred:\n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+				print(msg)
+				traceback.print_exc()
+					
+				msg = ("%s: Exception occurred, request assistance <@!232962122043228160> \n" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+				await self.disc_connect()
+				await self.disc_send_msg(msg,self.DISC_CHANNELS_MARKET)
+				await self.disc_send_msg(msg,self.DISC_CHANNELS_MINT)
+				await self.disc_send_msg(msg,self.DISC_CHANNELS_PING)
+		
 		else:
 			if ( bRestart ):
 				print("Restarting...")

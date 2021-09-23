@@ -1807,7 +1807,7 @@ async def sales(ctx, *arg):
 	if ( tElite == 1 ):
 		msg_elite = "Elite "
 	
-	msg = " **{elite}{name}** ({asset_id}) was sold {nSales} times for an average price of **${price_avg}**, the last was sold at **${price_last}** ".format(elite=msg_elite,name=asset_name,nSales=tSales,price_avg=tSale_avgP,price_last=tSale_lastP,asset_id=tID)
+	msg = " **{elite}{name}** ({asset_id}) was sold {nSales} times for an average price of **${price_avg:.2f}**, the last was sold at **${price_last}** ".format(elite=msg_elite,name=asset_name,nSales=tSales,price_avg=tSale_avgP,price_last=tSale_lastP,asset_id=tID)
 	
 
 	await ctx.channel.send(msg)
