@@ -1661,6 +1661,7 @@ def LoadHiveBlockChain():
 	nodelist.update_nodes()
 	nodes = nodelist.get_hive_nodes()
 	bHive = Hive(node=nodes)
+	print ( nodes )
 	print("Hive loaded?",bHive.is_hive)
 	
 	return bHive		
@@ -2639,10 +2640,13 @@ class my_eXode_bot(discord.Client):
 					continue
 				
 				ch_id = int(line)
+				DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)	
+				if ( DISC_CHANNEL == None ):
+					continue
+					
 				DISC_CHANNELS_PING_TMP.append(ch_id)
 				
-				if ( ch_id not in self.DISC_CHANNELS_PING):
-					DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)								
+				if ( ch_id not in self.DISC_CHANNELS_PING):						
 					print ( "DISCORD BOT:eXode bot [PING] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
 					await DISC_CHANNEL.send("*eXode BOT [PING] is connected here!*")
 					
@@ -2653,10 +2657,13 @@ class my_eXode_bot(discord.Client):
 					continue
 				
 				ch_id = int(line)
+				DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)	
+				if ( DISC_CHANNEL == None ):
+					continue
+					
 				DISC_CHANNELS_MINT_TMP.append(ch_id)
 						
-				if ( ch_id not in self.DISC_CHANNELS_MINT):	
-					DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)							
+				if ( ch_id not in self.DISC_CHANNELS_MINT):						
 					print ( "DISCORD BOT:eXode bot [EXODE-ALERT] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
 					await DISC_CHANNEL.send("*eXode BOT [EXODE-ALERT] is connected here!*")
 					
@@ -2667,10 +2674,13 @@ class my_eXode_bot(discord.Client):
 					continue
 				
 				ch_id = int(line)
+				DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)	
+				if ( DISC_CHANNEL == None ):
+					continue
+					
 				DISC_CHANNELS_MARKET_TMP.append(ch_id)
 						
-				if ( ch_id not in self.DISC_CHANNELS_MARKET):	
-					DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)				
+				if ( ch_id not in self.DISC_CHANNELS_MARKET):				
 					print ( "DISCORD BOT:eXode bot [MARKET-ALERT] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
 					await DISC_CHANNEL.send("*eXode BOT [MARKET-ALERT] is connected here!*")
 
@@ -2681,6 +2691,10 @@ class my_eXode_bot(discord.Client):
 					continue
 				
 				ch_id = int(line)
+				DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)	
+				if ( DISC_CHANNEL == None ):
+					continue
+					
 				DISC_CHANNELS_GIFT_TMP.append(ch_id)
 						
 				if ( ch_id not in self.DISC_CHANNELS_GIFT):	
@@ -3114,7 +3128,12 @@ class my_eXode_bot(discord.Client):
 				tBlock = iBlock+1
 				print("Read block: ", tBlock)
 				
-				fBlock = Block(tBlock)
+				try:
+					fBlock = Block(tBlock)
+				except bexceptions.BlockDoesNotExistsException:
+					print("Block doesn't exist, break loop")
+					break
+				
 				
 				tTransList = fBlock.json_transactions;	
 					
