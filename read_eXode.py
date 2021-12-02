@@ -1157,6 +1157,8 @@ def db_Card_Apply_TransferAll( card_prev_owner, card_owner, card_block ):
 	
 	cursor.reset()
 	cursor.close()
+
+#test
 	
 	
 	
