@@ -1965,6 +1965,7 @@ class my_eXode_bot(discord.Client):
 					# Fix card_id if possible
 					if ( cInfo['id'] == "" and l_asset_id != "" ):
 						cInfo['id'] = l_asset_id
+						cInfo['elite'] = ex_IsElite(l_asset_id)
 					
 					l_asset_ids.append(cInfo['id'])
 					l_asset_elite.append(cInfo['elite'])
