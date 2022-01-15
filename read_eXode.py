@@ -192,6 +192,8 @@ def ex_GetAssetDetails( mID ):
 		return (False, "Federal Database", 					2,	37)	
 		
 		
+	if ( mID == "exode_card_045_Rekatron_fireworks" 		or mID == "exode_card_E045_Rekatron_fireworks" ):
+		return (False, "FIREWORKS",	 					0,	45)
 	if ( mID == "exode_card_046_Rekatron_defensiveAmmo" 		or mID == "exode_card_E046_Rekatron_defensiveAmmo" ):
 		return (False, "DEFENSIVE AMMO",	 				0,	46)
 	if ( mID == "exode_card_047_Rekatron_firetalkerPistol" 	or mID == "exode_card_E047_Rekatron_firetalkerPistol" ):
