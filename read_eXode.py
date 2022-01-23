@@ -240,7 +240,7 @@ def ex_GetAssetDetails( mID ):
 		return (False, "SHELTER \"Happy Five\"", 				EPIC_CARD,	64)
 		
 	if ( mID == "exode_card_065_SyndicateGeisha_ThirdSister" 	or mID == "exode_card_E065_SyndicateGeisha_ThirdSister" ):
-		return (False, "Syndicate Geisha",	 				LEGENDARY_CARD,	65)
+		return (False, "Syndicate Geisha",	 				EPIC_CARD,	65)
 	if ( mID == "exode_card_066_SyndicateEquipment_Chip" 	or mID == "exode_card_E066_SyndicateEquipment_Chip" ):
 		return (False, "Syndicate Chip", 					COMMON_CARD,	66)
 	if ( mID == "exode_card_067_SyndicateEquipment_DrugHolidays"	or mID == "exode_card_E067_SyndicateEquipment_DrugHolidays" ):
