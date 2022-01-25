@@ -197,6 +197,9 @@ def ex_GetAssetDetails( mID ):
 	if ( mID == "exode_card_037_setDatabase" 			or mID == "exode_card_E037_setDatabase" ):
 		return (False, "Federal Database", 					EPIC_CARD,	37)	
 		
+	if ( mID == "exode_card_039_Tom_BeautyCapsule" 		or mID == "exode_card_E039_Tom_BeautyCapsule" ):
+		return (False, "BEAUTY Capsule", 					EPIC_CARD,	39)	
+		
 		
 	if ( mID == "exode_card_045_Rekatron_fireworks" 		or mID == "exode_card_E045_Rekatron_fireworks" ):
 		return (False, "FIREWORKS",	 					LEGENDARY_CARD,	45)
