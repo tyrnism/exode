@@ -2655,14 +2655,11 @@ class my_eXode_bot(discord.Client):
 				if ( line[0] == "#" or line == "\n" ):
 					continue
 				
-				ch_id = int(line)
-				DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)	
-				if ( DISC_CHANNEL == None ):
-					continue
-					
+				ch_id = int(line)	
+				DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)					
 				DISC_CHANNELS_PING_TMP.append(ch_id)
 				
-				if ( ch_id not in self.DISC_CHANNELS_PING):						
+				if ( ch_id not in self.DISC_CHANNELS_PING and DISC_CHANNEL != None ):						
 					print ( "DISCORD BOT:eXode bot [PING] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
 					await DISC_CHANNEL.send("*eXode BOT [PING] is connected here!*")
 					
@@ -2674,12 +2671,9 @@ class my_eXode_bot(discord.Client):
 				
 				ch_id = int(line)
 				DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)	
-				if ( DISC_CHANNEL == None ):
-					continue
-					
 				DISC_CHANNELS_MINT_TMP.append(ch_id)
 						
-				if ( ch_id not in self.DISC_CHANNELS_MINT):						
+				if ( ch_id not in self.DISC_CHANNELS_MINT and DISC_CHANNEL != None ):						
 					print ( "DISCORD BOT:eXode bot [EXODE-ALERT] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
 					await DISC_CHANNEL.send("*eXode BOT [EXODE-ALERT] is connected here!*")
 					
@@ -2691,12 +2685,9 @@ class my_eXode_bot(discord.Client):
 				
 				ch_id = int(line)
 				DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)	
-				if ( DISC_CHANNEL == None ):
-					continue
-					
 				DISC_CHANNELS_MARKET_TMP.append(ch_id)
 						
-				if ( ch_id not in self.DISC_CHANNELS_MARKET):				
+				if ( ch_id not in self.DISC_CHANNELS_MARKET and DISC_CHANNEL != None ):				
 					print ( "DISCORD BOT:eXode bot [MARKET-ALERT] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
 					await DISC_CHANNEL.send("*eXode BOT [MARKET-ALERT] is connected here!*")
 
@@ -2708,13 +2699,9 @@ class my_eXode_bot(discord.Client):
 				
 				ch_id = int(line)
 				DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)	
-				if ( DISC_CHANNEL == None ):
-					continue
-					
 				DISC_CHANNELS_GIFT_TMP.append(ch_id)
 						
-				if ( ch_id not in self.DISC_CHANNELS_GIFT):	
-					DISC_CHANNEL = DISC_CLIENT.get_channel(ch_id)				
+				if ( ch_id not in self.DISC_CHANNELS_GIFT and DISC_CHANNEL != None ):	
 					print ( "DISCORD BOT:eXode bot [GIFT-ALERT] connected to {guild_name}".format(guild_name=DISC_CHANNEL.guild.name) )
 					await DISC_CHANNEL.send("*eXode BOT [GIFT-ALERT] is connected here!*")
 
