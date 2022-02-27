@@ -673,6 +673,10 @@ def ex_GetAssetID( mID, mElite ):
 			return "exode_card_037_setDatabase"	
 			
 			
+		if ( mID == "exode_card_039_Tom_BeautyCapsule" 		or mID == "39" ):
+			return "exode_card_039_Tom_BeautyCapsule"
+		if ( mID == "exode_card_045_Rekatron_fireworks" 		or mID == "45" ):
+			return "exode_card_045_Rekatron_fireworks"
 		if ( mID == "exode_card_046_Rekatron_defensiveAmmo"		or mID == "46" ): 
 			return "exode_card_046_Rekatron_defensiveAmmo"
 		if ( mID == "exode_card_047_Rekatron_firetalkerPistol" 	or mID == "47" ): 
@@ -710,8 +714,9 @@ def ex_GetAssetID( mID, mElite ):
 		if ( mID == "exode_card_063_Tom_Explorator" 			or mID == "63" ): 
 			return "exode_card_063_Tom_Explorator"
 		if ( mID == "exode_card_064_Tom_ShelterHappyFive" 		or mID == "64" ): 
-			return "exode_card_064_Tom_ShelterHappyFive"
-			
+			return "exode_card_064_Tom_ShelterHappyFive"			
+		if ( mID == "exode_card_065_SyndicateGeisha_ThirdSister" 	or mID == "65" ):
+			return "exode_card_065_SyndicateGeisha_ThirdSister"
 		if ( mID == "exode_card_066_SyndicateEquipment_Chip" 	or mID == "66" ): 
 			return "exode_card_066_SyndicateEquipment_Chip"
 		if ( mID == "exode_card_067_SyndicateEquipment_DrugHolidays"	or mID == "67" ): 
