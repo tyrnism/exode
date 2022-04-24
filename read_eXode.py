@@ -2453,7 +2453,7 @@ class my_eXode_bot(discord.Client):
 							
 							lOut = ":green_square: {buyer} bought 1 **{name}** from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=pack_name, seller=asset_seller, price=asset_price, sold_price=mSoldPrice)
 							tMSGOut.append(lOut)
-							if mSoldPrice > 1000.:
+							if mSoldPrice > 999.:
 								if 'transaction_id' in tValue:
 									lOut = f"<@!460463462464618536> <@!232962122043228160> high price sale alert! Link: https://hiveblocks.com/tx/{tValue['transaction_id']}"
 								else:
@@ -3064,6 +3064,8 @@ class my_eXode_bot(discord.Client):
 		
 		# Initialize iterator
 		iIterator = 0
+
+		bTest = True
 		
 		# It's running! 
 		while True:
@@ -3158,6 +3160,10 @@ class my_eXode_bot(discord.Client):
 				
 						if( tType != 'custom_json_operation' and tType != 'transfer_operation' ):
 							continue	
+
+						if bTest:
+							bTest = False
+							print(tOperation['value'])
 						
 						#print ( tOperation )
 						lOut = await self.ProcessTransaction( tType, tBlock, tOperation['value'] )
