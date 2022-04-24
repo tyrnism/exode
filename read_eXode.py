@@ -1,3 +1,4 @@
+from errno import errorcode
 from beem import exceptions as bexceptions
 from beem import Hive
 from beem.nodelist import NodeList
@@ -2452,7 +2453,13 @@ class my_eXode_bot(discord.Client):
 							
 							lOut = ":green_square: {buyer} bought 1 **{name}** from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=pack_name, seller=asset_seller, price=asset_price, sold_price=mSoldPrice)
 							tMSGOut.append(lOut)
-								
+							if mSoldPrice > 1000.:
+								if 'transaction_id' in tValue:
+									lOut = f"<@!460463462464618536> <@!232962122043228160> high price sale alert! Link: https://hiveblocks.com/tx/{tValue['transaction_id']}"
+								else:
+									print(tValue)
+									lOut = f"<@!460463462464618536> <@!232962122043228160> high price sale alert!"
+								tMSGOut.append(lOut)
 						else:
 							print('card-buy', mTxId, mFrom, tTo, mID, mUID )
 							
