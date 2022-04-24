@@ -3064,8 +3064,6 @@ class my_eXode_bot(discord.Client):
 		
 		# Initialize iterator
 		iIterator = 0
-
-		bTest = True
 		
 		# It's running! 
 		while True:
@@ -3160,10 +3158,6 @@ class my_eXode_bot(discord.Client):
 				
 						if( tType != 'custom_json_operation' and tType != 'transfer_operation' ):
 							continue	
-
-						if bTest:
-							bTest = False
-							print(tOperation['value'])
 						
 						#print ( tOperation )
 						lOut = await self.ProcessTransaction( tType, tBlock, tOperation['value'] )
