@@ -533,8 +533,8 @@ def ex_GetAssetDetails( mID ):
 	if ( mID == "exode_card_261_actionImmediateOrder"		or mID == "exode_card_E261_actionImmediateOrder" ):
 		return (False, "Emergency Order!", 					COMMON_CARD,	261)
 	
-		
-	return (False, mID, -1, 0)
+	is_pack = mID[:len(exode_card)] != "exode_card"
+	return ( is_pack, mID, -1, 0)
 
 #########################################################################################
 
@@ -1198,7 +1198,7 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 	db_Card_Mint( card_owner, card_id, card_num, card_uid, card_mint, card_elite, card_bound, card_block, card_owner )
 	
 	
-	if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) ):
+	if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) or (card_rank == -1) ):
 		if ( int(card_elite) == 1 ):
 			msg_elite = "an **Elite "
 		else:
@@ -1212,6 +1212,8 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 			msg_rarity = "Epic"
 		elif ( card_rank == 3 ):
 			msg_rarity = "Legendary"
+		elif ( card_rank == -1 ):
+			msg_rarity = "???"
 		
 		msg = ":tada: {player} found {elite}{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid}*)".format(player=card_owner,rarity=msg_rarity, elite=msg_elite,name=card_name, 
 					mint=card_mint, uid=card_uid)
@@ -1278,7 +1280,7 @@ def db_Card_Apply_Burn( card_burner, card_id, card_uid, card_block, tx_id, bypas
 	card_mint = cInfo[1]
 	card_elite = cInfo[4]
 	(is_pack, card_name, card_rank, card_num) = ex_GetAssetDetails(card_id)
-	if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) ):
+	if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) or (card_rank == -1) ):
 		if ( card_elite == 1 ):
 			msg_elite = "an **Elite "
 		else:
@@ -1291,6 +1293,8 @@ def db_Card_Apply_Burn( card_burner, card_id, card_uid, card_block, tx_id, bypas
 			msg_rarity = "Epic"
 		elif ( card_rank == 3 ):
 			msg_rarity = "Legendary"
+		elif ( card_rank == -1 ):
+			msg_rarity = "???"
 			
 		msg = ":fire: {player} burn {elite}{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid})*".format(player=card_burner,elite=msg_elite,name=card_name, rarity=msg_rarity, mint=card_mint, uid=card_uid)
 	
@@ -1328,6 +1332,8 @@ def db_Card_Apply_Transfer( card_prev_owner, card_new_owner, card_id, card_uid, 
 				msg_rarity = "Epic"
 			elif ( card_rank == 3 ):
 				msg_rarity = "Legendary"
+			elif ( card_rank == -1 ):
+				msg_rarity = "???"
 				
 			msg = ":gift: {player} gave {elite}{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid})* to the EXODE Reward Pool (*@exoderewardspool*)! :tada:".format(player=card_prev_owner,elite=msg_elite,name=card_name, rarity=msg_rarity, mint=card_mint, uid=card_uid)
 		
@@ -1767,6 +1773,8 @@ class my_eXode_bot(discord.Client):
 				msg_rarity = "Epic"
 			elif ( asset_rank == 3 ):
 				msg_rarity = "Legendary"
+			elif ( asset_rank == -1 ):
+				msg_rarity = "???"
 			
 			msg_missing_mint=""
 			if ( asset_id in excst.MINT_NUM_NOSOURCE ):
@@ -2125,6 +2133,8 @@ class my_eXode_bot(discord.Client):
 					msg_rarity = "Epic"
 				elif ( asset_rank == 3 ):
 					msg_rarity = "Legendary"
+				elif ( asset_rank == -1 ):
+					msg_rarity = "???"
 				
 				lOut = ":purple_square: {seller} unlisted 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint} *uid={muid}*)".format(seller=l_asset_seller, 
 								name=card_name, rarity=msg_rarity, mint=card_mint, missing_mint=msg_missing_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, 
@@ -2488,6 +2498,8 @@ class my_eXode_bot(discord.Client):
 								msg_rarity = "Epic"
 							elif ( asset_rank == 3 ):
 								msg_rarity = "Legendary"
+							elif ( asset_rank == -1 ):
+								msg_rarity = "???"
 												
 							lOut = ":green_square: {buyer} bought 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint}  *uid={muid}*) from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=card_name,
 										 rarity=msg_rarity, elite=card_elite_msg, mint=card_mint, ntot_mint=card_ntot_mint, missing_mint=msg_missing_mint, muid=mUID, seller=asset_seller, price=asset_price,sold_price=mSoldPrice)
