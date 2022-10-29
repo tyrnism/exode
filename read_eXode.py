@@ -3098,10 +3098,12 @@ class my_eXode_bot(discord.Client):
 				print("sleeping...")
 				time.sleep(3.)
 				iLastBlock = bBlockC.get_current_block_num()
-			print(f"Loading from {iFirstBlock} to {iFirstBlock+500}")
+				
+			block_step = 200
+			print(f"Loading from {iFirstBlock} to {iFirstBlock+block_step}")
 			
 			# Loop over blocks
-			for fBlock in Blocks(iFirstBlock, count=500):
+			for fBlock in Blocks(iFirstBlock, count=block_step):
 				tBlock = fBlock.block_num
 				iBlock = tBlock - 1
 										
