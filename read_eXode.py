@@ -3095,6 +3095,26 @@ class my_eXode_bot(discord.Client):
 			
 			#print(iLastBlock, iFirstBlock)
 			while iLastBlock <= iFirstBlock:
+			
+				if ( os.path.isfile('stop.order') ):
+					
+					# Update player table
+					db_Player_CompleteList()
+					db_Player_SetLastBlock_all(iBlock-1)
+					
+					msg = ":zap: Killing order received, going to shutdown... :zap:"
+					with open('stop.order', "r") as f:
+						msg = msg + "\n Shutdown reason: " + f.read()
+							
+					os.remove('stop.order')
+						
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_MARKET)
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_PING)
+						
+					print("shutdown")
+					raise ValueError("stop_order")
+				
 				print("sleeping...")
 				time.sleep(3.)
 				iLastBlock = bBlockC.get_current_block_num()
