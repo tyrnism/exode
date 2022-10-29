@@ -3106,7 +3106,7 @@ class my_eXode_bot(discord.Client):
 			# Loop over blocks
 			for fBlock in Blocks(iFirstBlock, count=block_step):
 				tBlock = fBlock.block_num
-				iBlock = tBlock - 1
+				iBlock = tBlock
 										
 				# Check if need to reconnect or to ping
 				if ( iIterator % 100 == 0 ):					
