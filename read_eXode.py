@@ -3100,6 +3100,7 @@ class my_eXode_bot(discord.Client):
 				iLastBlock = bBlockC.get_current_block_num()
 				
 			block_step = 200
+			time.sleep(1.)
 			print(f"Loading from {iFirstBlock} to {iFirstBlock+block_step}")
 			
 			# Loop over blocks
