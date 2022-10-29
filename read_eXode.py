@@ -3101,7 +3101,9 @@ class my_eXode_bot(discord.Client):
 			print(f"Loading from {iFirstBlock} to {iLastBlock}")
 			
 			# Loop over blocks
-			for iBlock in range(iFirstBlock,iLastBlock):
+			for fBlock in Blocks(iFirstBlock, count=500):
+				tBlock = fBlock.block_num
+				iBlock = tBlock - 1
 										
 				# Check if need to reconnect or to ping
 				if ( iIterator % 100 == 0 ):					
@@ -3148,15 +3150,7 @@ class my_eXode_bot(discord.Client):
 				# Increase Iterator
 				iIterator = iIterator + 1
 				
-				tBlock = iBlock+1
 				print("Read block: ", tBlock)
-				
-				try:
-					fBlock = Block(tBlock)
-				except bexceptions.BlockDoesNotExistsException:
-					print("Block doesn't exist, break loop")
-					break
-				
 				
 				tTransList = fBlock.json_transactions;	
 					
