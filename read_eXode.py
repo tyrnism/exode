@@ -2,7 +2,7 @@ from errno import errorcode
 from beem import exceptions as bexceptions
 from beem import Hive
 from beem.nodelist import NodeList
-from beem.block import Block
+from beem.block import Block, Blocks
 from beem.blockchain import Blockchain
 from beem.account import Account
 import json
