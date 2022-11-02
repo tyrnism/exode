@@ -1803,6 +1803,7 @@ async def sales(ctx, *arg):
 	
 	(tID, tElite) = ArgToID(0, arg)	
 	if ( tID == "" ):
+		await ctx.channel.send("Unknown card or contract")
 		return
 
 	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails( tID )
