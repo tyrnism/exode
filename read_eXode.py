@@ -123,6 +123,19 @@ def ex_GetAssetDetails( mID ):
 	if ( mID == "exode_alpha_character_pack_drachian" ):
 		return (True, "Alpha Promo Character Pack [Drachian Colonel]",	NO_RARITY, 0)
 		
+	if ( mID == "exode_beta_booster" ):
+		return (True, "Beta booster",				NO_RARITY, 0)
+	if ( mID == "exode_alpha_contract_achean" ):
+		return (True, "Beta contract Achean",				NO_RARITY, 0)
+	if ( mID == "exode_alpha_contract_starships_mods" ):
+		return (True, "Beta contract Starships mods",				NO_RARITY, 0)
+	if ( mID == "exode_alpha_contract_armor_mods" ):
+		return (True, "Beta contract Armor mods",				NO_RARITY, 0)
+	if ( mID == "exode_alpha_contract_shop_franchise" ):
+		return (True, "Beta contract Shop Franchise",				NO_RARITY, 0)
+	if ( mID == "exode_alpha_contract_street_franchise" ):
+		return (True, "Beta contract Street franchise",				NO_RARITY, 0)
+
 	if ( mID == "exode_card_001_originNavy" 			or mID == "exode_card_E001_originNavy" ):
 		return (False, "Navy Lieutenant [Origin]", 				EPIC_CARD, 	1)	
 	if ( mID == "exode_card_002_shipArcheon" 			or mID == "exode_card_E002_shipArcheon" ):
