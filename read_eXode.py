@@ -546,7 +546,8 @@ def ex_GetAssetDetails( mID ):
 	if ( mID == "exode_card_261_actionImmediateOrder"		or mID == "exode_card_E261_actionImmediateOrder" ):
 		return (False, "Emergency Order!", 					COMMON_CARD,	261)
 	
-	is_pack = mID[:len(exode_card)] != "exode_card"
+	print(mID)
+	is_pack = mID[:len("exode_card")] != "exode_card"
 	return ( is_pack, mID, -1, 0)
 
 #########################################################################################
