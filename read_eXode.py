@@ -103,7 +103,7 @@ def ex_GetAssetDetails( mID ):
 	
 		return (True, "Alpha Starter [Navy Lieutenant]",			NO_RARITY, 0)
 	if ( mID == "exode_alpha_contract_tom" ):
-		return (True, "Alpha Contract [TOM Settler PREMIUM BUDDIER]", 	NO_RARITY, 0)
+		return (True, "Alpha Contract [TOM Settler PREMIUM BUDDIES]", 	NO_RARITY, 0)
 	if ( mID == "exode_alpha_contract_rekatron" ):
 		return (True, "Alpha Contract [WEAPON DROPS BY REKATRON]", 		NO_RARITY, 0)
 	if ( mID == "exode_alpha_contract_syndicate" ):
@@ -125,15 +125,15 @@ def ex_GetAssetDetails( mID ):
 		
 	if ( mID == "exode_beta_booster" ):
 		return (True, "Beta booster",				NO_RARITY, 0)
-	if ( mID == "exode_alpha_contract_achean" ):
+	if ( mID == "exode_beta_contract_achean" ):
 		return (True, "Beta contract Achean",				NO_RARITY, 0)
-	if ( mID == "exode_alpha_contract_starships_mods" ):
+	if ( mID == "exode_beta_contract_starships_mods" ):
 		return (True, "Beta contract Starships mods",				NO_RARITY, 0)
-	if ( mID == "exode_alpha_contract_armor_mods" ):
+	if ( mID == "exode_beta_contract_armor_mods" ):
 		return (True, "Beta contract Armor mods",				NO_RARITY, 0)
-	if ( mID == "exode_alpha_contract_shop_franchise" ):
+	if ( mID == "exode_beta_contract_shop_franchise" ):
 		return (True, "Beta contract Shop Franchise",				NO_RARITY, 0)
-	if ( mID == "exode_alpha_contract_street_franchise" ):
+	if ( mID == "exode_beta_contract_street_franchise" ):
 		return (True, "Beta contract Street franchise",				NO_RARITY, 0)
 
 	if ( mID == "exode_card_001_originNavy" 			or mID == "exode_card_E001_originNavy" ):
