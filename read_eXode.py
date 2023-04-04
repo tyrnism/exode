@@ -82,6 +82,8 @@ def ex_GetAssetDetails( mID ):
 	EPIC_CARD = 2
 	LEGENDARY_CARD = 3
 	
+	if ( mID == "exode_????_booster" ):
+		return (True, "???? booster",							NO_RARITY, 0)
 	if ( mID == "exode_alpha_booster" ):
 		return (True, "Alpha booster",							NO_RARITY, 0)
 	if ( mID == "exode_beta_booster" ):
@@ -1990,7 +1992,7 @@ class my_eXode_bot(discord.Client):
 			
 			if ( tMarketType_Pack ):
 				if ( l_asset_id == "" ):
-					l_asset_id = "exode_alpha_booster"
+					l_asset_id = "exode_????_booster"
 					tIDUnknown = True
 					
 				for iAsset in range(len(l_asset_uids)):
