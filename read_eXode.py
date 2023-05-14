@@ -2119,7 +2119,7 @@ class my_eXode_bot(discord.Client):
 						
 				pack_name                               = asset_name
 				
-				lOut = ":purple_square: {seller} unlisted {nb} **{name}** on the market".format(seller=l_asset_seller, nb=1, name=pack_name)
+				lOut = ":purple_square: {seller} delisted {nb} **{name}** from the market".format(seller=l_asset_seller, nb=1, name=pack_name)
 				tMSGOut.append(lOut)
 							
 			else:
@@ -2151,7 +2151,7 @@ class my_eXode_bot(discord.Client):
 				elif ( asset_rank == -1 ):
 					msg_rarity = "???"
 				
-				lOut = ":purple_square: {seller} unlisted 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint} *uid={muid}*)".format(seller=l_asset_seller, 
+				lOut = ":purple_square: {seller} delisted 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint} *uid={muid}*)".format(seller=l_asset_seller, 
 								name=card_name, rarity=msg_rarity, mint=card_mint, missing_mint=msg_missing_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, 
 								muid=card_muid)
 				tMSGOut.append(lOut)
@@ -3177,7 +3177,7 @@ class my_eXode_bot(discord.Client):
 				# Check if need to reconnect or to ping
 				if ( iIterator % 30000 == 0 ):	
 									
-					msg = "Listing :blue_square:, unlisting :purple_square:, and buy :green_square: alert messages are displayed in this channel.\n**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
+					msg = "Listing :blue_square:, delisting :purple_square:, and buy :green_square: alert messages are displayed in this channel.\n**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
 					await self.disc_send_msg(msg, self.DISC_CHANNELS_MARKET)
 					msg = "**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
 					await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
