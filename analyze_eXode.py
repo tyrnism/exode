@@ -2143,14 +2143,19 @@ async def pack_open(ctx, *arg):
 	if ( iArgN == 0 ):
 		return
 
-
+	sPlayer = "elindos"
 	(tID, tElite) = ArgToID(0, arg)	
+	if ( tID == "" and iArgN > 1 ):
+			sPlayer = arg[0]
+			(tID, tElite) = ArgToID(0, arg)	
+			
 	if ( tID == "" ):
 		return
 	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails( tID )
 		
 	if ( not is_pack ):
 		return
+		
 	
 	mMax = 10
 	(tPacks, tPack_owners, tPack_nbs, tPack_open, tPacks_n) = db_Pack_GetOwners( tID, "opened", mMax )
