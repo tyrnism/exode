@@ -2150,6 +2150,7 @@ async def pack_open(ctx, *arg):
 			(tID, tElite) = ArgToID(0, arg)	
 			
 	if ( tID == "" ):
+		print(tID)
 		return
 	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails( tID )
 		
