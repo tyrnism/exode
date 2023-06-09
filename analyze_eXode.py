@@ -2146,8 +2146,8 @@ async def pack_open(ctx, *arg):
 	sPlayer = "elindos"
 	(tID, tElite) = ArgToID(0, arg)	
 	if ( tID == "" and iArgN > 1 ):
-			sPlayer = arg[0]
-			(tID, tElite) = ArgToID(0, arg)	
+		sPlayer = arg[0]
+		(tID, tElite) = ArgToID(1, arg)	
 			
 	if ( tID == "" ):
 		print(tID)
