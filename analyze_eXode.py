@@ -2158,7 +2158,7 @@ async def pack_open(ctx, *arg):
 		
 	
 	mMax = 10
-	(tPacks, tPack_owners, tPack_nbs, tPack_open, tPacks_n) = db_Pack_GetOwners( tID, "opened", mMax )
+	(tPacks, tPack_owners, tPack_nbs, tPack_open, tPacks_n) = db_Pack_GetOwners( tID, "opened", mMax, sPlayer )
 		
 	
 	
