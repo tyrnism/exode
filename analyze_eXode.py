@@ -1437,18 +1437,27 @@ def db_Pack_GetDetails( pack_id ):
 	
 	return output
 		
-def db_Pack_GetOwners( mID, mVar, mMax ):
+def db_Pack_GetOwners( mID, mVar, mMax, sPlayer = "elindos" ):
 
 	cursor = myDB.db_Cursor()
 	
-	if ( mVar == "nb" ):	
-		query = ("SELECT player, nb, opened FROM exode_pack "
-			 "WHERE type = %s and nb > 0 and player != %s ORDER BY nb DESC LIMIT %s" )	
+	if ( mVar == "nb" ):
+		if sPlayer == "elindos":		
+			query = ("SELECT player, nb, opened FROM exode_pack "
+				 "WHERE type = %s and nb > 0 and player != %s ORDER BY nb DESC LIMIT %s" )
+		else:
+			query = ("SELECT player, nb, opened FROM exode_pack "
+				 "WHERE type = %s and nb > 0 and player = %s ORDER BY nb DESC LIMIT %s" )	
 	else:
-		query = ("SELECT player, nb, opened FROM exode_pack "
-			 "WHERE type = %s and opened > 0 and player != %s ORDER BY opened DESC LIMIT %s" )	
+		if sPlayer == "elindos":
+			query = ("SELECT player, nb, opened FROM exode_pack "
+				 "WHERE type = %s and opened > 0 and player != %s ORDER BY opened DESC LIMIT %s" )	
+		else:
+			query = ("SELECT player, nb, opened FROM exode_pack "
+				 "WHERE type = %s and opened > 0 and player = %s ORDER BY opened DESC LIMIT %s" )
 		
-	cursor.execute(query, (mID,"elindos",mMax))
+		
+	cursor.execute(query, (mID,sPlayer,mMax))
 	m_output = cursor.fetchall()
 	
 	tPack_owners = []
@@ -1469,14 +1478,22 @@ def db_Pack_GetOwners( mID, mVar, mMax ):
 	
 	
 	if ( mVar == "nb" ):	
-		query = ("SELECT player FROM exode_pack "
-			 "WHERE type = %s and nb > 0 and player != %s" )	
+		if sPlayer == "elindos":
+			query = ("SELECT player FROM exode_pack "
+				 "WHERE type = %s and nb > 0 and player != %s" )	
+		else:
+			query = ("SELECT player FROM exode_pack "
+				 "WHERE type = %s and nb > 0 and player = %s" )
 	else:
-		query = ("SELECT player FROM exode_pack "
-			 "WHERE type = %s and opened > 0 and player != %s" )	
+		if sPlayer == "elindos":
+			query = ("SELECT player FROM exode_pack "
+				 "WHERE type = %s and opened > 0 and player != %s" )	
+		else:
+			query = ("SELECT player FROM exode_pack "
+				 "WHERE type = %s and opened > 0 and player = %s" )	
 	
 		
-	cursor.execute(query, (mID,"elindos"))
+	cursor.execute(query, (mID,sPlayer))
 	m_output = cursor.fetchall()
 	
 	tPacks_n = cursor.rowcount
