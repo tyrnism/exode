@@ -6,8 +6,6 @@ import os
 MINT_IFNOSOURCE = True
 DO_DISCORD      = True
 
-# Store Max Mint
-
 # Block
 EXODE_BLOCK_MIN        = 42233330
 EXODE_BLOCK_MIN_CANCEL = 45975275 # Minimum block for cancellation broadcast
