@@ -4,7 +4,7 @@ from beem.block import Block
 
 def db_TransferTX_Reset(mysql: lib_mysql, last_block: int = None):
 
-	if last_block != None:
+	if last_block != None and last_block != 0:
 		query = ("delete from exode_cards "
 			"where minter = 'no_source' or block > %s")
 		values = (last_block, )
