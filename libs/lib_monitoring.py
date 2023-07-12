@@ -27,9 +27,9 @@ class lib_monitoring:
 			
 		#
 		self.fLoadExodeGame    = False
+		self.fLoadPlayerMarket = False
 		self.fLoadMintOnly     = False
 			
-		self.fLoadPlayerMarket = False
 		self.fReBuildDataBase  = False
 
 		self.MINT_NUM = {}
@@ -45,6 +45,11 @@ class lib_monitoring:
 
 		# Hive
 		self.Hive = None
+		
+		if ( os.path.isfile('database_rebuild.flag') ):
+			print("Flag to rebuild database is active")
+			self.fReBuildDataBase = True
+
 		######################################################################################
 
 	def LoadHiveBlockChain(self):
@@ -1323,6 +1328,8 @@ class lib_monitoring:
 	async def rebuild_exode_database(self, iFirstBlock: int, bBlockC, mysql: lib_mysql, from_start: bool = False):
 
 		self.fReBuildDataBase = True
+		with open('database_rebuild.flag','w') as f:
+			json.dump(True, f)
 			
 		lib_database.db_TransferTX_Reset(last_block=iFirstBlock, mysql=mysql)
 		print( "Calculate Mints" )
@@ -1661,6 +1668,11 @@ class lib_monitoring:
 			# Change flag	
 			self.fFast            = False
 			self.fReBuildDataBase = False
+			try: 
+				os.remove('database_rebuild.flag')
+			except:
+				pass
+			
 			self.fLoadMintOnly    = False
 			self.fStart 		  = False
 		
