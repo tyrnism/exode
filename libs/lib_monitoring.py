@@ -583,7 +583,11 @@ class lib_monitoring:
 				elif (	   l_source_id == "exode_alpha_starter_3"
 					or l_source_id == "exode_alpha_starter_2"
 					or l_source_id == "exode_alpha_starter_1" ):
-					iPack_nb = len(l_card_ids)/14					
+					iPack_nb = len(l_card_ids)/14				
+				elif (	   l_source_id == "exode_beta_starter_3"
+					or l_source_id == "exode_beta_starter_2"
+					or l_source_id == "exode_beta_starter_1" ):
+					iPack_nb = len(l_card_ids)/9					
 				elif (     l_source_id == "exode_alpha_pack_crew_galvin4" ):
 					iPack_nb = len(l_card_ids)/3
 				elif (     l_source_id == "exode_alpha_pack_crew_kb119" ):
@@ -1194,8 +1198,7 @@ class lib_monitoring:
 				return 0
 							
 			lOut = self.ReadJSONTransaction(tValue=hTransaction, tBlock=tBlock, mysql=mysql)
-			
-							
+
 		if ( lOut[0] == cst_exode.ALERT_MINT ):
 			if( len(lOut[1]) > 0 ):
 				for msg in lOut[1]:
@@ -1400,8 +1403,7 @@ class lib_monitoring:
 				lOut = await self.ProcessTransaction( tType=tType, tBlock=tBlock, hTransaction=hTransaction, mysql=mysql )
 					
 				if ( lOut == cst_exode.ALERT_KILL ):
-					print("Quit...")
-					return
+					raise Exception("ERROR: ALERT_KILL")
 											
 				with open('logs/file_block_fast.json', 'w') as f:
 					json.dump( tBlock, f ) 
@@ -1484,8 +1486,7 @@ class lib_monitoring:
 					lOut = await self.ProcessTransaction(tType=tType, tBlock=tBlock, hTransaction=hTransaction, mysql=mysql )
 						
 					if ( lOut == cst_exode.ALERT_KILL ):
-						print("Quit...")
-						return
+						raise Exception("ERROR: ALERT_KILL")
 						
 					c_block_cur = tBlock
 				
@@ -1623,8 +1624,7 @@ class lib_monitoring:
 						lOut = await self.ProcessTransaction( tType=tType, tBlock=tBlock, hTransaction=tOperation['value'], mysql=mysql )
 							
 						if ( lOut == cst_exode.ALERT_KILL ):
-							print("Quit...")
-							return tBlock
+							raise Exception("ERROR: ALERT_KILL")
 												
 				with open('logs/file_block_fast.json', 'w') as f:
 					json.dump( tBlock, f ) 
