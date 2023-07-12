@@ -67,11 +67,11 @@ class lib_monitoring:
 			return -1
 		
 		try:
-			cst_exode.MINT_NUM[ card_id ] += 1
+			self.MINT_NUM[ card_id ] += 1
 		except:
-			cst_exode.MINT_NUM[ card_id ] = 1
+			self.MINT_NUM[ card_id ] = 1
 
-		return cst_exode.MINT_NUM[ card_id ]
+		return self.MINT_NUM[ card_id ]
 			
 	def MakeMessage_List(self, sale_seller, asset_id, asset_nb, asset_uid, asset_mint, asset_elite, sale_price, mysql: lib_mysql):
 			
@@ -1328,6 +1328,7 @@ class lib_monitoring:
 		print( "Calculate Mints" )
 		(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
 		lib_database.db_Card_Mint_Missing(mysql=mysql)
+		print( "Loading exode history" )
 		
 		# Load exode history to build the database
 		acc = Account("exodegame")
