@@ -10,20 +10,13 @@ from beem.block import Block, Blocks
 from beem.blockchain import Blockchain
 from beem.account import Account
 
-def LoadHiveBlockChain():
-	print ("HIVE: Loading blockchain")
-	nodelist = NodeList()
-	nodelist.update_nodes()
-	nodes = nodelist.get_hive_nodes()
-	bHive = Hive(node=nodes)
-	print ( nodes )
-	print("Hive loaded?",bHive.is_hive)
-	return bHive		
+from nextcord.ext import commands
 
 class lib_monitoring:
-	def __init__(self) -> None:
+	def __init__(self, client: commands.Bot ) -> None:
 		######################################################################################
 		# Initialise
+		self.client			  = client
 		self.fFast            = False
 		self.fDoDiscord       = cst_exode.DO_DISCORD
 			
@@ -50,7 +43,20 @@ class lib_monitoring:
 		self.DISC_CHANNELS_PING   = []
 		self.DISC_CHANNELS_MINT   = []
 		self.DISC_CHANNELS_GIFT   = []
+
+		# Hive
+		self.Hive = None
 		######################################################################################
+
+	def LoadHiveBlockChain(self):
+		print ("HIVE: Loading blockchain")
+		nodelist = NodeList()
+		nodelist.update_nodes()
+		nodes = nodelist.get_hive_nodes()
+		bHive = Hive(node=nodes)
+		print ( nodes )
+		print("Hive loaded?",bHive.is_hive)
+		self.Hive = bHive
 
 	def CheckByPass(self, mBlock ):	
 		if ( not self.fReBuildDataBase or mBlock > self.fFirstBlock ):
@@ -1195,7 +1201,7 @@ class lib_monitoring:
 				for msg in lOut[1]:
 					print ( msg )
 								
-				await self.disc_send_msg_list( lOut[1], self.DISC_CHANNELS_MINT )
+				await self.disc_send_msg_list( lOut[1], self.DISC_CHANNELS_MINT)
 				
 		elif ( lOut[0] == cst_exode.ALERT_MARKET ):
 			if( len(lOut[1]) > 0 ):
@@ -1216,7 +1222,7 @@ class lib_monitoring:
 	
 	######################################################################################
 
-	async def disc_connect(self, client):
+	async def disc_connect(self):
 	
 		if ( not self.fDoDiscord ):
 			return
@@ -1228,7 +1234,7 @@ class lib_monitoring:
 					continue
 				
 				ch_id = int(line)	
-				DISC_CHANNEL = client.get_channel(ch_id)					
+				DISC_CHANNEL = self.client.get_channel(ch_id)					
 				DISC_CHANNELS_PING_TMP.append(ch_id)
 				
 				if ( ch_id not in self.DISC_CHANNELS_PING and DISC_CHANNEL != None ):						
@@ -1242,7 +1248,7 @@ class lib_monitoring:
 					continue
 				
 				ch_id = int(line)
-				DISC_CHANNEL = client.get_channel(ch_id)	
+				DISC_CHANNEL = self.client.get_channel(ch_id)	
 				DISC_CHANNELS_MINT_TMP.append(ch_id)
 						
 				if ( ch_id not in self.DISC_CHANNELS_MINT and DISC_CHANNEL != None ):						
@@ -1256,7 +1262,7 @@ class lib_monitoring:
 					continue
 				
 				ch_id = int(line)
-				DISC_CHANNEL = client.get_channel(ch_id)	
+				DISC_CHANNEL = self.client.get_channel(ch_id)	
 				DISC_CHANNELS_MARKET_TMP.append(ch_id)
 						
 				if ( ch_id not in self.DISC_CHANNELS_MARKET and DISC_CHANNEL != None ):				
@@ -1270,7 +1276,7 @@ class lib_monitoring:
 					continue
 				
 				ch_id = int(line)
-				DISC_CHANNEL = client.get_channel(ch_id)	
+				DISC_CHANNEL = self.client.get_channel(ch_id)	
 				DISC_CHANNELS_GIFT_TMP.append(ch_id)
 						
 				if ( ch_id not in self.DISC_CHANNELS_GIFT and DISC_CHANNEL != None ):	
@@ -1282,13 +1288,13 @@ class lib_monitoring:
 		self.DISC_CHANNELS_PING   = DISC_CHANNELS_PING_TMP 
 		self.DISC_CHANNELS_GIFT   = DISC_CHANNELS_GIFT_TMP
 		
-	async def disc_send_msg_list(self, msg_list, CHANNEL_LIST, client):
+	async def disc_send_msg_list(self, msg_list, CHANNEL_LIST):
 	
 		if ( not self.fDoDiscord ):
 			return
 	
 		for DISCORD_CHANNEL_id in CHANNEL_LIST:
-			DISC_CHANNEL = client.get_channel(DISCORD_CHANNEL_id)
+			DISC_CHANNEL = self.client.get_channel(DISCORD_CHANNEL_id)
 			
 			if ( DISC_CHANNEL == None ): 
 				continue
@@ -1296,13 +1302,13 @@ class lib_monitoring:
 			for msg in msg_list:
 				await DISC_CHANNEL.send(msg)	
 				
-	async def disc_send_msg(self, msg, CHANNEL_LIST, client):
+	async def disc_send_msg(self, msg, CHANNEL_LIST):
 		
 		if ( not self.fDoDiscord ):
 			return
 	
 		for DISCORD_CHANNEL_id in CHANNEL_LIST:
-			DISC_CHANNEL = client.get_channel(DISCORD_CHANNEL_id)
+			DISC_CHANNEL = self.client.get_channel(DISCORD_CHANNEL_id)
 			
 			if ( DISC_CHANNEL == None ): 
 				continue
@@ -1313,7 +1319,7 @@ class lib_monitoring:
 
 	######################################################################################	
 
-	async def rebuild_exode_database(self, client, iFirstBlock: int, bBlockC, mysql: lib_mysql, from_start: bool = False):
+	async def rebuild_exode_database(self, iFirstBlock: int, bBlockC, mysql: lib_mysql, from_start: bool = False):
 
 		self.fReBuildDataBase = True
 			
@@ -1514,105 +1520,8 @@ class lib_monitoring:
 				self.ProcessTransfer( tx_auth=mRow[0], tx_type=mRow[1], tx_block=mRow[2], tx_time=mRow[3], tx_id=mRow[4], 
 										player_from=mRow[5], player_to=mRow[6], card_id=mRow[7], card_uid=mRow[8], price=mRow[9], mysql=mysql )							
 						
-	
-	async def process_exode(self, client, bBlockC, mysql: lib_mysql):
+	async def first_process_exode(self, bBlockC, mysql: lib_mysql):
 
-		iIterator = 0
-
-		# Get first block
-		iFirstBlock = 1
-		if ( os.path.isfile('logs/file_block_fast.json') ):
-			with open('logs/file_block_fast.json', 'r') as f:
-				iFirstBlock = json.load(f)+1  
-		#print("First block is",iFirstBlock)
-			
-		if ( iFirstBlock < cst_exode.EXODE_BLOCK_MIN ):
-			iFirstBlock = cst_exode.EXODE_BLOCK_MIN
-			
-		# Get last block
-		iLastBlock = bBlockC.get_current_block_num()
-			
-		#print(iLastBlock, iFirstBlock)
-		if iLastBlock <= iFirstBlock:
-			return
-				
-		block_step = 200
-		print(f"Loading from {iFirstBlock} to {iFirstBlock+block_step}")
-			
-		# Loop over blocks
-		for fBlock in Blocks(iFirstBlock, count=block_step):
-			tBlock = fBlock.block_num
-										
-			# Check if need to reconnect or to ping
-			if ( iIterator % 100 == 0 ):					
-				
-				# Update player table
-				lib_database.db_Player_CompleteList(mysql=mysql)
-				lib_database.db_Player_SetLastBlock_all(mBlock=tBlock-1, mysql=mysql)
-					
-				print("Discord: reconnect")
-				# Reconnect
-				await self.disc_connect()
-						
-				print("Discord: ping")
-				# Ping
-				msg = "[PING] Reading block {block}".format(block=tBlock)
-				await self.disc_send_msg(msg, self.DISC_CHANNELS_PING)
-					
-			# Check if need to reconnect or to ping
-			if ( self.fIterator % 30000 == 0 ):	
-									
-				msg = "Listing :blue_square:, delisting :purple_square:, and buy :green_square: alert messages are displayed in this channel.\n**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
-				await self.disc_send_msg(msg, self.DISC_CHANNELS_MARKET)
-				msg = "**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
-				await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
-
-				self.fIterator = 0
-																		
-			# Increase Iterator
-			iIterator += 1
-			self.fIterator += 1
-				
-			print("Read block: ", tBlock)
-				
-			tTransList = fBlock.json_transactions;	
-					
-			for tTrans in tTransList:
-				
-				#print(tTrans)
-				tOperationList = tTrans['operations']
-				
-				for tOperation in tOperationList:
-				
-					tType = tOperation['type']
-				
-					if( tType != 'custom_json_operation' and tType != 'transfer_operation' ):
-						continue	
-						
-					#print ( tOperation )
-					lOut = await self.ProcessTransaction( tType, tBlock, tOperation['value'] )
-						
-					if ( lOut == cst_exode.ALERT_KILL ):
-						print("Quit...")
-						return tBlock
-											
-			with open('logs/file_block_fast.json', 'w') as f:
-				json.dump( tBlock, f ) 
-
-		return tBlock
-
-
-	async def read_exode(self, client):
-	
-		print ( "DISCORD_BOT: read_exode" ) 
-		
-		bHive = LoadHiveBlockChain()
-		if ( bHive.is_hive != True ):
-			print("[FATAL] Hive is not loaded")
-			quit()
-			
-		#Get get_current_block
-		bBlockC = Blockchain()
 		iLastBlock = bBlockC.get_current_block_num()
 		iFirstBlock = 0
 
@@ -1625,33 +1534,145 @@ class lib_monitoring:
 		iFirstBlock = self.fFirstBlock
 		print("Last block is:", iFirstBlock)
 
+		from_start = False
 		if ( iFirstBlock < cst_exode.EXODE_BLOCK_MIN ):
 			iFirstBlock = cst_exode.EXODE_BLOCK_MIN
+			from_start = True
 
-		mysql = lib_mysql(db_user=cst_exode.DB_USER, db_version=cst_exode.DB_NAME, db_password=cst_exode.DB_PASS)
+		if iLastBlock <= iFirstBlock:
+			return
 
-		if self.fStart:
-			# Compute card mint numbers:
-			(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
-			self.fStart = False
-		
-		while (self.fFirstBlock + 2000 < iLastBlock and self.loop_iterator == 0 and not self.fFast):
-			self.rebuild_exode_database()
-		
+		# Compute card mint numbers:
+		(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
+			
+		while (self.fFirstBlock + 2000 < iLastBlock and self.fIterator == 0 and not self.fFast):
+			print("Rebuild eXode database")
+			await self.rebuild_exode_database(iFirstBlock=iFirstBlock, bBlockC=bBlockC, mysql=mysql, from_start=from_start)
+			
 		if ( not self.fLoadMintOnly ):
 			print ( "Add known new missing mint" )
 			lib_database.db_Card_Mint_Missing_New(mysql=mysql)
 		
-		# Change flag	
-		self.fFast            = False
-		self.fReBuildDataBase = False
-		self.fLoadMintOnly    = False
+	async def process_exode(self, bBlockC, mysql: lib_mysql):
+
+		iIterator = 0
+			
+		block_step = 200
 		
+		while True:
+
+			# Get first block
+			iFirstBlock = 0
+			if ( os.path.isfile('logs/file_block_fast.json') ):
+				with open('logs/file_block_fast.json', 'r') as f:
+					iFirstBlock = json.load(f) 
+			
+			if ( iFirstBlock < cst_exode.EXODE_BLOCK_MIN ):
+				iFirstBlock = cst_exode.EXODE_BLOCK_MIN
+			
+			# Get last block
+			iLastBlock = bBlockC.get_current_block_num()
+			
+			if iLastBlock <= iFirstBlock:
+				return
+
+			print(f"Loading from {iFirstBlock} to {iFirstBlock+block_step}")
+			# Loop over blocks
+			for fBlock in Blocks(iFirstBlock, count=block_step):
+				tBlock = fBlock.block_num
+											
+				# Check if need to reconnect or to ping
+				if ( iIterator % 100 == 0 ):					
+					
+					# Update player table
+					lib_database.db_Player_CompleteList(mysql=mysql)
+					lib_database.db_Player_SetLastBlock_all(mBlock=tBlock-1, mysql=mysql)
+						
+					print("Discord: reconnect")
+					# Reconnect
+					await self.disc_connect()
+							
+					print("Discord: ping")
+					# Ping
+					msg = "[PING] Reading block {block}".format(block=tBlock)
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_PING)
+						
+				# Check if need to reconnect or to ping
+				if ( self.fIterator % 30000 == 0 ):	
+										
+					msg = "Listing :blue_square:, delisting :purple_square:, and buy :green_square: alert messages are displayed in this channel.\n**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_MARKET)
+					msg = "**[NOTE]** Mint numbers are estimated from the *currently incomplete* blockchain minting broadcasts. They are not an official information."
+					await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
+
+					self.fIterator = 0
+																			
+				# Increase Iterator
+				iIterator += 1
+				self.fIterator += 1
+					
+				print("Read block: ", tBlock)
+					
+				tTransList = fBlock.json_transactions;	
+						
+				for tTrans in tTransList:
+					
+					#print(tTrans)
+					tOperationList = tTrans['operations']
+					
+					for tOperation in tOperationList:
+					
+						tType = tOperation['type']
+					
+						if( tType != 'custom_json_operation' and tType != 'transfer_operation' ):
+							continue	
+							
+						#print ( tOperation )
+						lOut = await self.ProcessTransaction( tType, tBlock, tOperation['value'] )
+							
+						if ( lOut == cst_exode.ALERT_KILL ):
+							print("Quit...")
+							return tBlock
+												
+				with open('logs/file_block_fast.json', 'w') as f:
+					json.dump( tBlock, f ) 
+
+			return tBlock
+
+
+	async def read_exode(self):
+	
+		if ( self.Hive == None ):
+			self.LoadHiveBlockChain()
+
+		if ( not self.Hive.is_hive ):
+			print("[FATAL] Hive is not loaded")
+			quit()
+			
+		#Get get_current_block
+		bBlockC = Blockchain()
+		mysql = lib_mysql(db_user=cst_exode.DB_USER, db_version=cst_exode.DB_NAME, db_password=cst_exode.DB_PASS)
+
+		if self.fStart:
+			print ( "DISCORD_BOT: read_exode" ) 
+			
+			# First processing
+			await self.first_process_exode(bBlockC=bBlockC, mysql=mysql)
+
+			# Change flag	
+			self.fFast            = False
+			self.fReBuildDataBase = False
+			self.fLoadMintOnly    = False
+			self.fStart 		  = False
+		
+		# Normal processing
 		# It's running! 
 		iBlock = await self.process_exode(bBlockC=bBlockC, mysql=mysql)
 
 		lib_database.db_Player_CompleteList(mysql=mysql)
 		lib_database.db_Player_SetLastBlock_all(mBlock=iBlock-1, mysql=mysql)
+
+		mysql.close_cursor()
 		
 	
 	

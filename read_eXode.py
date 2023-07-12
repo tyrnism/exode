@@ -15,13 +15,14 @@ def main():
 	intents = nextcord.Intents.default()
 	intents.message_content = True
 
-	monitor = lib_monitoring()
 	
 	client = commands.Bot(case_insensitive=True, help_command=None, intents=intents)
 
 	for folder in os.listdir("commands"):
 		if os.path.exists(os.path.join("commands", folder, "cog.py")):
 			client.load_extension(f"commands.{folder}.cog")
+
+	monitor = lib_monitoring(client=client)
 
 	@tasks.loop(minutes=1)
 	async def read_exode():
@@ -33,7 +34,7 @@ def main():
 				print("shutdown")
 				raise Exception("stop_order")
 		
-			await monitor.read_exode(client=client)
+			await monitor.read_exode()
 
 			error_count = 0
 

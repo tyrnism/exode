@@ -1,3 +1,3 @@
 source env.sh
 
-python3 read
+python3 -u read_eXode.py
