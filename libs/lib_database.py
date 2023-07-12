@@ -1,14 +1,26 @@
 from lib_mysql import lib_mysql
-import lib_exode, cst_exode
-import json
+import lib_exode
 from beem.block import Block
 
-def db_TransferTX_Reset(last_block: int, mysql: lib_mysql):
+def db_TransferTX_Reset(mysql: lib_mysql, last_block: int = None):
 
-	query = ("delete from exode_cards "
-		"where minter = 'no_source' or block > %s")
-	values = (last_block, )
-	mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
+	if last_block != None:
+		query = ("delete from exode_cards "
+			"where minter = 'no_source' or block > %s")
+		values = (last_block, )
+		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
+
+		query = ("delete from exode_tx "
+			"where block > %s")
+		values = (last_block, )
+		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
+
+	else:
+		query = ("delete from exode_cards "
+			"where minter = 'no_source'")
+		values = None
+		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
+
 	
 	query = ("UPDATE exode_cards "
 		"SET owner = minter, burn = 0, block_update = block ")

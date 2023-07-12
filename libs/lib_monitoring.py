@@ -31,7 +31,6 @@ class lib_monitoring:
 			
 		self.fLoadPlayerMarket = False
 		self.fReBuildDataBase  = False
-		self.fMintMissingDone  = False
 
 		self.MINT_NUM = {}
 		self.MINT_NUM_NOSOURCE = {}
@@ -621,7 +620,8 @@ class lib_monitoring:
 				for iCard in range( len(l_card_ids) ):
 					if ( l_card_ids[iCard] == "" ):
 						continue
-					lOut = lib_database.db_Card_Apply_Mint( card_owner=l_owner, card_id=l_card_ids[iCard], card_uid=l_card_uids[iCard], card_mint=0, card_elite=l_card_elite[iCard], card_bound=0, card_block=tBlock, tx_id=mTxId, bypass=self.CheckByPass( tBlock ), mysql=mysql )
+					card_mint = self.GetCardMintId(card_owner=l_owner, card_id=l_card_ids[iCard], card_uid=l_card_uids[iCard])
+					lOut = lib_database.db_Card_Apply_Mint( card_owner=l_owner, card_id=l_card_ids[iCard], card_uid=l_card_uids[iCard], card_mint=card_mint, card_elite=l_card_elite[iCard], card_bound=0, card_block=tBlock, tx_id=mTxId, bypass=self.CheckByPass( tBlock ), mysql=mysql )
 					
 					if ( lOut != "" ):
 						tMSGOut.append(lOut)
@@ -1324,10 +1324,10 @@ class lib_monitoring:
 
 		self.fReBuildDataBase = True
 			
-		if ( not self.fMintMissingDone ):
-			lib_database.db_TransferTX_Reset(mysql=mysql)
-			lib_database.db_Card_Mint_Missing(mysql=mysql)
-			self.fMintMissingDone = True
+		lib_database.db_TransferTX_Reset(last_block=iFirstBlock, mysql=mysql)
+		print( "Calculate Mints" )
+		(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
+		lib_database.db_Card_Mint_Missing(mysql=mysql)
 		
 		# Load exode history to build the database
 		acc = Account("exodegame")
@@ -1505,9 +1505,11 @@ class lib_monitoring:
 
 			# Rebuild sale/transfer
 			print ( "Reset transfer database" )
-			lib_database.db_TransferTX_Reset(mysql=mysql)	
+			lib_database.db_TransferTX_Reset(last_block=None, mysql=mysql)	
 			print ( "Add known missing mint" )
 			lib_database.db_Card_Mint_Missing(mysql=mysql)
+			print( "Calculate Mints" )
+			(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
 			print ( "Get last transfer tx block" )	
 			c_last_block = lib_database.db_TransferTX_Last(mysql=mysql)	
 			print ("Load transfer from: ", c_last_block )
@@ -1585,7 +1587,7 @@ class lib_monitoring:
 					print("Discord: reconnect")
 					# Reconnect
 					await self.disc_connect()
-							
+
 					print("Discord: ping")
 					# Ping
 					msg = "[PING] Reading block {block}".format(block=tBlock)
@@ -1640,6 +1642,9 @@ class lib_monitoring:
 		if ( not self.Hive.is_hive ):
 			print("[FATAL] Hive is not loaded")
 			quit()
+			
+		if ( self.fIterator % 100 == 0 ):
+			await self.disc_connect()
 			
 		#Get get_current_block
 		bBlockC = Blockchain()
