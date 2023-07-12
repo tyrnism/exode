@@ -1432,6 +1432,10 @@ class lib_monitoring:
 			iPlayer = iPlayer + 1
 					
 			try:
+				if len(player_name) > 16:
+					print("Account ", player_name, " should not exists!")
+					continue
+				
 				acc = Account(player_name)
 			except bexceptions.AccountDoesNotExistsException:
 				print("Account ", player_name, " does not exists!")
@@ -1501,23 +1505,20 @@ class lib_monitoring:
 			with open('logs/file_block_fast.json', 'r') as f:
 				self.fFirstBlock = json.load(f) 
 
-		if ( self.fLoadMintOnly ):
-			self.fReBuildDataBase = True
-
-			# Rebuild sale/transfer
-			print ( "Reset transfer database" )
-			lib_database.db_TransferTX_Reset(last_block=None, mysql=mysql)	
-			print ( "Add known missing mint" )
-			lib_database.db_Card_Mint_Missing(mysql=mysql)
-			print( "Calculate Mints" )
-			(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
-			print ( "Get last transfer tx block" )	
-			c_last_block = lib_database.db_TransferTX_Last(mysql=mysql)	
-			print ("Load transfer from: ", c_last_block )
-			mTransferTX = lib_database.db_TransferTX_Get(mBlock=c_last_block, mysql=mysql)
-			for mRow in mTransferTX:
-				self.ProcessTransfer( tx_auth=mRow[0], tx_type=mRow[1], tx_block=mRow[2], tx_time=mRow[3], tx_id=mRow[4], 
-										player_from=mRow[5], player_to=mRow[6], card_id=mRow[7], card_uid=mRow[8], price=mRow[9], mysql=mysql )							
+		# Rebuild sale/transfer
+		print ( "Reset transfer database" )
+		lib_database.db_TransferTX_Reset(last_block=None, mysql=mysql)	
+		print ( "Add known missing mint" )
+		lib_database.db_Card_Mint_Missing(mysql=mysql)
+		print( "Calculate Mints" )
+		(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
+		print ( "Get last transfer tx block" )	
+		c_last_block = lib_database.db_TransferTX_Last(mysql=mysql)	
+		print ("Load transfer from: ", c_last_block )
+		mTransferTX = lib_database.db_TransferTX_Get(mBlock=c_last_block, mysql=mysql)
+		for mRow in mTransferTX:
+			self.ProcessTransfer( tx_auth=mRow[0], tx_type=mRow[1], tx_block=mRow[2], tx_time=mRow[3], tx_id=mRow[4], 
+									player_from=mRow[5], player_to=mRow[6], card_id=mRow[7], card_uid=mRow[8], price=mRow[9], mysql=mysql )							
 						
 	async def first_process_exode(self, bBlockC, mysql: lib_mysql):
 
@@ -1544,7 +1545,7 @@ class lib_monitoring:
 		# Compute card mint numbers:
 		(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
 			
-		while (self.fFirstBlock + 2000 < iLastBlock and self.fIterator == 0 and not self.fFast):
+		while (self.fReBuildDataBase or (self.fFirstBlock + 2000 < iLastBlock and self.fIterator == 0 and not self.fFast)):
 			print("Rebuild eXode database")
 			await self.rebuild_exode_database(iFirstBlock=iFirstBlock, bBlockC=bBlockC, mysql=mysql, from_start=from_start)
 			
