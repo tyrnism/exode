@@ -4,7 +4,7 @@ import os
 
 # Flag
 MINT_IFNOSOURCE = True
-DO_DISCORD      = False
+DO_DISCORD      = True
 
 # Store Max Mint
 
