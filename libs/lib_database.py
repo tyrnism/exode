@@ -15,12 +15,13 @@ def db_TransferTX_Reset(mysql: lib_mysql, last_block: int = None):
 		values = (last_block, )
 		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
 
+		query = ("UPDATE exode_player SET last_block = %s ") 
+		values = (last_block, )
 	else:
 		query = ("delete from exode_cards "
 			"where minter = 'no_source'")
 		values = None
 		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
-
 	
 	query = ("UPDATE exode_cards "
 		"SET owner = minter, burn = 0, block_update = block ")
@@ -35,6 +36,7 @@ def db_TransferTX_Reset(mysql: lib_mysql, last_block: int = None):
 	query = ("truncate exode_sales ")
 	values = None
 	mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
+
 
 ##############################################################################################
 

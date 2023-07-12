@@ -9,6 +9,7 @@ DO_DISCORD      = True
 # Block
 EXODE_BLOCK_MIN        = 42233330
 EXODE_BLOCK_MIN_CANCEL = 45975275 # Minimum block for cancellation broadcast
+NO_MINT_ALERT_BELOW_BLOCK = 76559574
 
 # Tokens
 BOT_TOKEN_ALERT    = os.environ['EXODE_DISCORD_TOKEN_ALERT']

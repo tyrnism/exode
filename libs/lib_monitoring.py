@@ -219,7 +219,7 @@ class lib_monitoring:
 				for iCard in range( l_card_nb ):
 					card_mint = self.GetCardMintId(card_owner=l_owner, card_id=l_card_id, card_uid="none")
 					lOut = lib_database.db_Card_Apply_Mint( card_owner=l_owner, card_id=l_card_id, card_uid="none", card_mint=card_mint, card_elite=0, card_bound=0, card_block=tBlock, tx_id=mTxId, bypass=self.CheckByPass( tBlock ), mysql=mysql )					
-					if ( lOut != "" ):
+					if ( lOut != "" and tBlock >= cst_exode.NO_MINT_ALERT_BELOW_BLOCK):
 						tMSGOut.append(lOut)
 							
 			return [ cst_exode.ALERT_MINT, tMSGOut ]	
@@ -623,7 +623,7 @@ class lib_monitoring:
 					card_mint = self.GetCardMintId(card_owner=l_owner, card_id=l_card_ids[iCard], card_uid=l_card_uids[iCard])
 					lOut = lib_database.db_Card_Apply_Mint( card_owner=l_owner, card_id=l_card_ids[iCard], card_uid=l_card_uids[iCard], card_mint=card_mint, card_elite=l_card_elite[iCard], card_bound=0, card_block=tBlock, tx_id=mTxId, bypass=self.CheckByPass( tBlock ), mysql=mysql )
 					
-					if ( lOut != "" ):
+					if ( lOut != "" and tBlock >= cst_exode.NO_MINT_ALERT_BELOW_BLOCK ):
 						tMSGOut.append(lOut)
 						
 				return [ cst_exode.ALERT_MINT, tMSGOut ]
