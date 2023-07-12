@@ -1116,7 +1116,7 @@ class lib_monitoring:
 		# Check asset
 		(is_pack, asset_name, asset_rank, asset_num) = lib_exode.ex_GetAssetDetails(asset_id)
 		if ( not is_pack ):
-			cInfo = self.db_Card_IsTransferable( card_from=sale_seller, card_to="market", asset_id=asset_id, card_uid=asset_uid, card_block=sale_block, tx_id=sale_tx, transfer_action="sale", mysql=mysql )
+			cInfo = self.db_Card_IsTransferable( card_from=sale_seller, card_to="market", card_id=asset_id, card_uid=asset_uid, card_block=sale_block, tx_id=sale_tx, transfer_action="sale", mysql=mysql )
 			if ( not cInfo[0] ):
 				return False
 			
@@ -1435,7 +1435,7 @@ class lib_monitoring:
 				if len(player_name) > 16:
 					print("Account ", player_name, " should not exists!")
 					continue
-				
+
 				acc = Account(player_name)
 			except bexceptions.AccountDoesNotExistsException:
 				print("Account ", player_name, " does not exists!")
