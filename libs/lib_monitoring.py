@@ -1399,7 +1399,7 @@ class lib_monitoring:
 						
 				print("Read transaction in block: ", tBlock,"/",c_last_block)
 					
-				lOut = await self.ProcessTransaction( tType, tBlock, hTransaction )
+				lOut = await self.ProcessTransaction( tType=tType, tBlock=tBlock, hTransaction=hTransaction, mysql=mysql )
 					
 				if ( lOut == cst_exode.ALERT_KILL ):
 					print("Quit...")
@@ -1485,7 +1485,7 @@ class lib_monitoring:
 					#if( tType != 'custom_json' ):
 					#	continue
 							
-					lOut = await self.ProcessTransaction(tType, tBlock, hTransaction )
+					lOut = await self.ProcessTransaction(tType=tType, tBlock=tBlock, hTransaction=hTransaction, mysql=mysql )
 						
 					if ( lOut == cst_exode.ALERT_KILL ):
 						print("Quit...")
@@ -1628,7 +1628,7 @@ class lib_monitoring:
 							continue	
 							
 						#print ( tOperation )
-						lOut = await self.ProcessTransaction( tType, tBlock, tOperation['value'] )
+						lOut = await self.ProcessTransaction( tType=tType, tBlock=tBlock, hTransaction=tOperation['value'], mysql=mysql )
 							
 						if ( lOut == cst_exode.ALERT_KILL ):
 							print("Quit...")
