@@ -17,6 +17,7 @@ def db_TransferTX_Reset(mysql: lib_mysql, last_block: int = None):
 
 		query = ("UPDATE exode_player SET last_block = %s ") 
 		values = (last_block, )
+		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
 	else:
 		query = ("delete from exode_cards "
 			"where minter = 'no_source'")
