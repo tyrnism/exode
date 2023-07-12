@@ -1315,8 +1315,6 @@ class lib_monitoring:
 				
 			await DISC_CHANNEL.send(msg)	
 
-
-
 	######################################################################################	
 
 	async def rebuild_exode_database(self, iFirstBlock: int, bBlockC, mysql: lib_mysql, from_start: bool = False):
@@ -1407,8 +1405,6 @@ class lib_monitoring:
 											
 				with open('logs/file_block_fast.json', 'w') as f:
 					json.dump( tBlock, f ) 
-					
-				iIterator = iIterator + 1
 			
 		if ( c_last_block_chain > c_last_block ):
 			print("Last block registered is: ", c_last_block_chain )
@@ -1491,7 +1487,6 @@ class lib_monitoring:
 						print("Quit...")
 						return
 						
-					iIterator = iIterator + 1
 					c_block_cur = tBlock
 				
 			hTransactionList.clear() 	
@@ -1554,8 +1549,6 @@ class lib_monitoring:
 			lib_database.db_Card_Mint_Missing_New(mysql=mysql)
 		
 	async def process_exode(self, bBlockC, mysql: lib_mysql):
-
-		iIterator = 0
 			
 		block_step = 200
 		
@@ -1582,7 +1575,7 @@ class lib_monitoring:
 				tBlock = fBlock.block_num
 											
 				# Check if need to reconnect or to ping
-				if ( iIterator % 100 == 0 ):					
+				if ( self.fIterator % 100 == 0 ):					
 					
 					# Update player table
 					lib_database.db_Player_CompleteList(mysql=mysql)
@@ -1608,7 +1601,6 @@ class lib_monitoring:
 					self.fIterator = 0
 																			
 				# Increase Iterator
-				iIterator += 1
 				self.fIterator += 1
 					
 				print("Read block: ", tBlock)
