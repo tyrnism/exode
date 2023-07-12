@@ -485,6 +485,64 @@ def ex_GetAssetDetails( mID ):
 	if ( mID == "exode_card_261_actionImmediateOrder"		or mID == "exode_card_E261_actionImmediateOrder" ):
 		return (False, "Emergency Order!", 					COMMON_CARD,	261)
 	
+    # Beta
+	if ( mID == "exode_card_501_origin_selfmadeSavior"		or mID == "exode_card_E501_origin_selfmadeSavior" ):
+		return (False, "Self-Made Savior [Origin]", 		EPIC_CARD,	501)
+	if ( mID == "exode_card_502_crew_versatileWorker"		or mID == "exode_card_E502_crew_versatileWorker" ):
+		return (False, "Versatile Worker", 		            COMMON_CARD,	502)
+	if ( mID == "exode_card_503_crew_toughWorker"		    or mID == "exode_card_E503_crew_toughWorker" ):
+		return (False, "Tough Worker", 		                RARE_CARD,	503)
+	if ( mID == "exode_card_504_crew_maintenanceWorker"		or mID == "exode_card_E504_crew_maintenanceWorker" ):
+		return (False, "Maintenance Worker", 		        RARE_CARD,	504)
+	if ( mID == "exode_card_505_officer_mobLeader"		    or mID == "exode_card_E505_officer_mobLeader" ):
+		return (False, "Mob Leader", 		                RARE_CARD,	505)
+	if ( mID == "exode_card_506_officer_motivatedCivilian"  or mID == "exode_card_E506_officer_motivatedCivilian" ):
+		return (False, "Motivated Civilian", 		        RARE_CARD,	506)
+	if ( mID == "exode_card_507_officer_retiredWarVeteran"  or mID == "exode_card_E507_officer_retiredWarVeteran" ):
+		return (False, "Retired War Veteran", 		        RARE_CARD,	507)
+	if ( mID == "exode_card_508_equipmentSet_foodSupplies"  or mID == "exode_card_E508_equipmentSet_foodSupplies" ):
+		return (False, "Food Supplies (x20)", 		        RARE_CARD,	508)
+	if ( mID == "exode_card_509_starship_daystarTaxiCorvette"  or mID == "exode_card_E509_starship_daystarTaxiCorvette" ):
+		return (False, "Daystar Taxi Corvetter", 		    EPIC_CARD,	509)
+	
+	if ( mID == "exode_card_511_origin_religiousVisionary"	or mID == "exode_card_511_origin_religiousVisionary" ):
+		return (False, "Religious Visionary [Origin]", 		EPIC_CARD,	511)
+	if ( mID == "exode_card_512_crew_inquisitorInitiate"	or mID == "exode_card_512_crew_inquisitorInitiate" ):
+		return (False, "Inquisition Initiate", 		        RARE_CARD, 512)
+	if ( mID == "exode_card_513_crew_religiousClerk"		or mID == "exode_card_513_crew_religiousClerk" ):
+		return (False, "Religious Clerk", 		            COMMON_CARD, 513)
+	if ( mID == "exode_card_514_crew_cultStationSecurity"	or mID == "exode_card_514_crew_cultStationSecurity" ):
+		return (False, "Cult Station Security", 		    RARE_CARD,	514)
+	if ( mID == "exode_card_515_crew_cultTechie"		    or mID == "exode_card_515_crew_cultTechie" ):
+		return (False, "Cult Techie", 		                RARE_CARD,	515)
+	if ( mID == "exode_card_516_officer_cultSecurityOfficer" or mID == "exode_card_516_officer_cultSecurityOfficer" ):
+		return (False, "Cult Security Officer", 		    RARE_CARD,	516)
+	if ( mID == "exode_card_517_passenger_cultFollowers"    or mID == "exode_card_517_passenger_cultFollowers" ):
+		return (False, "Cult Followers", 		            RARE_CARD,	517)
+	if ( mID == "exode_card_518_officer_exiledCultOfficer"  or mID == "exode_card_518_officer_exiledCultOfficer" ):
+		return (False, "Exiled Cult Officer", 		        RARE_CARD,	518)
+	if ( mID == "exode_card_519_starship_fulgurusCruxFrigate"  or mID == "exode_card_519_starship_fulgurusCruxFrigate" ):
+		return (False, "Fulgurus Crux Frigate", 		    EPIC_CARD,	519)
+	
+	if ( mID == "exode_card_521_origin_utopianThinker"		or mID == "exode_card_E521_origin_utopianThinker" ):
+		return (False, "Utopian Thinker [Origin]", 		    EPIC_CARD,	521)
+	if ( mID == "exode_card_522_crew_colonialSecurity"		or mID == "exode_card_E522_crew_colonialSecurity" ):
+		return (False, "Colonial Security", 		        COMMON_CARD,	522)
+	if ( mID == "exode_card_523_crew_labTrainee"		    or mID == "exode_card_E523_crew_labTrainee" ):
+		return (False, "Lab Trainee", 		                RARE_CARD,	523)
+	if ( mID == "exode_card_524_crew_techTrainee"		    or mID == "exode_card_E524_crew_techTrainee" ):
+		return (False, "Tech Trainee", 		                RARE_CARD,	524)
+	if ( mID == "exode_card_525_crew_utopianPilot"		    or mID == "exode_card_E525_crew_utopianPilot" ):
+		return (False, "Test Pilot", 		                RARE_CARD,	525)
+	if ( mID == "exode_card_526_officer_groomedLeader"      or mID == "exode_card_E526_officer_groomedLeader" ):
+		return (False, "Groomed Leader", 		            RARE_CARD,	526)
+	if ( mID == "exode_card_527_officer_mandatedPresident"  or mID == "exode_card_E527_officer_mandatedPresident" ):
+		return (False, "Mandated President", 		        RARE_CARD,	527)
+	if ( mID == "exode_card_528_officer_astrophysicist"     or mID == "exode_card_E528_officer_astrophysicist" ):
+		return (False, "Astrophysicist", 		            RARE_CARD,	528)
+	if ( mID == "exode_card_529_starship_syrvenExploratorAA3"  or mID == "exode_card_E529_starship_syrvenExploratorAA3" ):
+		return (False, "Syrven Explorator AA-3", 		    EPIC_CARD,	529)
+	
 	print(mID)
 	is_pack = mID[:len("exode_card")] != "exode_card"
 	return ( is_pack, mID, -1, 0)
