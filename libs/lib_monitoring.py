@@ -17,7 +17,7 @@ class lib_monitoring:
 		######################################################################################
 		# Initialise
 		self.client			  = client
-		self.fFast            = False
+		self.fFast            = True
 		self.fDoDiscord       = cst_exode.DO_DISCORD
 			
 		# Variables
