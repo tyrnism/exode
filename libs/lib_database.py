@@ -2,14 +2,14 @@ from lib_mysql import lib_mysql
 import lib_exode
 from beem.block import Block
 
-def db_TransferTX_Reset(mysql: lib_mysql, last_block: int = None):
+def db_TransferTX_Reset(mysql: lib_mysql, last_block: int = None, delete_transfer: bool = True):
 
 	if last_block != None and last_block != 0:
 		query = ("delete from exode_cards "
 			"where minter = 'no_source' or block > %s")
 		values = (last_block, )
 		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
-
+		
 		query = ("delete from exode_tx "
 			"where block > %s")
 		values = (last_block, )
@@ -24,18 +24,31 @@ def db_TransferTX_Reset(mysql: lib_mysql, last_block: int = None):
 		values = None
 		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
 	
+	if delete_transfer:
+		query = ("UPDATE exode_cards "
+			"SET owner = minter, burn = 0, block_update = block ")
+		values = None
+		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
+				
+		query = ("UPDATE exode_pack "
+			"SET nb = buy ")
+		values = None
+		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
+		
+		query = ("truncate exode_sales ")
+		values = None
+		mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
+
+
+def db_TransferTX_Reset_ToBlock(mysql: lib_mysql, last_block: int = None):
+
 	query = ("UPDATE exode_cards "
-		"SET owner = minter, burn = 0, block_update = block ")
-	values = None
+		"SET owner = minter, burn = 0, block_update = block WHERE block_update >= %s")
+	values = (last_block,)
 	mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
-			
-	query = ("UPDATE exode_pack "
-		"SET nb = buy ")
-	values = None
-	mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
-	
-	query = ("truncate exode_sales ")
-	values = None
+
+	query = ("DELETE FROM exode_sales WHERE block >= %s")
+	values = (last_block,)
 	mysql.commit(query_str=query, value_tuple=values, mysql_continue=True)
 
 
