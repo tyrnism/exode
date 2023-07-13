@@ -1326,10 +1326,6 @@ class lib_monitoring:
 	######################################################################################	
 
 	async def rebuild_exode_database(self, iFirstBlock: int, bBlockC, mysql: lib_mysql, from_start: bool = False):
-
-		self.fReBuildDataBase = True
-		with open('database_rebuild.flag','w') as f:
-			json.dump(True, f)
 			
 		lib_database.db_TransferTX_Reset(last_block=iFirstBlock, mysql=mysql)
 		print( "Calculate Mints" )
@@ -1554,7 +1550,21 @@ class lib_monitoring:
 			
 		while (self.fReBuildDataBase or (self.fFirstBlock + 2000 < iLastBlock and self.fIterator == 0 and not self.fFast)):
 			print("Rebuild eXode database")
+
+			with open('database_rebuild.flag','w') as f:
+				json.dump(True, f)
+
+			##########################################################################
+			self.fReBuildDataBase = True
+			msg = "Rebuilding sale database..."
+			await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
 			await self.rebuild_exode_database(iFirstBlock=iFirstBlock, bBlockC=bBlockC, mysql=mysql, from_start=from_start)
+			msg = "Sale database rebuilding completed!"
+			await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
+			self.fReBuildDataBase = False
+			##########################################################################
+
+			os.remove('database_rebuild.flag')
 			
 		if ( not self.fLoadMintOnly ):
 			print ( "Add known new missing mint" )
