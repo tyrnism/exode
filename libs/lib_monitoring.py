@@ -1521,8 +1521,6 @@ class lib_monitoring:
 		self.fReBuildDataBase = False
 		os.remove('database_rebuild.flag')
 
-		await self.rebuild_exode_sale_database(mysql=mysql)
-
 	async def rebuild_exode_sale_database(self, mysql: lib_mysql):
 		self.fRebuildSaleDatabase = True
 		with open('database_sale_rebuild.flag','w') as f:
@@ -1576,24 +1574,26 @@ class lib_monitoring:
 			print("Rebuild eXode database")
 
 			##########################################################################
-			msg = "Rebuilding database..."
+			msg = "Rebuilding Blockchain Transactions database..."
 			await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
 			await self.rebuild_exode_database(iFirstBlock=iFirstBlock, bBlockC=bBlockC, mysql=mysql, from_start=from_start)
-			msg = "Database rebuilding completed!"
+			msg = "Blockchain Transactions database rebuilding completed!"
 			await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
 			##########################################################################
+
+			# Rebuild Sale database
+			self.fRebuildSaleDatabase = True
 		
 		if (self.fRebuildSaleDatabase):
 			print("Rebuild eXode sale database")
 
 			##########################################################################
-			msg = "Rebuilding sale database..."
+			msg = "Rebuilding Sales database..."
 			await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
 			await self.rebuild_exode_sale_database(mysql=mysql)
-			msg = "Sale database rebuilding completed!"
+			msg = "Sales database rebuilding completed!"
 			await self.disc_send_msg(msg, self.DISC_CHANNELS_MINT)
 			##########################################################################
-
 
 		if ( not self.fLoadMintOnly ):
 			print ( "Add known new missing mint" )
