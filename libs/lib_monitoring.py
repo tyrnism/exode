@@ -348,7 +348,7 @@ class lib_monitoring:
 			if ( not self.fLoadMintOnly ):
 				tTime = Block(tBlock).time()
 				for iAsset in range(len(l_asset_uids)):
-					bOK = self.db_Sale_Apply_New( sale_seller=l_asset_seller, asset_id=l_asset_ids[iAsset], asset_uid=l_asset_uids[iAsset], sale_block=tBlock, sale_time=tTime, sale_tx=l_sale_txid, sale_price=l_sale_price, sale_sold=0, sale_buyer="" )
+					bOK = self.db_Sale_Apply_New( sale_seller=l_asset_seller, asset_id=l_asset_ids[iAsset], asset_uid=l_asset_uids[iAsset], sale_block=tBlock, sale_time=tTime, sale_tx=l_sale_txid, sale_price=l_sale_price, sale_sold=0, sale_buyer="", mysql=mysql )
 
 			if ( not bOK ):
 				return [ cst_exode.NO_ALERT, tMSGOut ]
@@ -1534,6 +1534,7 @@ class lib_monitoring:
 		(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
 		print ( "Get last transfer tx block" )	
 		c_last_block = lib_database.db_TransferTX_Last(mysql=mysql)	
+		c_last_block = 76598390
 		lib_database.db_TransferTX_Reset_ToBlock(last_block=c_last_block, mysql=mysql)
 
 		print ("Load transfer from: ", c_last_block )
