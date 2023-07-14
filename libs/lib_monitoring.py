@@ -1534,7 +1534,6 @@ class lib_monitoring:
 		(self.MINT_NUM, self.MINT_NUM_NOSOURCE) = lib_database.db_Card_LoadMint(mysql=mysql)
 		print ( "Get last transfer tx block" )	
 		c_last_block = lib_database.db_TransferTX_Last(mysql=mysql)	
-		c_last_block = 76598390
 		lib_database.db_TransferTX_Reset_ToBlock(last_block=c_last_block, mysql=mysql)
 
 		print ("Load transfer from: ", c_last_block )
