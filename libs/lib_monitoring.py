@@ -1620,10 +1620,13 @@ class lib_monitoring:
 			if iLastBlock <= iFirstBlock:
 				return
 
-			print(f"Loading from {iFirstBlock} to {iFirstBlock+block_step}")
+			print(f"Loading from {iFirstBlock} to {min(iLastBlock,iFirstBlock+block_step)}")
 			# Loop over blocks
 			for fBlock in Blocks(iFirstBlock, count=block_step):
 				tBlock = fBlock.block_num
+
+				if ( tBlock > iLastBlock ):
+					break
 											
 				# Check if need to reconnect or to ping
 				if ( self.fIterator % 100 == 0 ):					
