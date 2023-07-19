@@ -1619,13 +1619,13 @@ class lib_monitoring:
 			
 			if iLastBlock <= iFirstBlock:
 				return
-
-			print(f"Loading from {iFirstBlock} to {min(iLastBlock,iFirstBlock+block_step)}")
+			iLastBlock = min(iLastBlock,iFirstBlock+block_step)
+			print(f"Loading from {iFirstBlock} to {iLastBlock}")
 			# Loop over blocks
 			for fBlock in Blocks(iFirstBlock, count=block_step):
 				tBlock = fBlock.block_num
 
-				if ( tBlock > iLastBlock ):
+				if ( int(tBlock) > int(iLastBlock) ):
 					break
 											
 				# Check if need to reconnect or to ping
@@ -1678,11 +1678,12 @@ class lib_monitoring:
 							
 						if ( lOut == cst_exode.ALERT_KILL ):
 							raise Exception("ERROR: ALERT_KILL")
-												
+				
+				tLastBlock = tBlock
 				with open('logs/file_block_fast.json', 'w') as f:
-					json.dump( tBlock, f ) 
+					json.dump( tLastBlock, f ) 
 
-			return tBlock
+			return tLastBlock
 
 
 	async def read_exode(self):
