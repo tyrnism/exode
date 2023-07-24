@@ -128,7 +128,7 @@ class lib_monitoring:
 				
 			msg_missing_mint=""
 			if ( card_ntot_mint_no_source > 0 ):
-				msg_missing_mint = "(+{card_ntot_mint_no_source})"
+				msg_missing_mint = f"(+{card_ntot_mint_no_source})"
 
 			print ( "mint", asset_mint, "uid", asset_uid)		
 								
