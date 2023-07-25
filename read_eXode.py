@@ -53,10 +53,12 @@ def main():
 				raise err
 			else:
 				print("ValueError", err)
-				msg = ":zap: ValueError... Trying to recover :zap:"
-				await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MARKET)
-				await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MINT)
-				await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_PING)	
+				
+				if error_count > 1:
+					msg = ":zap: ValueError... Trying to recover :zap:"
+					await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MARKET)
+					await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MINT)
+					await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_PING)	
 
 				error_count += 1
 
@@ -71,10 +73,11 @@ def main():
 			err = traceback.format_exc()
 			print("Error", err)
 
-			msg = ":zap: Unexpected error... Trying to recover :zap:"
-			await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MARKET)
-			await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MINT)
-			await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_PING)	
+			if error_count > 1:
+				msg = ":zap: Unexpected error... Trying to recover :zap:"
+				await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MARKET)
+				await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MINT)
+				await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_PING)	
 
 			error_count += 1
 
