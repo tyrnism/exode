@@ -114,7 +114,7 @@ class lib_monitoring:
 
 			card_elite_msg = ""
 			if ( asset_elite == 1 ):
-				card_elite_msg = "Elite "
+				card_elite_msg = ":exoelite: Elite "
 						
 			msg_rarity = "Common"
 			if ( asset_rank == 1 ):
@@ -477,7 +477,7 @@ class lib_monitoring:
 																						
 				card_elite_msg = ""
 				if ( card_elite == 1 ):
-					card_elite_msg = "Elite "
+					card_elite_msg = ":exoelite: Elite "
 					
 				msg_rarity = "Common"
 				if ( asset_rank == 1 ):
@@ -854,7 +854,7 @@ class lib_monitoring:
 									
 							card_elite_msg = ""
 							if ( card_elite == 1 ):
-								card_elite_msg = "Elite "
+								card_elite_msg = ":exoelite: Elite "
 								
 							msg_rarity = "Common"
 							if ( asset_rank == 1 ):
@@ -1038,7 +1038,7 @@ class lib_monitoring:
 		(is_pack, card_name, card_rank, card_num) = lib_exode.ex_GetAssetDetails(card_id)
 		if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) or (card_rank == -1) ):
 			if ( card_elite == 1 ):
-				msg_elite = "an **Elite "
+				msg_elite = "an **:exoelite: Elite "
 			else:
 				msg_elite = "a **"
 					
@@ -1077,7 +1077,7 @@ class lib_monitoring:
 			(is_pack, card_name, card_rank, card_num) = lib_exode.ex_GetAssetDetails(card_id)
 			if ( card_new_owner == "exoderewardspool" ):
 				if ( card_elite == 1 ):
-					msg_elite = "an **Elite "
+					msg_elite = "an **:exoelite: Elite "
 				else:
 					msg_elite = "a **"
 						
