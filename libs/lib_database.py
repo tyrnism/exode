@@ -483,7 +483,7 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 	
 	if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) or (card_rank == -1) ):
 		if ( int(card_elite) == 1 ):
-			msg_elite = "an **:exoelite: Elite "
+			msg_elite = "an **<:exoelite:716334248524775485> Elite "
 		else:
 			msg_elite = "a **"
 						
