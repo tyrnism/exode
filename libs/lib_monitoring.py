@@ -595,7 +595,8 @@ class lib_monitoring:
 					iPack_nb = len(l_card_ids)/14				
 				elif (	   l_source_id == "exode_beta_starter_3"
 					or l_source_id == "exode_beta_starter_2"
-					or l_source_id == "exode_beta_starter_1" ):
+					or l_source_id == "exode_beta_starter_1"
+					or l_source_id == "exode_beta_starter_4" ):
 					iPack_nb = len(l_card_ids)/9					
 				elif (     l_source_id == "exode_alpha_pack_crew_galvin4" ):
 					iPack_nb = len(l_card_ids)/3
