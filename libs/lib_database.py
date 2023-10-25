@@ -87,6 +87,11 @@ def db_TX_Add( tx_id, tx_uid, tx_type, tx_block, tx_player, tx_from, tx_auth, my
 		"VALUES (%s, %s, %s, %s, %s, %s, %s)")
 	mysql.commit(query_str=query, value_tuple=(tx_id, tx_type, tx_uid, tx_block, tx_player, tx_from, tx_auth), mysql_continue=True)
 		
+def db_TX_Remove( tx_id, tx_uid, tx_type, tx_target, mysql: lib_mysql ):
+	query = ("DELETE FROM exode_tx "
+			 "WHERE tx_id = %s and type = %s and uid = %s and player = %s" )
+	output = mysql.commit(query_str=query, value_tuple=(tx_id, tx_type, tx_uid, tx_target), mysql_continue=True)
+	
 def db_TX_GetLastBlock(mysql: lib_mysql, mPlayer="exodegame"): 
 
 	query = ("SELECT MAX(block) FROM exode_tx where auth = %s ")

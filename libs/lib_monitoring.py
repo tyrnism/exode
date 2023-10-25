@@ -617,7 +617,8 @@ class lib_monitoring:
 					#ignore
 					iPack_nb = 0					
 				else:
-					print("[ERROR] New card, unknown pack", l_owner, l_pack_ids, l_card_ids, l_card_uids, l_card_elite, l_source_id, l_source_uids)				
+					print("[ERROR] New card, unknown pack", l_owner, l_pack_ids, l_card_ids, l_card_uids, l_card_elite, l_source_id, l_source_uids)	
+					lib_database.db_TX_Remove(tx_id=mTxId, tx_uid="", tx_type=tVId, tx_target=mPlayer, mysql=mysql)
 					return [ cst_exode.ALERT_KILL, tMSGOut ]
 					
 				if ( iPack_nb > 0 ):
