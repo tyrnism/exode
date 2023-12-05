@@ -9,7 +9,7 @@ class sales(commands.Cog, name='sales'):
 
 	@nextcord.slash_command(description="Display the average and last sold prices.", dm_permission=False, force_global=True)
 	async def sales(self, interaction: nextcord.Interaction, asset: str = nextcord.SlashOption(
-        name="card", description="Card's or Pack's ID or number", required=True
+        name="asset", description="Card's or Pack's ID or number", required=True
     ), is_elite: bool = nextcord.SlashOption(
         name="is_elite", description="Indicate if the result should be for the elite version of the card", required=False, default=False
     ),):

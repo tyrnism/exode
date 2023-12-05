@@ -14,7 +14,7 @@ class sales_graph(commands.Cog, name='sales_graph'):
 
 	@nextcord.slash_command(description="Display a list of 10 players owning the card.", dm_permission=False, force_global=True)
 	async def sales_graph(self, interaction: nextcord.Interaction, asset: str = nextcord.SlashOption(
-        name="card", description="Card's or Pack's ID or number", required=True
+        name="asset", description="Card's or Pack's ID or number", required=True
     ), is_elite: bool = nextcord.SlashOption(
         name="is_elite", description="Indicate if the result should be for the elite version of the card", required=False, default=False
     ), time_range: str =  nextcord.SlashOption(
