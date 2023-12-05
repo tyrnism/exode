@@ -584,8 +584,10 @@ def ex_GetAssetDetails( mID ):
 	is_pack = mID[:len("exode_card")] != "exode_card"
 	return ( is_pack, mID, -1, 0)
 
+def ex_GetAssetID( mID: str, mElite: bool = False ):
 	
-def ex_GetAssetID( mID, mElite: False ):
+	if mID[:10] in ["exode_card", "exode_alph", "exode_beta"]:
+		return mID.split(" ")[0]
 	
 	if ( not mElite ):
 	
@@ -1037,8 +1039,6 @@ def ex_GetAssetID( mID, mElite: False ):
 		if ( mID == "exode_card_261_actionImmediateOrder"		or mID == "261" ): 
 			return "exode_card_261_actionImmediateOrder"
 		
-			
-		return ""
 	else:
 	
 		if ( mID == "exode_card_E001_originNavy"		or mID == "navy lieutenant"		or mID == "military origin"		or mID == "1" ): 	
@@ -1442,5 +1442,6 @@ def ex_GetAssetID( mID, mElite: False ):
 			return "exode_card_E260_equipmentTomEssentialsSurvivor"
 		if ( mID == "exode_card_E261_actionImmediateOrder"		or mID == "261" ): 
 			return "exode_card_E261_actionImmediateOrder"
-		return ""
+				
+	return ""
 		
