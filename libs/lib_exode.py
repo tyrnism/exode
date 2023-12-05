@@ -6,6 +6,16 @@ def ex_IsPack( mID ):
 def ex_IsElite( mID ):
 	return ( mID[:12] == "exode_card_E" )
 
+def ex_IsNameElite( name: str ):
+	
+	if ( name[:12] == "exode_card_E" ):
+		return True
+	
+	if name.lower()[:5] == "elite":
+		return True
+	
+	return False
+
 def ex_GetAssetDetails( mID ):
 
 	# rank: 
@@ -574,3 +584,863 @@ def ex_GetAssetDetails( mID ):
 	is_pack = mID[:len("exode_card")] != "exode_card"
 	return ( is_pack, mID, -1, 0)
 
+	
+def ex_GetAssetID( mID, mElite: False ):
+	
+	if ( not mElite ):
+	
+		if ( mID == "exode_alpha_booster"			or mID == "alpha booster"		or mID == "booster" ):
+			return "exode_alpha_booster"
+			
+		if ( mID == "exode_alpha_support_vega"		or mID == "vega pack" ):
+			return "exode_alpha_support_vega"
+		if ( mID == "exode_alpha_support_ionguards"		or mID == "ion guards pack" ):
+			return "exode_alpha_support_ionguards"
+		if ( mID == "exode_alpha_support_tom"			or mID == "tom essentials"		or mID == "tom pack" ):
+			return "exode_alpha_support_tom"
+			
+			
+		if ( mID == "exode_alpha_starter_4"			or mID == "triple alpha starter" ):
+			return "exode_alpha_starter_4"
+		if ( mID == "exode_alpha_starter_3"			or mID == "civilian starter"		or mID == "civilian alpha starter" ):
+			return "exode_alpha_starter_3"
+		if ( mID == "exode_alpha_starter_2"			or mID == "scientist starter"		or mID == "scientific starter"		or mID == "scientific alpha starter"		or mID == "scientist alpha starter" ):
+			return "exode_alpha_starter_2"
+		if ( mID == "exode_alpha_starter_1"			or mID == "military starter"		or mID == "military alpha starter" ):	
+			return "exode_alpha_starter_1"
+			
+		if ( mID == "exode_alpha_contract_tom"		or mID == "tom alpha contract"	or mID == "tom contract" ):
+			return "exode_alpha_contract_tom"
+		if ( mID == "exode_alpha_contract_rekatron"		or mID == "rekatron alpha contract"	or mID == "rekatron contract" ):
+			return "exode_alpha_contract_rekatron"
+		if ( mID == "exode_alpha_contract_syndicate"		or mID == "syndicate alpha contract"	or mID == "syndicate contract" ):
+			return "exode_alpha_contract_syndicate"
+			
+		if ( mID == "exode_alpha_pack_crew_kb119"		or mID == "kilbot-119 pack"		or mID == "kb-119 pack" ):
+			return "exode_alpha_pack_crew_kb119"
+		if ( mID == "exode_alpha_pack_crew_galvin4"		or mID == "galvin 4 pack"		or mID == "galvin pack" ):
+			return "exode_alpha_pack_crew_galvin4"
+			
+		if ( mID == "exode_alpha_character_pack_nomad"	or mID == "nomad pack"			or mID == "nomad promo pack" ):
+			return "exode_alpha_character_pack_nomad"
+		if ( mID == "exode_alpha_character_pack_genetician"	or mID == "genetician pack"		or mID == "genetician promo pack" ):
+			return "exode_alpha_character_pack_genetician"
+		if ( mID == "exode_alpha_character_pack_suntek"	or mID == "suntek pack"		or mID == "suntek promo pack" ):
+			return "exode_alpha_character_pack_suntek"
+		if ( mID == "exode_alpha_character_pack_drachian"	or mID == "drachian pack"		or mID == "drachian promo pack" ):
+			return "exode_alpha_character_pack_drachian"
+			
+		if ( mID == "exode_card_001_originNavy"		or mID == "navy lieutenant"		or mID == "military origin"		or mID == "1" ): 	
+			return "exode_card_001_originNavy"		
+		if ( mID == "exode_card_002_shipArcheon"		or mID == "archeon ship"		or mID == "military ship"		or mID == "2" ): 	
+			return "exode_card_002_shipArcheon"
+		if ( mID == "exode_card_003_officerComms"		or mID == "communications officer"						or mID == "3" ): 	
+			return "exode_card_003_officerComms"
+		if ( mID == "exode_card_004_officerWeapons" 		or mID == "weapons officer"							or mID == "4" ): 
+			return "exode_card_004_officerWeapons"	
+		if ( mID == "exode_card_005_officerTactical" 		or mID == "tactical officer"							or mID == "5" ): 
+			return "exode_card_005_officerTactical"	
+		if ( mID == "exode_card_006_crewPilot" 		or mID == "pilot"			or mID == "military pilot"		or mID == "6" ): 
+			return "exode_card_006_crewPilot"	
+		if ( mID == "exode_card_007_crewSRT" 			or mID == "signals specialist"						or mID == "7" ): 
+			return "exode_card_007_crewSRT"	
+		if ( mID == "exode_card_008_crewDefense"		or mID == "defense specialist"						or mID == "8" ): 
+			return "exode_card_008_crewDefense"	
+		if ( mID == "exode_card_009_crewTrooper" 		or mID == "trooper"								or mID == "9" ): 
+			return "exode_card_009_crewTrooper"	
+		if ( mID == "exode_card_010_crewEngineer" 		or mID == "military engineer "						or mID == "10" ): 
+			return "exode_card_010_crewEngineer"	
+		if ( mID == "exode_card_011_setFMR17" 		or mID == "fmr-17 x3"			or mID == "atonis x3"			or mID == "11" ): 
+			return "exode_card_011_setFMR17"	
+		if ( mID == "exode_card_012_setSuitMilitaryC" 	or mID == "military suit class c x3"						or mID == "12" ): 
+			return "exode_card_012_setSuitMilitaryC"	
+		if ( mID == "exode_card_013_originArk" 		or mID == "ark scientist"		or mID == "scientific origin"		or mID == "13" ): 
+			return "exode_card_013_originArk"	
+		if ( mID == "exode_card_014_shipOrwell1" 		or mID == "ark ship"			or mID == "orwell1"			or mID == "scientific ship"	or mID == "14" ): 
+			return "exode_card_014_shipOrwell1"	
+		if ( mID == "exode_card_015_officerResearch" 		or mID == "research officer"		or mID == "15" ): 
+			return "exode_card_015_officerResearch"	
+		if ( mID == "exode_card_016_officerExploration" 	or mID == "exploration officer"	or mID == "16" ): 
+			return "exode_card_016_officerExploration"	
+		if ( mID == "exode_card_017_officerPreservation" 	or mID == "preservation officer"	or mID == "17" ): 
+			return "exode_card_017_officerPreservation"	
+		if ( mID == "exode_card_018_crewSurgeon" 		or mID == "space surgeon"		or mID == "18" ): 
+			return "exode_card_018_crewSurgeon"	
+		if ( mID == "exode_card_019_crewXenoAnalyst" 		or mID == "xeno analyst"		or mID == "19" ): 
+			return "exode_card_019_crewXenoAnalyst"	
+		if ( mID == "exode_card_020_crewBioScientist" 	or mID == "bio scientist"		or mID == "20" ): 
+			return "exode_card_020_crewBioScientist"	
+		if ( mID == "exode_card_021_crewAnimalHandler" 	or mID == "animal handler"		or mID == "21" ): 
+			return "exode_card_021_crewAnimalHandler"	
+		if ( mID == "exode_card_022_crewLifeSearcher" 	or mID == "life searcher"		or mID == "22" ): 
+			return "exode_card_022_crewLifeSearcher"	
+		if ( mID == "exode_card_023_crewLabScientist" 	or mID == "lab scientist"		or mID == "23" ): 
+			return "exode_card_023_crewLabScientist"	
+		if ( mID == "exode_card_024_setRarePlants" 		or mID == "rare plants"		or mID == "24" ): 
+			return "exode_card_024_setRarePlants"	
+		if ( mID == "exode_card_025_setSuitResearchC" 	or mID == "research suits class c x3"	or mID == "25" ): 
+			return "exode_card_025_setSuitResearchC"	
+		if ( mID == "exode_card_026_originLeader" 		or mID == "elected leader" 		or mID == "civilian origin"	or mID == "26" ): 
+			return "exode_card_026_originLeader"	
+		if ( mID == "exode_card_027_shipDiplomatic" 		or mID == "diplomatic corvette" 	or mID == "amarasia" or mID == "civilian ship"	or mID == "27" ): 
+			return "exode_card_027_shipDiplomatic"	
+		if ( mID == "exode_card_028_officerAdministrative"	or mID == "administrative officer"	or mID == "28" ): 
+			return "exode_card_028_officerAdministrative"	
+		if ( mID == "exode_card_029_officerSecurity" 		or mID == "security officer"		or mID == "29" ): 
+			return "exode_card_029_officerSecurity"	
+		if ( mID == "exode_card_030_crewPropaganda"		or mID == "propaganda specialist"	or mID == "30" ): 
+			return "exode_card_030_crewPropaganda"	
+		if ( mID == "exode_card_031_crewPopulation" 		or mID == "population analyst"	or mID == "31" ): 
+			return "exode_card_031_crewPopulation"	
+		if ( mID == "exode_card_032_crewEntertainment" 	or mID == "welfare specialist"	or mID == "32" ): 
+			return "exode_card_032_crewEntertainment"	
+		if ( mID == "exode_card_033_crewMaintenance" 		or mID == "maintenance staff"		or mID == "33" ): 
+			return "exode_card_033_crewMaintenance"	
+		if ( mID == "exode_card_034_crewPilotCivilian" 	or mID == "civilian pilot"		or mID == "34" ): 
+			return "exode_card_034_crewPilotCivilian"	
+		if ( mID == "exode_card_035_crewSecurity" 		or mID == "security guard"		or mID == "35" ): 
+			return "exode_card_035_crewSecurity"	
+		if ( mID == "exode_card_036_setLuxury" 		or mID == "diplomatic gifts"		or mID == "36" ): 
+			return "exode_card_036_setLuxury"	
+		if ( mID == "exode_card_037_setDatabase" 		or mID == "federal database"		or mID == "37" ): 
+			return "exode_card_037_setDatabase"	
+			
+			
+		if ( mID == "exode_card_039_Tom_BeautyCapsule" 		or mID == "39" ):
+			return "exode_card_039_Tom_BeautyCapsule"
+		if ( mID == "exode_card_045_Rekatron_fireworks" 		or mID == "45" ):
+			return "exode_card_045_Rekatron_fireworks"
+		if ( mID == "exode_card_046_Rekatron_defensiveAmmo"		or mID == "46" ): 
+			return "exode_card_046_Rekatron_defensiveAmmo"
+		if ( mID == "exode_card_047_Rekatron_firetalkerPistol" 	or mID == "47" ): 
+			return "exode_card_047_Rekatron_firetalkerPistol"
+		if ( mID == "exode_card_048_Rekatron_karperPistol" 		or mID == "48" ): 
+			return "exode_card_048_Rekatron_karperPistol"
+		if ( mID == "exode_card_049_Rekatron_explanatorRifle" 	or mID == "49" ): 
+			return "exode_card_049_Rekatron_explanatorRifle"
+		if ( mID == "exode_card_050_Rekatron_rsdRifle" 		or mID == "50" ): 
+			return "exode_card_050_Rekatron_rsdRifle"
+		if ( mID == "exode_card_051_Rekatron_goodMorningPistol" 	or mID == "51" ): 
+			return "exode_card_051_Rekatron_goodMorningPistol"
+		if ( mID == "exode_card_052_Rekatron_jugdmentDayRifle" 	or mID == "52" ): 
+			return "exode_card_052_Rekatron_jugdmentDayRifle"
+		if ( mID == "exode_card_053_Rekatron_galacticPeacemaker" 	or mID == "53" ): 
+			return "exode_card_053_Rekatron_galacticPeacemaker"
+		if ( mID == "exode_card_054_Rekatron_ammoGuided" 		or mID == "54" ): 
+			return "exode_card_054_Rekatron_ammoGuided"
+		if ( mID == "exode_card_055_Rekatron_ammoParty" 		or mID == "55" ): 
+			return "exode_card_055_Rekatron_ammoParty"
+		if ( mID == "exode_card_056_Tom_SmootyAllInOne" 		or mID == "56" ): 
+			return "exode_card_056_Tom_SmootyAllInOne"
+		if ( mID == "exode_card_057_Tom_FoodieMoodie" 		or mID == "57" ): 
+			return "exode_card_057_Tom_FoodieMoodie"
+		if ( mID == "exode_card_058_Tom_FriendlyEyes" 		or mID == "58" ): 
+			return "exode_card_058_Tom_FriendlyEyes"
+		if ( mID == "exode_card_059_Tom_BuddyPinger" 			or mID == "59" ): 
+			return "exode_card_059_Tom_BuddyPinger"
+		if ( mID == "exode_card_060_Tom_VehicleLittleBuddy" 		or mID == "60" ): 
+			return "exode_card_060_Tom_VehicleLittleBuddy"
+		if ( mID == "exode_card_061_Tom_Custom" 			or mID == "61" ): 
+			return "exode_card_061_Tom_Custom"
+		if ( mID == "exode_card_062_Tom_WHCConverter" 		or mID == "62" ): 
+			return "exode_card_062_Tom_WHCConverter"
+		if ( mID == "exode_card_063_Tom_Explorator" 			or mID == "63" ): 
+			return "exode_card_063_Tom_Explorator"
+		if ( mID == "exode_card_064_Tom_ShelterHappyFive" 		or mID == "64" ): 
+			return "exode_card_064_Tom_ShelterHappyFive"			
+		if ( mID == "exode_card_065_SyndicateGeisha_ThirdSister" 	or mID == "65" ):
+			return "exode_card_065_SyndicateGeisha_ThirdSister"
+		if ( mID == "exode_card_066_SyndicateEquipment_Chip" 	or mID == "66" ): 
+			return "exode_card_066_SyndicateEquipment_Chip"
+		if ( mID == "exode_card_067_SyndicateEquipment_DrugHolidays"	or mID == "67" ): 
+			return "exode_card_067_SyndicateEquipment_DrugHolidays"
+		if ( mID == "exode_card_068_SyndicateEquipment_DrugNPrime"	or mID == "68" ): 
+			return "exode_card_068_SyndicateEquipment_DrugNPrime"
+		if ( mID == "exode_card_069_SyndicateShipBlackLotus" 	or mID == "69" ): 
+			return "exode_card_069_SyndicateShipBlackLotus"
+		if ( mID == "exode_card_070_SyndicateEquipmentAutoBlaster"	or mID == "70" ): 
+			return "exode_card_070_SyndicateEquipmentAutoBlaster"
+		if ( mID == "exode_card_071_SyndicateEquipment_NarcoWarfare"	or mID == "71" ): 
+			return "exode_card_071_SyndicateEquipment_NarcoWarfare"
+		if ( mID == "exode_card_072_SyndicateEquipmentSet_Genefactory" or mID == "72" ): 
+			return "exode_card_072_SyndicateEquipmentSet_Genefactory"
+		if ( mID == "exode_card_073_SyndicateHacker" 			or mID == "73" ): 
+			return "exode_card_073_SyndicateHacker"
+		if ( mID == "exode_card_074_SyndicateLeader" 			or mID == "74" ): 
+			return "exode_card_074_SyndicateLeader"
+		if ( mID == "exode_card_075_SyndicateTransactor" 		or mID == "75" ): 
+			return "exode_card_075_SyndicateTransactor"
+		if ( mID == "exode_card_076_SyndicateTrooper" 		or mID == "76" ): 
+			return "exode_card_076_SyndicateTrooper"
+		if ( mID == "exode_card_077_SyndicateAyumi" 			or mID == "77" ): 
+			return "exode_card_077_SyndicateAyumi"
+		if ( mID == "exode_card_078_SyndicateYakuzaNoble" 		or mID == "78" ): 
+			return "exode_card_078_SyndicateYakuzaNoble"
+		if ( mID == "exode_card_079_SyndicateYakuzaSniper" 		or mID == "79" ): 
+			return "exode_card_079_SyndicateYakuzaSniper"
+		if ( mID == "exode_card_080_TheKumicho" 			or mID == "80" ): 
+			return "exode_card_080_TheKumicho"
+		if ( mID == "exode_card_081_RebelGeneral" 			or mID == "81" ): 
+			return "exode_card_081_RebelGeneral"
+		if ( mID == "exode_card_082_AlannaVos" 			or mID == "82" ): 
+			return "exode_card_082_AlannaVos"
+		if ( mID == "exode_card_083_Sh4rken" 				or mID == "83" ): 
+			return "exode_card_083_Sh4rken"
+		if ( mID == "exode_card_084_TheAI" 				or mID == "84" ): 
+			return "exode_card_084_TheAI"
+		if ( mID == "exode_card_085_Apprentice" 			or mID == "85" ): 
+			return "exode_card_085_Apprentice"
+		if ( mID == "exode_card_086_Cranium" 				or mID == "86" ): 
+			return "exode_card_086_Cranium"
+		if ( mID == "exode_card_087_Cryptoeater" 			or mID == "87" ): 
+			return "exode_card_087_Cryptoeater"
+		if ( mID == "exode_card_088_originRepentantPirate" 		or mID == "88" ): 
+			return "exode_card_088_originRepentantPirate"
+		if ( mID == "exode_card_089_shipColombus" 			or mID == "89" ): 
+			return "exode_card_089_shipColombus"
+		if ( mID == "exode_card_090_shipQuantumSupreme"		or mID == "90" ): 
+			return "exode_card_090_shipQuantumSupreme"
+		if ( mID == "exode_card_091_vehicleVelvetStorm" 		or mID == "91" ): 
+			return "exode_card_091_vehicleVelvetStorm"
+		if ( mID == "exode_card_092_vehicleVanguard" 			or mID == "92" ): 
+			return "exode_card_092_vehicleVanguard"
+		if ( mID == "exode_card_093_equipmentSuitArena" 		or mID == "93" ): 
+			return "exode_card_093_equipmentSuitArena"
+			
+		if ( mID == "exode_card_101_originSecretAgent" 		or mID == "101" ): 
+			return "exode_card_101_originSecretAgent"
+		if ( mID == "exode_card_102_originStrandedTrader" 		or mID == "102" ): 
+			return "exode_card_102_originStrandedTrader"
+		if ( mID == "exode_card_103_originCruiseShipCaptain" 	or mID == "103" ): 
+			return "exode_card_103_originCruiseShipCaptain"
+		if ( mID == "exode_card_104_shipArkLifesavior" 		or mID == "104" ): 
+			return "exode_card_104_shipArkLifesavior"
+		if ( mID == "exode_card_105_shipCargoKormen" 			or mID == "105" ): 
+			return "exode_card_105_shipCargoKormen"
+		if ( mID == "exode_card_106_shipRhino" 			or mID == "106" ): 
+			return "exode_card_106_shipRhino"
+		if ( mID == "exode_card_107_shipCargoTaurus" 			or mID == "107" ): 
+			return "exode_card_107_shipCargoTaurus"
+		if ( mID == "exode_card_108_shipMyrmidon" 			or mID == "108" ): 
+			return "exode_card_108_shipMyrmidon"
+		if ( mID == "exode_card_109_shipAkhen" 			or mID == "109" ): 
+			return "exode_card_109_shipAkhen"
+		if ( mID == "exode_card_110_shipCoetus" 			or mID == "110" ): 
+			return "exode_card_110_shipCoetus"
+		if ( mID == "exode_card_111_setGeneticianConsole" 		or mID == "111" ): 
+			return "exode_card_111_setGeneticianConsole"
+		if ( mID == "exode_card_112_setMilitaryClassA" 		or mID == "112" ): 
+			return "exode_card_112_setMilitaryClassA"
+		if ( mID == "exode_card_113_setEisenSuits" 			or mID == "113" ): 
+			return "exode_card_113_setEisenSuits"
+		if ( mID == "exode_card_114_vehicleAcheanRacer" 		or mID == "114" ): 
+			return "exode_card_114_vehicleAcheanRacer"
+		if ( mID == "exode_card_115_crewSpaceMarshal"			or mID == "115" ): 
+			return "exode_card_115_crewSpaceMarshal"
+		if ( mID == "exode_card_116_officerEliza" 			or mID == "116" ): 
+			return "exode_card_116_officerEliza"
+		if ( mID == "exode_card_117_crewOksana" 			or mID == "117" ): 
+			return "exode_card_117_crewOksana"
+		if ( mID == "exode_card_118_officerNorah" 			or mID == "118" ): 
+			return "exode_card_118_officerNorah"
+		if ( mID == "exode_card_119_officerShen" 			or mID == "119" ): 
+			return "exode_card_119_officerShen"
+		if ( mID == "exode_card_120_officerStug" 			or mID == "120" ): 
+			return "exode_card_120_officerStug"
+		if ( mID == "exode_card_121_crewTyron" 			or mID == "121" ): 
+			return "exode_card_121_crewTyron"
+		if ( mID == "exode_card_122_officerAdmiralValro" 		or mID == "122" ): 
+			return "exode_card_122_officerAdmiralValro"
+		if ( mID == "exode_card_123_officerNash" 			or mID == "123" ): 
+			return "exode_card_123_officerNash"
+		if ( mID == "exode_card_124_crewSpecialInfiltrationAgent" 	or mID == "124" ): 
+			return "exode_card_124_crewSpecialInfiltrationAgent"
+		if ( mID == "exode_card_125_crewScarletSarah" 		or mID == "125" ): 
+			return "exode_card_125_crewScarletSarah"
+		if ( mID == "exode_card_126_passengerNuclearFamily" 		or mID == "126" ): 
+			return "exode_card_126_passengerNuclearFamily"
+		if ( mID == "exode_card_127_installationOctohome" 		or mID == "127" ): 
+			return "exode_card_127_installationOctohome"
+		if ( mID == "exode_card_128_installationOrbitalShield" 	or mID == "128" ): 
+			return "exode_card_128_installationOrbitalShield"
+		if ( mID == "exode_card_129_installationDreamsphere" 	or mID == "129" ): 
+			return "exode_card_129_installationDreamsphere"
+		if ( mID == "exode_card_130_installationGenerator100"	or mID == "130" ): 
+			return "exode_card_130_installationGenerator100"
+		if ( mID == "exode_card_131_equipmentFactionCorporate" 	or mID == "131" ): 
+			return "exode_card_131_equipmentFactionCorporate"
+		if ( mID == "exode_card_132_equipmentSuitRacer" 		or mID == "132" ): 
+			return "exode_card_132_equipmentSuitRacer"
+		if ( mID == "exode_card_133_equipmentSuitSpartan" 		or mID == "133" ): 
+			return "exode_card_133_equipmentSuitSpartan"
+		if ( mID == "exode_card_134_equipmentFactionRebellion" 	or mID == "134" ): 
+			return "exode_card_134_equipmentFactionRebellion"
+		if ( mID == "exode_card_135_escortSabre" 			or mID == "135" ): 
+			return "exode_card_135_escortSabre"
+		if ( mID == "exode_card_136_crewFleshCultLeader" 		or mID == "136" ): 
+			return "exode_card_136_crewFleshCultLeader"
+		if ( mID == "exode_card_137_installationDefensiveBunker" 	or mID == "137" ): 
+			return "exode_card_137_installationDefensiveBunker"
+			
+		if ( mID == "exode_card_151_officerDrachianColonel" 		or mID == "151" ): 
+			return "exode_card_151_officerDrachianColonel"
+		if ( mID == "exode_card_152_crewNomadNavigator" 		or mID == "152" ): 
+			return "exode_card_152_crewNomadNavigator"
+		if ( mID == "exode_card_153_crewGeneticianScientist" 	or mID == "153" ): 
+			return "exode_card_153_crewGeneticianScientist"
+		if ( mID == "exode_card_154_crewSuntekSurvivor" 		or mID == "154" ): 
+			return "exode_card_154_crewSuntekSurvivor"
+		if ( mID == "exode_card_155_crewKilbot" 			or mID == "155" ): 
+			return "exode_card_155_crewKilbot"
+		if ( mID == "exode_card_156_crewGalvin" 			or mID == "156" ): 
+			return "exode_card_156_crewGalvin"
+		if ( mID == "exode_card_157_escortVega" 			or mID == "157" ): 
+			return "exode_card_157_escortVega"
+		if ( mID == "exode_card_158_escortIonguards" 			or mID == "158" ): 
+			return "exode_card_158_escortIonguards"
+		if ( mID == "exode_card_159_suntekSphere" 			or mID == "159" ): 
+			return "exode_card_159_suntekSphere"
+			
+			
+		if ( mID == "exode_card_181_escortLongswords" 		or mID == "181" ): 
+			return "exode_card_181_escortLongswords"
+		if ( mID == "exode_card_182_escortCruiserTaskForce" 		or mID == "182" ): 
+			return "exode_card_182_escortCruiserTaskForce"
+		if ( mID == "exode_card_183_escortStarsystemGarrison" 	or mID == "183" ): 
+			return "exode_card_183_escortStarsystemGarrison"
+		if ( mID == "exode_card_184_shipBaldie" 			or mID == "184" ): 
+			return "exode_card_184_shipBaldie"
+		if ( mID == "exode_card_185_shipClaymoreHyperfighter" 	or mID == "185" ): 
+			return "exode_card_185_shipClaymoreHyperfighter"
+		if ( mID == "exode_card_186_shipDrachianMantis" 		or mID == "186" ): 
+			return "exode_card_186_shipDrachianMantis"
+		if ( mID == "exode_card_187_vehicleSalazar" 			or mID == "187" ): 
+			return "exode_card_187_vehicleSalazar"
+		if ( mID == "exode_card_188_vehicleTraveler2" 		or mID == "188" ): 
+			return "exode_card_188_vehicleTraveler2"
+		if ( mID == "exode_card_189_vehicleSupplyDropship" 		or mID == "189" ): 
+			return "exode_card_189_vehicleSupplyDropship"
+		if ( mID == "exode_card_190_vehicleExplorationDropship" 	or mID == "190" ): 
+			return "exode_card_190_vehicleExplorationDropship"
+		if ( mID == "exode_card_191_vehicleZandratti" 		or mID == "191" ): 
+			return "exode_card_191_vehicleZandratti"
+		if ( mID == "exode_card_192_vehicleSecurityDrone" 		or mID == "192" ): 
+			return "exode_card_192_vehicleSecurityDrone"
+		if ( mID == "exode_card_193_vehiclePantherBike" 		or mID == "193" ): 
+			return "exode_card_193_vehiclePantherBike"
+			
+		if ( mID == "exode_card_201_setMedicalBay" 			or mID == "201" ): 
+			return "exode_card_201_setMedicalBay"
+		if ( mID == "exode_card_202_equipmentRoboticParts" 		or mID == "202" ): 
+			return "exode_card_202_equipmentRoboticParts"
+		if ( mID == "exode_card_203_equipmentEnergyCells" 		or mID == "203" ): 
+			return "exode_card_203_equipmentEnergyCells"
+		if ( mID == "exode_card_204_equipmentShipConstructionParts"	or mID == "204" ): 
+			return "exode_card_204_equipmentShipConstructionParts"
+		if ( mID == "exode_card_205_equipmentUniversalFixer" 	or mID == "205" ): 
+			return "exode_card_205_equipmentUniversalFixer"
+		if ( mID == "exode_card_206_equipmentLonestar" 		or mID == "206" ): 
+			return "exode_card_206_equipmentLonestar"
+		if ( mID == "exode_card_207_equipmentChipsAndData" 		or mID == "207" ): 
+			return "exode_card_207_equipmentChipsAndData"
+		if ( mID == "exode_card_208_equipmentCorporate" 		or mID == "208" ): 
+			return "exode_card_208_equipmentCorporate"
+		if ( mID == "exode_card_209_equipmentEisenSuit" 		or mID == "209" ): 
+			return "exode_card_209_equipmentEisenSuit"
+		if ( mID == "exode_card_210_equipmentDrachianSuit" 		or mID == "210" ): 
+			return "exode_card_210_equipmentDrachianSuit"
+		if ( mID == "exode_card_211_equipmentMilitarySuit" 		or mID == "211" ): 
+			return "exode_card_211_equipmentMilitarySuit"
+		if ( mID == "exode_card_212_equipmentPlanetscan" 		or mID == "212" ): 
+			return "exode_card_212_equipmentPlanetscan"
+		if ( mID == "exode_card_213_equipmentRimscan" 		or mID == "213" ): 
+			return "exode_card_213_equipmentRimscan"
+		if ( mID == "exode_card_214_equipmentDesigner" 		or mID == "214" ): 
+			return "exode_card_214_equipmentDesigner"
+		if ( mID == "exode_card_215_equipmentIdentificationMatrix" 	or mID == "215" ): 
+			return "exode_card_215_equipmentIdentificationMatrix"
+			
+		if ( mID == "exode_card_221_crewDrachianCommissar" 		or mID == "221" ): 
+			return "exode_card_221_crewDrachianCommissar"
+		if ( mID == "exode_card_222_crewFederalAgent" 		or mID == "222" ): 
+			return "exode_card_222_crewFederalAgent"
+		if ( mID == "exode_card_223_crewCorporateBodyguard" 		or mID == "223" ): 
+			return "exode_card_223_crewCorporateBodyguard"
+		if ( mID == "exode_card_224_crewFederalMarine" 		or mID == "224" ): 
+			return "exode_card_224_crewFederalMarine"
+		if ( mID == "exode_card_225_crewFederalPolice" 		or mID == "225" ): 
+			return "exode_card_225_crewFederalPolice"
+		if ( mID == "exode_card_226_crewDrachianTrooper" 		or mID == "226" ): 
+			return "exode_card_226_crewDrachianTrooper"
+		if ( mID == "exode_card_227_crewCorneredRebelAgent" 		or mID == "227" ): 
+			return "exode_card_227_crewCorneredRebelAgent"
+		if ( mID == "exode_card_228_passengerDangerous" 		or mID == "228" ): 
+			return "exode_card_228_passengerDangerous"
+		if ( mID == "exode_card_229_passengerUnstable" 		or mID == "229" ): 
+			return "exode_card_229_passengerUnstable"
+		if ( mID == "exode_card_230_crewMaintenanceDroid" 		or mID == "230" ): 
+			return "exode_card_230_crewMaintenanceDroid"
+		if ( mID == "exode_card_231_passengerScienceStudent" 	or mID == "231" ): 
+			return "exode_card_231_passengerScienceStudent"
+		if ( mID == "exode_card_232_passengerSocialite" 		or mID == "232" ): 
+			return "exode_card_232_passengerSocialite"
+		if ( mID == "exode_card_233_passengerTechExpert" 		or mID == "233" ): 
+			return "exode_card_233_passengerTechExpert"
+			
+		if ( mID == "exode_card_235_crewTriskan" 			or mID == "235" ): 
+			return "exode_card_235_crewTriskan"
+		if ( mID == "exode_card_236_crewFleshCult"			or mID == "236" ): 
+			return "exode_card_236_crewFleshCult"
+		if ( mID == "exode_card_237_crewFleshCultScientist" 		or mID == "237" ): 
+			return "exode_card_237_crewFleshCultScientist"
+			
+		if ( mID == "exode_card_241_installationDrillingMachine" 	or mID == "drill"			or mID == "drilling machine"			or mID == "241" ): 
+			return "exode_card_241_installationDrillingMachine"
+		if ( mID == "exode_card_242_installationRadarArray" 		or mID == "242" ): 
+			return "exode_card_242_installationRadarArray"
+		if ( mID == "exode_card_243_installationGenerator20" 	or mID == "243" ): 
+			return "exode_card_243_installationGenerator20"
+		if ( mID == "exode_card_244_installationTomStarter" 		or mID == "244" ): 
+			return "exode_card_244_installationTomStarter"
+		if ( mID == "exode_card_245_installationLiveBlock" 		or mID == "245" ): 
+			return "exode_card_245_installationLiveBlock"
+		if ( mID == "exode_card_246_installationBiodomes" 		or mID == "246" ): 
+			return "exode_card_246_installationBiodomes"
+		if ( mID == "exode_card_247_installationTurret" 		or mID == "247" ): 
+			return "exode_card_247_installationTurret"
+		if ( mID == "exode_card_248_layoutProtectionWalls" 		or mID == "248" ): 
+			return "exode_card_248_layoutProtectionWalls"
+		if ( mID == "exode_card_249_layoutUnderground" 		or mID == "249" ): 
+			return "exode_card_249_layoutUnderground"
+		if ( mID == "exode_card_250_interiorLabEquipment" 		or mID == "250" ): 
+			return "exode_card_250_interiorLabEquipment"
+		if ( mID == "exode_card_251_interiorManagementConsole" 	or mID == "251" ): 
+			return "exode_card_251_interiorManagementConsole"
+		if ( mID == "exode_card_252_interiorComputerRoom" 		or mID == "252" ): 
+			return "exode_card_252_interiorComputerRoom"
+		if ( mID == "exode_card_253_installationMultipurpose" 	or mID == "253" ): 
+			return "exode_card_253_installationMultipurpose"
+		if ( mID == "exode_card_254_installationCommunicationArray"	or mID == "254" ): 
+			return "exode_card_254_installationCommunicationArray"
+		if ( mID == "exode_card_255_interiorCuves" 			or mID == "255" ): 
+			return "exode_card_255_interiorCuves"
+		if ( mID == "exode_card_256_installationPreservationDome"	or mID == "256" ): 
+			return "exode_card_256_installationPreservationDome"
+		if ( mID == "exode_card_257_installationStorage" 		or mID == "257" ): 
+			return "exode_card_257_installationStorage"
+		if ( mID == "exode_card_258_equipmentTomEssentialsHappyFood"	or mID == "258" ): 
+			return "exode_card_258_equipmentTomEssentialsHappyFood"
+		if ( mID == "exode_card_259_equipmentTomEssentialsHappyAir"	or mID == "259" ): 
+			return "exode_card_259_equipmentTomEssentialsHappyAir"
+		if ( mID == "exode_card_260_equipmentTomEssentialsSurvivor"	or mID == "260" ): 
+			return "exode_card_260_equipmentTomEssentialsSurvivor"
+		if ( mID == "exode_card_261_actionImmediateOrder"		or mID == "261" ): 
+			return "exode_card_261_actionImmediateOrder"
+		
+			
+		return ""
+	else:
+	
+		if ( mID == "exode_card_E001_originNavy"		or mID == "navy lieutenant"		or mID == "military origin"		or mID == "1" ): 	
+			return "exode_card_E001_originNavy"		
+		if ( mID == "exode_card_E002_shipArcheon"		or mID == "archeon ship"		or mID == "military ship"		or mID == "2" ): 	
+			return "exode_card_E002_shipArcheon"
+		if ( mID == "exode_card_E003_officerComms"		or mID == "communications officer"						or mID == "3" ): 	
+			return "exode_card_E003_officerComms"
+		if ( mID == "exode_card_E004_officerWeapons" 		or mID == "weapons officer"							or mID == "4" ): 
+			return "exode_card_E004_officerWeapons"	
+		if ( mID == "exode_card_E005_officerTactical" 		or mID == "tactical officer"							or mID == "5" ): 
+			return "exode_card_E005_officerTactical"	
+		if ( mID == "exode_card_E006_crewPilot" 		or mID == "pilot"			or mID == "military pilot"		or mID == "6" ): 
+			return "exode_card_E006_crewPilot"	
+		if ( mID == "exode_card_E007_crewSRT" 			or mID == "signals specialist"						or mID == "7" ): 
+			return "exode_card_E007_crewSRT"	
+		if ( mID == "exode_card_E008_crewDefense"		or mID == "defense specialist"						or mID == "8" ): 
+			return "exode_card_E008_crewDefense"	
+		if ( mID == "exode_card_E009_crewTrooper" 		or mID == "trooper"								or mID == "9" ): 
+			return "exode_card_E009_crewTrooper"	
+		if ( mID == "exode_card_E010_crewEngineer" 		or mID == "military engineer "						or mID == "10" ): 
+			return "exode_card_E010_crewEngineer"	
+		if ( mID == "exode_card_E011_setFMR17" 		or mID == "fmr-17 x3"			or mID == "atonis x3"			or mID == "11" ): 
+			return "exode_card_E011_setFMR17"	
+		if ( mID == "exode_card_E012_setSuitMilitaryC" 	or mID == "military suit class c x3"						or mID == "12" ): 
+			return "exode_card_E012_setSuitMilitaryC"	
+		if ( mID == "exode_card_E013_originArk" 		or mID == "ark scientist"		or mID == "scientific origin"		or mID == "13" ): 
+			return "exode_card_E013_originArk"	
+		if ( mID == "exode_card_E014_shipOrwell1" 		or mID == "ark ship"			or mID == "orwell1"			or mID == "scientific ship"	or mID == "14" ): 
+			return "exode_card_E014_shipOrwell1"	
+		if ( mID == "exode_card_E015_officerResearch" 		or mID == "research officer"		or mID == "15" ): 
+			return "exode_card_E015_officerResearch"	
+		if ( mID == "exode_card_E016_officerExploration" 	or mID == "exploration officer"	or mID == "16" ): 
+			return "exode_card_E016_officerExploration"	
+		if ( mID == "exode_card_E017_officerPreservation" 	or mID == "preservation officer"	or mID == "17" ): 
+			return "exode_card_E017_officerPreservation"	
+		if ( mID == "exode_card_E018_crewSurgeon" 		or mID == "space surgeon"		or mID == "18" ): 
+			return "exode_card_E018_crewSurgeon"	
+		if ( mID == "exode_card_E019_crewXenoAnalyst" 		or mID == "xeno analyst"		or mID == "19" ): 
+			return "exode_card_E019_crewXenoAnalyst"	
+		if ( mID == "exode_card_E020_crewBioScientist" 	or mID == "bio scientist"		or mID == "20" ): 
+			return "exode_card_E020_crewBioScientist"	
+		if ( mID == "exode_card_E021_crewAnimalHandler" 	or mID == "animal handler"		or mID == "21" ): 
+			return "exode_card_E021_crewAnimalHandler"	
+		if ( mID == "exode_card_E022_crewLifeSearcher" 	or mID == "life searcher"		or mID == "22" ): 
+			return "exode_card_E022_crewLifeSearcher"	
+		if ( mID == "exode_card_E023_crewLabScientist" 	or mID == "lab scientist"		or mID == "23" ): 
+			return "exode_card_E023_crewLabScientist"	
+		if ( mID == "exode_card_E024_setRarePlants" 		or mID == "rare plants"		or mID == "24" ): 
+			return "exode_card_E024_setRarePlants"	
+		if ( mID == "exode_card_E025_setSuitResearchC" 	or mID == "research suits class c x3"	or mID == "25" ): 
+			return "exode_card_E025_setSuitResearchC"	
+		if ( mID == "exode_card_E026_originLeader" 		or mID == "elected leader" 		or mID == "civilian origin"	or mID == "26" ): 
+			return "exode_card_E026_originLeader"	
+		if ( mID == "exode_card_E027_shipDiplomatic" 		or mID == "diplomatic corvette" 	or mID == "amarasia" or mID == "civilian ship"	or mID == "27" ): 
+			return "exode_card_E027_shipDiplomatic"	
+		if ( mID == "exode_card_E028_officerAdministrative"	or mID == "administrative officer"	or mID == "28" ): 
+			return "exode_card_E028_officerAdministrative"	
+		if ( mID == "exode_card_E029_officerSecurity" 		or mID == "security officer"		or mID == "29" ): 
+			return "exode_card_E029_officerSecurity"	
+		if ( mID == "exode_card_E030_crewPropaganda"		or mID == "propaganda specialist"	or mID == "30" ): 
+			return "exode_card_E030_crewPropaganda"	
+		if ( mID == "exode_card_E031_crewPopulation" 		or mID == "population analyst"	or mID == "31" ): 
+			return "exode_card_E031_crewPopulation"	
+		if ( mID == "exode_card_E032_crewEntertainment" 	or mID == "welfare specialist"	or mID == "32" ): 
+			return "exode_card_E032_crewEntertainment"	
+		if ( mID == "exode_card_E033_crewMaintenance" 		or mID == "maintenance staff"		or mID == "33" ): 
+			return "exode_card_E033_crewMaintenance"	
+		if ( mID == "exode_card_E034_crewPilotCivilian" 	or mID == "civilian pilot"		or mID == "34" ): 
+			return "exode_card_E034_crewPilotCivilian"	
+		if ( mID == "exode_card_E035_crewSecurity" 		or mID == "security guard"		or mID == "35" ): 
+			return "exode_card_E035_crewSecurity"	
+		if ( mID == "exode_card_E036_setLuxury" 		or mID == "diplomatic gifts"		or mID == "36" ): 
+			return "exode_card_E036_setLuxury"	
+		if ( mID == "exode_card_E037_setDatabase" 		or mID == "federal database"		or mID == "37" ): 
+			return "exode_card_E037_setDatabase"	
+			
+			
+		if ( mID == "exode_card_E046_Rekatron_defensiveAmmo"		or mID == "46" ): 
+			return "exode_card_E046_Rekatron_defensiveAmmo"
+		if ( mID == "exode_card_E047_Rekatron_firetalkerPistol" 	or mID == "47" ): 
+			return "exode_card_E047_Rekatron_firetalkerPistol"
+		if ( mID == "exode_card_E048_Rekatron_karperPistol" 		or mID == "48" ): 
+			return "exode_card_E048_Rekatron_karperPistol"
+		if ( mID == "exode_card_E049_Rekatron_explanatorRifle" 	or mID == "49" ): 
+			return "exode_card_E049_Rekatron_explanatorRifle"
+		if ( mID == "exode_card_E050_Rekatron_rsdRifle" 		or mID == "50" ): 
+			return "exode_card_E050_Rekatron_rsdRifle"
+		if ( mID == "exode_card_E051_Rekatron_goodMorningPistol" 	or mID == "51" ): 
+			return "exode_card_E051_Rekatron_goodMorningPistol"
+		if ( mID == "exode_card_E052_Rekatron_jugdmentDayRifle" 	or mID == "52" ): 
+			return "exode_card_E052_Rekatron_jugdmentDayRifle"
+		if ( mID == "exode_card_E053_Rekatron_galacticPeacemaker" 	or mID == "53" ): 
+			return "exode_card_E053_Rekatron_galacticPeacemaker"
+		if ( mID == "exode_card_E054_Rekatron_ammoGuided" 		or mID == "54" ): 
+			return "exode_card_E054_Rekatron_ammoGuided"
+		if ( mID == "exode_card_E055_Rekatron_ammoParty" 		or mID == "55" ): 
+			return "exode_card_E055_Rekatron_ammoParty"
+		if ( mID == "exode_card_E056_Tom_SmootyAllInOne" 		or mID == "56" ): 
+			return "exode_card_E056_Tom_SmootyAllInOne"
+		if ( mID == "exode_card_E057_Tom_FoodieMoodie" 		or mID == "57" ): 
+			return "exode_card_E057_Tom_FoodieMoodie"
+		if ( mID == "exode_card_E058_Tom_FriendlyEyes" 		or mID == "58" ): 
+			return "exode_card_E058_Tom_FriendlyEyes"
+		if ( mID == "exode_card_E059_Tom_BuddyPinger" 			or mID == "59" ): 
+			return "exode_card_E059_Tom_BuddyPinger"
+		if ( mID == "exode_card_E060_Tom_VehicleLittleBuddy" 		or mID == "60" ): 
+			return "exode_card_E060_Tom_VehicleLittleBuddy"
+		if ( mID == "exode_card_E061_Tom_Custom" 			or mID == "61" ): 
+			return "exode_card_E061_Tom_Custom"
+		if ( mID == "exode_card_E062_Tom_WHCConverter" 		or mID == "62" ): 
+			return "exode_card_E062_Tom_WHCConverter"
+		if ( mID == "exode_card_E063_Tom_Explorator" 			or mID == "63" ): 
+			return "exode_card_E063_Tom_Explorator"
+		if ( mID == "exode_card_E064_Tom_ShelterHappyFive" 		or mID == "64" ): 
+			return "exode_card_E064_Tom_ShelterHappyFive"
+			
+		if ( mID == "exode_card_E066_SyndicateEquipment_Chip" 	or mID == "66" ): 
+			return "exode_card_E066_SyndicateEquipment_Chip"
+		if ( mID == "exode_card_E067_SyndicateEquipment_DrugHolidays"	or mID == "67" ): 
+			return "exode_card_E067_SyndicateEquipment_DrugHolidays"
+		if ( mID == "exode_card_E068_SyndicateEquipment_DrugNPrime"	or mID == "68" ): 
+			return "exode_card_E068_SyndicateEquipment_DrugNPrime"
+		if ( mID == "exode_card_E069_SyndicateShipBlackLotus" 	or mID == "69" ): 
+			return "exode_card_E069_SyndicateShipBlackLotus"
+		if ( mID == "exode_card_E070_SyndicateEquipmentAutoBlaster"	or mID == "70" ): 
+			return "exode_card_E070_SyndicateEquipmentAutoBlaster"
+		if ( mID == "exode_card_E071_SyndicateEquipment_NarcoWarfare"	or mID == "71" ): 
+			return "exode_card_E071_SyndicateEquipment_NarcoWarfare"
+		if ( mID == "exode_card_E072_SyndicateEquipmentSet_Genefactory" or mID == "72" ): 
+			return "exode_card_E072_SyndicateEquipmentSet_Genefactory"
+		if ( mID == "exode_card_E073_SyndicateHacker" 			or mID == "73" ): 
+			return "exode_card_E073_SyndicateHacker"
+		if ( mID == "exode_card_E074_SyndicateLeader" 			or mID == "74" ): 
+			return "exode_card_E074_SyndicateLeader"
+		if ( mID == "exode_card_E075_SyndicateTransactor" 		or mID == "75" ): 
+			return "exode_card_E075_SyndicateTransactor"
+		if ( mID == "exode_card_E076_SyndicateTrooper" 		or mID == "76" ): 
+			return "exode_card_E076_SyndicateTrooper"
+		if ( mID == "exode_card_E077_SyndicateAyumi" 			or mID == "77" ): 
+			return "exode_card_E077_SyndicateAyumi"
+		if ( mID == "exode_card_E078_SyndicateYakuzaNoble" 		or mID == "78" ): 
+			return "exode_card_E078_SyndicateYakuzaNoble"
+		if ( mID == "exode_card_E079_SyndicateYakuzaSniper" 		or mID == "79" ): 
+			return "exode_card_E079_SyndicateYakuzaSniper"
+		if ( mID == "exode_card_E080_TheKumicho" 			or mID == "80" ): 
+			return "exode_card_E080_TheKumicho"
+		if ( mID == "exode_card_E081_RebelGeneral" 			or mID == "81" ): 
+			return "exode_card_E081_RebelGeneral"
+		if ( mID == "exode_card_E082_AlannaVos" 			or mID == "82" ): 
+			return "exode_card_E082_AlannaVos"
+		if ( mID == "exode_card_E083_Sh4rken" 				or mID == "83" ): 
+			return "exode_card_E083_Sh4rken"
+		if ( mID == "exode_card_E084_TheAI" 				or mID == "84" ): 
+			return "exode_card_E084_TheAI"
+		if ( mID == "exode_card_E085_Apprentice" 			or mID == "85" ): 
+			return "exode_card_E085_Apprentice"
+		if ( mID == "exode_card_E086_Cranium" 				or mID == "86" ): 
+			return "exode_card_E086_Cranium"
+		if ( mID == "exode_card_E087_Cryptoeater" 			or mID == "87" ): 
+			return "exode_card_E087_Cryptoeater"
+		if ( mID == "exode_card_E088_originRepentantPirate" 		or mID == "88" ): 
+			return "exode_card_E088_originRepentantPirate"
+		if ( mID == "exode_card_E089_shipColombus" 			or mID == "89" ): 
+			return "exode_card_E089_shipColombus"
+		if ( mID == "exode_card_E090_shipQuantumSupreme"		or mID == "90" ): 
+			return "exode_card_E090_shipQuantumSupreme"
+		if ( mID == "exode_card_E091_vehicleVelvetStorm" 		or mID == "91" ): 
+			return "exode_card_E091_vehicleVelvetStorm"
+		if ( mID == "exode_card_E092_vehicleVanguard" 			or mID == "92" ): 
+			return "exode_card_E092_vehicleVanguard"
+		if ( mID == "exode_card_E093_equipmentSuitArena" 		or mID == "93" ): 
+			return "exode_card_E093_equipmentSuitArena"
+			
+		if ( mID == "exode_card_E101_originSecretAgent" 		or mID == "101" ): 
+			return "exode_card_E101_originSecretAgent"
+		if ( mID == "exode_card_E102_originStrandedTrader" 		or mID == "102" ): 
+			return "exode_card_E102_originStrandedTrader"
+		if ( mID == "exode_card_E103_originCruiseShipCaptain" 	or mID == "103" ): 
+			return "exode_card_E103_originCruiseShipCaptain"
+		if ( mID == "exode_card_E104_shipArkLifesavior" 		or mID == "104" ): 
+			return "exode_card_E104_shipArkLifesavior"
+		if ( mID == "exode_card_E105_shipCargoKormen" 			or mID == "105" ): 
+			return "exode_card_E105_shipCargoKormen"
+		if ( mID == "exode_card_E106_shipRhino" 			or mID == "106" ): 
+			return "exode_card_E106_shipRhino"
+		if ( mID == "exode_card_E107_shipCargoTaurus" 			or mID == "107" ): 
+			return "exode_card_E107_shipCargoTaurus"
+		if ( mID == "exode_card_E108_shipMyrmidon" 			or mID == "108" ): 
+			return "exode_card_E108_shipMyrmidon"
+		if ( mID == "exode_card_E109_shipAkhen" 			or mID == "109" ): 
+			return "exode_card_E109_shipAkhen"
+		if ( mID == "exode_card_E110_shipCoetus" 			or mID == "110" ): 
+			return "exode_card_E110_shipCoetus"
+		if ( mID == "exode_card_E111_setGeneticianConsole" 		or mID == "111" ): 
+			return "exode_card_E111_setGeneticianConsole"
+		if ( mID == "exode_card_E112_setMilitaryClassA" 		or mID == "112" ): 
+			return "exode_card_E112_setMilitaryClassA"
+		if ( mID == "exode_card_E113_setEisenSuits" 			or mID == "113" ): 
+			return "exode_card_E113_setEisenSuits"
+		if ( mID == "exode_card_E114_vehicleAcheanRacer" 		or mID == "114" ): 
+			return "exode_card_E114_vehicleAcheanRacer"
+		if ( mID == "exode_card_E115_crewSpaceMarshal"			or mID == "115" ): 
+			return "exode_card_E115_crewSpaceMarshal"
+		if ( mID == "exode_card_E116_officerEliza" 			or mID == "116" ): 
+			return "exode_card_E116_officerEliza"
+		if ( mID == "exode_card_E117_crewOksana" 			or mID == "117" ): 
+			return "exode_card_E117_crewOksana"
+		if ( mID == "exode_card_E118_officerNorah" 			or mID == "118" ): 
+			return "exode_card_E118_officerNorah"
+		if ( mID == "exode_card_E119_officerShen" 			or mID == "119" ): 
+			return "exode_card_E119_officerShen"
+		if ( mID == "exode_card_E120_officerStug" 			or mID == "120" ): 
+			return "exode_card_E120_officerStug"
+		if ( mID == "exode_card_E121_crewTyron" 			or mID == "121" ): 
+			return "exode_card_E121_crewTyron"
+		if ( mID == "exode_card_E122_officerAdmiralValro" 		or mID == "122" ): 
+			return "exode_card_E122_officerAdmiralValro"
+		if ( mID == "exode_card_E123_officerNash" 			or mID == "123" ): 
+			return "exode_card_E123_officerNash"
+		if ( mID == "exode_card_E124_crewSpecialInfiltrationAgent" 	or mID == "124" ): 
+			return "exode_card_E124_crewSpecialInfiltrationAgent"
+		if ( mID == "exode_card_E125_crewScarletSarah" 		or mID == "125" ): 
+			return "exode_card_E125_crewScarletSarah"
+		if ( mID == "exode_card_E126_passengerNuclearFamily" 		or mID == "126" ): 
+			return "exode_card_E126_passengerNuclearFamily"
+		if ( mID == "exode_card_E127_installationOctohome" 		or mID == "127" ): 
+			return "exode_card_E127_installationOctohome"
+		if ( mID == "exode_card_E128_installationOrbitalShield" 	or mID == "128" ): 
+			return "exode_card_E128_installationOrbitalShield"
+		if ( mID == "exode_card_E129_installationDreamsphere" 	or mID == "129" ): 
+			return "exode_card_E129_installationDreamsphere"
+		if ( mID == "exode_card_E130_installationGenerator100"	or mID == "130" ): 
+			return "exode_card_E130_installationGenerator100"
+		if ( mID == "exode_card_E131_equipmentFactionCorporate" 	or mID == "131" ): 
+			return "exode_card_E131_equipmentFactionCorporate"
+		if ( mID == "exode_card_E132_equipmentSuitRacer" 		or mID == "132" ): 
+			return "exode_card_E132_equipmentSuitRacer"
+		if ( mID == "exode_card_E133_equipmentSuitSpartan" 		or mID == "133" ): 
+			return "exode_card_E133_equipmentSuitSpartan"
+		if ( mID == "exode_card_E134_equipmentFactionRebellion" 	or mID == "134" ): 
+			return "exode_card_E134_equipmentFactionRebellion"
+		if ( mID == "exode_card_E135_escortSabre" 			or mID == "135" ): 
+			return "exode_card_E135_escortSabre"
+		if ( mID == "exode_card_E136_crewFleshCultLeader" 		or mID == "136" ): 
+			return "exode_card_E136_crewFleshCultLeader"
+		if ( mID == "exode_card_E137_installationDefensiveBunker" 	or mID == "137" ): 
+			return "exode_card_E137_installationDefensiveBunker"
+			
+		if ( mID == "exode_card_E151_officerDrachianColonel" 		or mID == "151" ): 
+			return "exode_card_E151_officerDrachianColonel"
+		if ( mID == "exode_card_E152_crewNomadNavigator" 		or mID == "152" ): 
+			return "exode_card_E152_crewNomadNavigator"
+		if ( mID == "exode_card_E153_crewGeneticianScientist" 	or mID == "153" ): 
+			return "exode_card_E153_crewGeneticianScientist"
+		if ( mID == "exode_card_E154_crewSuntekSurvivor" 		or mID == "154" ): 
+			return "exode_card_E154_crewSuntekSurvivor"
+		if ( mID == "exode_card_E155_crewKilbot" 			or mID == "155" ): 
+			return "exode_card_E155_crewKilbot"
+		if ( mID == "exode_card_E156_crewGalvin" 			or mID == "156" ): 
+			return "exode_card_E156_crewGalvin"
+		if ( mID == "exode_card_E157_escortVega" 			or mID == "157" ): 
+			return "exode_card_E157_escortVega"
+		if ( mID == "exode_card_E158_escortIonguards" 			or mID == "158" ): 
+			return "exode_card_E158_escortIonguards"
+		if ( mID == "exode_card_E159_suntekSphere" 			or mID == "159" ): 
+			return "exode_card_E159_suntekSphere"
+			
+			
+		if ( mID == "exode_card_E181_escortLongswords" 		or mID == "181" ): 
+			return "exode_card_E181_escortLongswords"
+		if ( mID == "exode_card_E182_escortCruiserTaskForce" 		or mID == "182" ): 
+			return "exode_card_E182_escortCruiserTaskForce"
+		if ( mID == "exode_card_E183_escortStarsystemGarrison" 	or mID == "183" ): 
+			return "exode_card_E183_escortStarsystemGarrison"
+		if ( mID == "exode_card_E184_shipBaldie" 			or mID == "184" ): 
+			return "exode_card_E184_shipBaldie"
+		if ( mID == "exode_card_E185_shipClaymoreHyperfighter" 	or mID == "185" ): 
+			return "exode_card_E185_shipClaymoreHyperfighter"
+		if ( mID == "exode_card_E186_shipDrachianMantis" 		or mID == "186" ): 
+			return "exode_card_E186_shipDrachianMantis"
+		if ( mID == "exode_card_E187_vehicleSalazar" 			or mID == "187" ): 
+			return "exode_card_E187_vehicleSalazar"
+		if ( mID == "exode_card_E188_vehicleTraveler2" 		or mID == "188" ): 
+			return "exode_card_E188_vehicleTraveler2"
+		if ( mID == "exode_card_E189_vehicleSupplyDropship" 		or mID == "189" ): 
+			return "exode_card_E189_vehicleSupplyDropship"
+		if ( mID == "exode_card_E190_vehicleExplorationDropship" 	or mID == "190" ): 
+			return "exode_card_E190_vehicleExplorationDropship"
+		if ( mID == "exode_card_E191_vehicleZandratti" 		or mID == "191" ): 
+			return "exode_card_E191_vehicleZandratti"
+		if ( mID == "exode_card_E192_vehicleSecurityDrone" 		or mID == "192" ): 
+			return "exode_card_E192_vehicleSecurityDrone"
+		if ( mID == "exode_card_E193_vehiclePantherBike" 		or mID == "193" ): 
+			return "exode_card_E193_vehiclePantherBike"
+			
+		if ( mID == "exode_card_E201_setMedicalBay" 			or mID == "201" ): 
+			return "exode_card_E201_setMedicalBay"
+		if ( mID == "exode_card_E202_equipmentRoboticParts" 		or mID == "202" ): 
+			return "exode_card_E202_equipmentRoboticParts"
+		if ( mID == "exode_card_E203_equipmentEnergyCells" 		or mID == "203" ): 
+			return "exode_card_E203_equipmentEnergyCells"
+		if ( mID == "exode_card_E204_equipmentShipConstructionParts"	or mID == "204" ): 
+			return "exode_card_E204_equipmentShipConstructionParts"
+		if ( mID == "exode_card_E205_equipmentUniversalFixer" 	or mID == "205" ): 
+			return "exode_card_E205_equipmentUniversalFixer"
+		if ( mID == "exode_card_E206_equipmentLonestar" 		or mID == "206" ): 
+			return "exode_card_E206_equipmentLonestar"
+		if ( mID == "exode_card_E207_equipmentChipsAndData" 		or mID == "207" ): 
+			return "exode_card_E207_equipmentChipsAndData"
+		if ( mID == "exode_card_E208_equipmentCorporate" 		or mID == "208" ): 
+			return "exode_card_E208_equipmentCorporate"
+		if ( mID == "exode_card_E209_equipmentEisenSuit" 		or mID == "209" ): 
+			return "exode_card_E209_equipmentEisenSuit"
+		if ( mID == "exode_card_E210_equipmentDrachianSuit" 		or mID == "210" ): 
+			return "exode_card_E210_equipmentDrachianSuit"
+		if ( mID == "exode_card_E211_equipmentMilitarySuit" 		or mID == "211" ): 
+			return "exode_card_E211_equipmentMilitarySuit"
+		if ( mID == "exode_card_E212_equipmentPlanetscan" 		or mID == "212" ): 
+			return "exode_card_E212_equipmentPlanetscan"
+		if ( mID == "exode_card_E213_equipmentRimscan" 		or mID == "213" ): 
+			return "exode_card_E213_equipmentRimscan"
+		if ( mID == "exode_card_E214_equipmentDesigner" 		or mID == "214" ): 
+			return "exode_card_E214_equipmentDesigner"
+		if ( mID == "exode_card_E215_equipmentIdentificationMatrix" 	or mID == "215" ): 
+			return "exode_card_E215_equipmentIdentificationMatrix"
+			
+		if ( mID == "exode_card_E221_crewDrachianCommissar" 		or mID == "221" ): 
+			return "exode_card_E221_crewDrachianCommissar"
+		if ( mID == "exode_card_E222_crewFederalAgent" 		or mID == "222" ): 
+			return "exode_card_E222_crewFederalAgent"
+		if ( mID == "exode_card_E223_crewCorporateBodyguard" 		or mID == "223" ): 
+			return "exode_card_E223_crewCorporateBodyguard"
+		if ( mID == "exode_card_E224_crewFederalMarine" 		or mID == "224" ): 
+			return "exode_card_E224_crewFederalMarine"
+		if ( mID == "exode_card_E225_crewFederalPolice" 		or mID == "225" ): 
+			return "exode_card_E225_crewFederalPolice"
+		if ( mID == "exode_card_E226_crewDrachianTrooper" 		or mID == "226" ): 
+			return "exode_card_E226_crewDrachianTrooper"
+		if ( mID == "exode_card_E227_crewCorneredRebelAgent" 		or mID == "227" ): 
+			return "exode_card_E227_crewCorneredRebelAgent"
+		if ( mID == "exode_card_E228_passengerDangerous" 		or mID == "228" ): 
+			return "exode_card_E228_passengerDangerous"
+		if ( mID == "exode_card_E229_passengerUnstable" 		or mID == "229" ): 
+			return "exode_card_E229_passengerUnstable"
+		if ( mID == "exode_card_E230_crewMaintenanceDroid" 		or mID == "230" ): 
+			return "exode_card_E230_crewMaintenanceDroid"
+		if ( mID == "exode_card_E231_passengerScienceStudent" 	or mID == "231" ): 
+			return "exode_card_E231_passengerScienceStudent"
+		if ( mID == "exode_card_E232_passengerSocialite" 		or mID == "232" ): 
+			return "exode_card_E232_passengerSocialite"
+		if ( mID == "exode_card_E233_passengerTechExpert" 		or mID == "233" ): 
+			return "exode_card_E233_passengerTechExpert"
+			
+		if ( mID == "exode_card_E235_crewTriskan" 			or mID == "235" ): 
+			return "exode_card_E235_crewTriskan"
+		if ( mID == "exode_card_E236_crewFleshCult"			or mID == "236" ): 
+			return "exode_card_E236_crewFleshCult"
+		if ( mID == "exode_card_E237_crewFleshCultScientist" 		or mID == "237" ): 
+			return "exode_card_E237_crewFleshCultScientist"
+			
+		if ( mID == "exode_card_E241_installationDrillingMachine" 	or mID == "drill"			or mID == "drilling machine"			or mID == "241" ): 
+			return "exode_card_E241_installationDrillingMachine"
+		if ( mID == "exode_card_E242_installationRadarArray" 		or mID == "242" ): 
+			return "exode_card_E242_installationRadarArray"
+		if ( mID == "exode_card_E243_installationGenerator20" 	or mID == "243" ): 
+			return "exode_card_E243_installationGenerator20"
+		if ( mID == "exode_card_E244_installationTomStarter" 		or mID == "244" ): 
+			return "exode_card_E244_installationTomStarter"
+		if ( mID == "exode_card_E245_installationLiveBlock" 		or mID == "245" ): 
+			return "exode_card_E245_installationLiveBlock"
+		if ( mID == "exode_card_E246_installationBiodomes" 		or mID == "246" ): 
+			return "exode_card_E246_installationBiodomes"
+		if ( mID == "exode_card_E247_installationTurret" 		or mID == "247" ): 
+			return "exode_card_E247_installationTurret"
+		if ( mID == "exode_card_E248_layoutProtectionWalls" 		or mID == "248" ): 
+			return "exode_card_E248_layoutProtectionWalls"
+		if ( mID == "exode_card_E249_layoutUnderground" 		or mID == "249" ): 
+			return "exode_card_E249_layoutUnderground"
+		if ( mID == "exode_card_E250_interiorLabEquipment" 		or mID == "250" ): 
+			return "exode_card_E250_interiorLabEquipment"
+		if ( mID == "exode_card_E251_interiorManagementConsole" 	or mID == "251" ): 
+			return "exode_card_E251_interiorManagementConsole"
+		if ( mID == "exode_card_E252_interiorComputerRoom" 		or mID == "252" ): 
+			return "exode_card_E252_interiorComputerRoom"
+		if ( mID == "exode_card_E253_installationMultipurpose" 	or mID == "253" ): 
+			return "exode_card_E253_installationMultipurpose"
+		if ( mID == "exode_card_E254_installationCommunicationArray"	or mID == "254" ): 
+			return "exode_card_E254_installationCommunicationArray"
+		if ( mID == "exode_card_E255_interiorCuves" 			or mID == "255" ): 
+			return "exode_card_E255_interiorCuves"
+		if ( mID == "exode_card_E256_installationPreservationDome"	or mID == "256" ): 
+			return "exode_card_E256_installationPreservationDome"
+		if ( mID == "exode_card_E257_installationStorage" 		or mID == "257" ): 
+			return "exode_card_E257_installationStorage"
+		if ( mID == "exode_card_E258_equipmentTomEssentialsHappyFood"	or mID == "258" ): 
+			return "exode_card_E258_equipmentTomEssentialsHappyFood"
+		if ( mID == "exode_card_E259_equipmentTomEssentialsHappyAir"	or mID == "259" ): 
+			return "exode_card_E259_equipmentTomEssentialsHappyAir"
+		if ( mID == "exode_card_E260_equipmentTomEssentialsSurvivor"	or mID == "260" ): 
+			return "exode_card_E260_equipmentTomEssentialsSurvivor"
+		if ( mID == "exode_card_E261_actionImmediateOrder"		or mID == "261" ): 
+			return "exode_card_E261_actionImmediateOrder"
+		return ""
+		
