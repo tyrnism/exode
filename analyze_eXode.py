@@ -2,6 +2,7 @@ import os.path
 
 import nextcord
 from nextcord.ext import commands
+import cst_exode
 
 ##############################################################################################
 	
@@ -18,6 +19,11 @@ def main():
 	@client.event
 	async def on_ready():
 		print('We have logged in as {0.user}'.format(client))
+
+	client.run(cst_exode.BOT_TOKEN_ANALYSER)
+
+if __name__ == '__main__':
+	main()
 
 ##############################################################################################
 """
