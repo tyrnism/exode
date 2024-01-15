@@ -63,7 +63,7 @@ class lib_monitoring:
 		nodelist.update_nodes()
 		nodes = nodelist.get_hive_nodes()
 		nodes.remove("https://api.hive.blog")
-		bHive = Hive(node=nodes)
+		bHive = Hive(node=nodes[0])
 		print ( nodes )
 		print("Hive loaded?",bHive.is_hive)
 		self.Hive = bHive
