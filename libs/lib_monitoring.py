@@ -62,7 +62,7 @@ class lib_monitoring:
 		nodelist = NodeList()
 		nodelist.update_nodes()
 		nodes = nodelist.get_hive_nodes()
-		bHive = Hive(node=nodes)
+		bHive = Hive(node=nodes[0])
 		print ( nodes )
 		print("Hive loaded?",bHive.is_hive)
 		self.Hive = bHive
@@ -1624,7 +1624,7 @@ class lib_monitoring:
 			iLastBlock = min(iLastBlock,iFirstBlock+block_step)
 			print(f"Loading from {iFirstBlock} to {iLastBlock}")
 			# Loop over blocks
-			for fBlock in Blocks(iFirstBlock, count=block_step):
+			for fBlock in Blocks(iFirstBlock, count=block_step, blockchain_instance=bBlockC):
 				tBlock = fBlock.block_num
 
 				if ( int(tBlock) > int(iLastBlock) ):
@@ -1701,7 +1701,7 @@ class lib_monitoring:
 			await self.disc_connect()
 			
 		#Get get_current_block
-		bBlockC = Blockchain()
+		bBlockC = Blockchain(blockchain_instance=self.Hive)
 		mysql = lib_mysql(db_user=cst_exode.DB_USER, db_version=cst_exode.DB_NAME, db_password=cst_exode.DB_PASS)
 
 		if self.fStart:
