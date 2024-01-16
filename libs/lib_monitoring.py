@@ -346,7 +346,7 @@ class lib_monitoring:
 			for iAsset in range(len(l_asset_uids)):
 				lib_database.db_TransferTX_Add( tx_auth=tVAuth, tx_type=tVId, tx_block=tBlock, tx_id=l_sale_txid, player_from=l_asset_seller, player_to="market", card_id=l_asset_ids[iAsset], card_uid=l_asset_uids[iAsset], price=l_sale_price, mysql=mysql )
 			if ( not self.fLoadMintOnly ):
-				tTime = Block(tBlock).time()
+				tTime = Block(tBlock, blockchain_instance=self.Hive).time()
 				for iAsset in range(len(l_asset_uids)):
 					bOK = self.db_Sale_Apply_New( sale_seller=l_asset_seller, asset_id=l_asset_ids[iAsset], asset_uid=l_asset_uids[iAsset], sale_block=tBlock, sale_time=tTime, sale_tx=l_sale_txid, sale_price=l_sale_price, sale_sold=0, sale_buyer="", mysql=mysql )
 
@@ -436,7 +436,7 @@ class lib_monitoring:
 			lib_database.db_TransferTX_Add( tx_auth=tVAuth, tx_type=tVId, tx_block=tBlock, tx_id=l_sale_txid, player_from=l_asset_seller, player_to=l_asset_seller, card_id=l_asset_id, card_uid=l_asset_uid, price=0.0, mysql=mysql )
 			
 			if ( not self.fLoadMintOnly ):	
-				tTime = Block(tBlock).time()
+				tTime = Block(tBlock, blockchain_instance=self.Hive).time()
 				bOK = self.db_Sale_Apply_Cancel( sale_seller=l_asset_seller, asset_id=l_asset_id, asset_uid=l_asset_uid, sale_block=tBlock, sale_time=tTime, sale_tx=l_sale_txid, mysql=mysql )
 				
 			if ( not bOK ):
@@ -761,7 +761,7 @@ class lib_monitoring:
 					
 					if ( not self.fLoadMintOnly ):
 						# Cancel sale if any			
-						tTime = Block(tBlock).time()
+						tTime = Block(tBlock, blockchain_instance=self.Hive).time()
 						
 						bOK = self.db_Sale_Apply_Cancel( sale_seller=mFrom, asset_id=mID, asset_uid=mUID, sale_block=tBlock, sale_time=tTime, sale_tx=mTxId, transfert_cancel=True, mysql=mysql )
 						
@@ -794,7 +794,7 @@ class lib_monitoring:
 					lib_database.db_TransferTX_Add( tx_auth=tFrom, tx_type=tType, tx_block=tBlock, tx_id=mTxId, player_from=mFrom, player_to=tTo, card_id=mID, card_uid=mUID, price=0.0, mysql=mysql )
 						
 					if ( not self.fLoadMintOnly ):				
-						tTime = Block(tBlock).time()
+						tTime = Block(tBlock, blockchain_instance=self.Hive).time()
 						(is_pack, asset_name, asset_rank, asset_num) = lib_exode.ex_GetAssetDetails(mID) 
 					
 						sInfo = self.db_Sale_Apply_Sold( sale_seller=mFrom, asset_id=mID, asset_uid=mUID, sale_block=tBlock, sale_time=tTime, sale_tx=mTxId, sale_sold=1, sale_buyer=tTo, mysql=mysql )
@@ -1624,7 +1624,7 @@ class lib_monitoring:
 			iLastBlock = min(iLastBlock,iFirstBlock+block_step)
 			print(f"Loading from {iFirstBlock} to {iLastBlock}")
 			# Loop over blocks
-			for fBlock in Blocks(iFirstBlock, count=block_step, blockchain_instance=bBlockC):
+			for fBlock in Blocks(iFirstBlock, count=block_step, blockchain_instance=self.Hive):
 				tBlock = fBlock.block_num
 
 				if ( int(tBlock) > int(iLastBlock) ):
