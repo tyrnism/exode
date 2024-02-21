@@ -10,6 +10,7 @@ from lib_monitoring import lib_monitoring
 		
 ##############################################################################################
 error_count = 0
+wait_count = 0
 
 def main():
 	intents = nextcord.Intents.default()
@@ -26,7 +27,12 @@ def main():
 
 	@tasks.loop(minutes=1)
 	async def read_exode():
-		global error_count
+		global error_count, wait_count
+
+		if wait_count > 0:
+			print("Waiting")
+			wait_count -= 1
+			return
 		
 		try:
 			# Check for stop order	
@@ -59,6 +65,7 @@ def main():
 					await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MARKET)
 					await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_MINT)
 					await monitor.disc_send_msg(msg, monitor.DISC_CHANNELS_PING)	
+					wait_count = 10
 
 				error_count += 1
 
