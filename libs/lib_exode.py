@@ -93,6 +93,11 @@ def ex_GetAssetDetails( mID ):
 		return (True, "Alpha Promo Character Pack [Suntek Survivor]",		NO_RARITY, 		0)
 	if ( mID == "exode_alpha_character_pack_drachian" ):
 		return (True, "Alpha Promo Character Pack [Drachian Colonel]",		NO_RARITY, 		0)
+	
+	if ( mID == "exode_pack_currency_200" ):
+		return (True, "Credits pack [4400 EXOCREDITS + 1 Unique Epic]",		NO_RARITY, 		0)
+	if ( mID == "exode_pack_currency_1000" ):
+		return (True, "Credits pack [25.5k EXOCREDITS + 1 Unique Elite Epic]",		NO_RARITY, 		0)
 
 	if ( mID == "exode_card_001_originNavy" 						or mID == "exode_card_E001_originNavy" ):
 		return (False, "Navy Lieutenant [Origin]", 							EPIC_CARD, 		1)	
@@ -631,6 +636,12 @@ def ex_GetAssetID( mID: str, mElite: bool = False ):
 			return "exode_alpha_character_pack_suntek"
 		if ( mID == "exode_alpha_character_pack_drachian"	or mID == "drachian pack"		or mID == "drachian promo pack" ):
 			return "exode_alpha_character_pack_drachian"
+		
+		if ( mID == "exode_pack_currency_200"	or mID == "4400 credits pack" ):
+			return "exode_pack_currency_200"
+		
+		if ( mID == "exode_pack_currency_1000"	or mID == "22.5k credits pack" ):
+			return "exode_pack_currency_1000"
 			
 		if ( mID == "exode_card_001_originNavy"		or mID == "navy lieutenant"		or mID == "military origin"		or mID == "1" ): 	
 			return "exode_card_001_originNavy"		

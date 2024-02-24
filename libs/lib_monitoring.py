@@ -62,6 +62,7 @@ class lib_monitoring:
 		nodelist = NodeList()
 		nodelist.update_nodes()
 		nodes = nodelist.get_hive_nodes()
+		#nodes.remove("")
 		bHive = Hive(node=nodes[0])
 		print ( nodes )
 		print("Hive loaded?",bHive.is_hive)
@@ -604,7 +605,9 @@ class lib_monitoring:
 					iPack_nb = len(l_card_ids)/2
 				elif (	   l_source_id == "exode_alpha_character_pack_nomad"
 					or l_source_id == "exode_alpha_character_pack_genetician"
-					or l_source_id == "exode_alpha_character_pack_drachian" ):
+					or l_source_id == "exode_alpha_character_pack_drachian"
+					or l_source_id == "exode_pack_currency_200"
+					or l_source_id == "exode_pack_currency_1000" ):
 					iPack_nb = len(l_card_ids)
 				elif (	   l_source_id == "exode_alpha_character_pack_suntek" ):
 					iPack_nb = len(l_card_ids)/2
