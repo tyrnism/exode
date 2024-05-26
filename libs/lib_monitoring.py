@@ -62,9 +62,14 @@ class lib_monitoring:
 		nodelist = NodeList()
 		nodelist.update_nodes()
 		nodes = nodelist.get_hive_nodes()
-		#nodes.remove("")
-		bHive = Hive(node=nodes[0])
-		print ( nodes )
+		nodes.remove("https://api.c0ff33a.uk")
+
+		default_node = "https://api.openhive.network"
+		if default_node in nodes:
+			bHive = Hive(node=default_node)
+		else:
+			print(nodes)
+			bHive = Hive(node=nodes[0])
 		print("Hive loaded?",bHive.is_hive)
 		self.Hive = bHive
 
