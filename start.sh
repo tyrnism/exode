@@ -1,3 +1,4 @@
-source env.sh
+#!/bin/bash
 
-python3 -u read_eXode.py
+screen -dmS EXODE_READ ./start_read.sh
+screen -dmS EXODE_ANALYSIS ./start_analysis.sh
