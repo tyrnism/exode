@@ -622,7 +622,7 @@ class lib_monitoring:
 					iPack_nb = len(l_card_ids)/5
 				elif (	   l_source_id == "exode_alpha_support_tom" ):
 					iPack_nb = len(l_card_ids)/3	
-				elif (	   l_source_id == "exode_card_261_actionImmediateOrder" ):
+				elif (	l_source_id[:len("exode_card")] == "exode_card" ):
 					#ignore
 					iPack_nb = 0					
 				else:
