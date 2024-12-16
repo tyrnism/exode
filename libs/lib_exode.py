@@ -584,6 +584,8 @@ def ex_GetAssetDetails( mID ):
 		return (False, "Intelligent Equipment (x5)",						RARE_CARD,		538)
 	if ( mID == "exode_card_539_starship_narazuStealthCorvette"  	or mID == "exode_card_E539_starship_narazuStealthCorvette" ):
 		return (False, "Narazu Stealth Corvette",							EPIC_CARD,		539)
+	if ( mID == "exode_card_541_vehicle_deployableOmnisiteTerrabot" or mID == "exode_card_E541_vehicle_deployableOmnisiteTerrabot" ):
+		return (False, "Deployable Omnsite Terrabot (DEPOT)",				EPIC_CARD,		541)
 
 	print(mID)
 	is_pack = mID[:len("exode_card")] != "exode_card"
