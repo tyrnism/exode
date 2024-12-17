@@ -482,6 +482,8 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 	
 	msg = ""
 	(is_pack, card_name, card_rank, card_num) = lib_exode.ex_GetAssetDetails(card_id)
+	if not card_elite:
+		card_elite = lib_exode.ex_IsElite(card_id)
 	
 	# Mint here
 	db_Card_Mint( card_owner=card_owner, card_id=card_id, card_num=card_num, card_uid=card_uid, card_mint=card_mint, card_elite=card_elite, card_bound=card_bound, card_block=card_block, card_minter=card_owner, mysql=mysql )
