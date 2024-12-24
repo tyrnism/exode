@@ -589,9 +589,8 @@ class lib_monitoring:
 				#print( 'new', mTxId, l_owner, l_pack_ids, l_card_ids, l_card_uids, l_card_elite, l_source_id, l_source_uids )	
 				if ( l_source_id == "exode_alpha_booster" ):
 					iPack_nb = len(l_card_ids)/5
-				elif (	   l_source_id == "exode_alpha_contract_rekatron" 
-					or l_source_id == "exode_alpha_contract_syndicate" 
-					or l_source_id == "exode_alpha_contract_tom" ):
+				elif ( l_source_id[:len("exode_alpha_contract")] == "exode_alpha_contract"
+					or l_source_id[:len("exode_beta_contract")] == "exode_beta_contract"):
 					#Ignore
 					iPack_nb = 0
 				elif (     l_source_id == "exode_alpha_starter_4" ):
