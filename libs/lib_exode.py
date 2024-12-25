@@ -630,6 +630,8 @@ def ex_GetAssetDetails_List(mID):
 	if ( mID == "exode_card_6021_holocube_andromedaKids_01" 				or mID == "exode_card_E6021_holocube_andromedaKids_01" ):
 		return (False, "Andromeda Kids - Season 1- War Against the Burloks",				RARE_CARD,			6021)
 	
+	if ( mID == "exode_card_6041_holocube_oceanBeasts_01" 					or mID == "exode_card_E6041_holocube_oceanBeasts_01" ):
+		return (False, "True Ocean Beast (1), The First Era",								RARE_CARD,			6041)
 	if ( mID == "exode_card_6051_holocube_plantManEater_04" 				or mID == "exode_card_E6051_holocube_plantManEater_04" ):
 		return (False, "True Beast (4) - The Plant Man-Eater",								LEGENDARY_CARD,		6051)
 	
