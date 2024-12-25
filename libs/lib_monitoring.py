@@ -118,10 +118,6 @@ class lib_monitoring:
 			except:
 				self.MINT_NUM_NOSOURCE[ asset_id ] = 0	
 				card_ntot_mint_no_source = 0
-
-			card_elite_msg = ""
-			if ( asset_elite == 1 ):
-				card_elite_msg = "<:exoelite:716334248524775485> Elite "
 						
 			msg_rarity = "Common"
 			if ( asset_rank == 1 ):
@@ -140,11 +136,11 @@ class lib_monitoring:
 			print ( "mint", asset_mint, "uid", asset_uid)		
 								
 			if ( asset_nb == 1 ):
-				msg = ":blue_square: {seller} listed 1 **{elite}{name}** [*{rarity}*]  (**{mint}**/{ntot_mint}{missing_mint} *uid={muid})* for **${price}** (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller, 
-						name=asset_name, rarity=msg_rarity, mint=asset_mint, missing_mint=msg_missing_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, muid=asset_uid, price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
+				msg = ":blue_square: {seller} listed 1 **{name}** [*{rarity}*]  (**{mint}**/{ntot_mint}{missing_mint} *uid={muid})* for **${price}** (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller, 
+						name=asset_name, rarity=msg_rarity, mint=asset_mint, missing_mint=msg_missing_mint, ntot_mint=card_ntot_mint, muid=asset_uid, price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 			else:						
-				msg = ":blue_square: {seller} listed {nb} **{elite}{name}** [*{rarity}*] for **${price}** (min. mint is **{mint}**/{ntot_mint}{missing_mint} *uid={muid}*) (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller,
-						nb=asset_nb, elite=card_elite_msg, missing_mint=msg_missing_mint, name=asset_name, rarity=msg_rarity, mint=asset_mint, ntot_mint=card_ntot_mint, muid=asset_uid,
+				msg = ":blue_square: {seller} listed {nb} **{name}** [*{rarity}*] for **${price}** (min. mint is **{mint}**/{ntot_mint}{missing_mint} *uid={muid}*) (avg sold price: **${sold_price:.2f}**, last sold price: **${last_price:.2f}**)".format(seller=sale_seller,
+						nb=asset_nb, missing_mint=msg_missing_mint, name=asset_name, rarity=msg_rarity, mint=asset_mint, ntot_mint=card_ntot_mint, muid=asset_uid,
 						price=sale_price,sold_price=mSoldPrice,last_price=mLastPrice)
 		return msg
 
@@ -481,11 +477,7 @@ class lib_monitoring:
 				msg_missing_mint = ""
 				if ( card_ntot_mint_no_source > 0 ):
 					msg_missing_mint = f"(+{card_ntot_mint_no_source})"
-																						
-				card_elite_msg = ""
-				if ( card_elite == 1 ):
-					card_elite_msg = "<:exoelite:716334248524775485> Elite "
-					
+																									
 				msg_rarity = "Common"
 				if ( asset_rank == 1 ):
 					msg_rarity = "Rare"
@@ -496,8 +488,8 @@ class lib_monitoring:
 				elif ( asset_rank == -1 ):
 					msg_rarity = "???"
 				
-				lOut = ":purple_square: {seller} delisted 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint} *uid={muid}*)".format(seller=l_asset_seller, 
-								name=card_name, rarity=msg_rarity, mint=card_mint, missing_mint=msg_missing_mint, elite=card_elite_msg, ntot_mint=card_ntot_mint, 
+				lOut = ":purple_square: {seller} delisted 1 **{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint} *uid={muid}*)".format(seller=l_asset_seller, 
+								name=card_name, rarity=msg_rarity, mint=card_mint, missing_mint=msg_missing_mint, ntot_mint=card_ntot_mint, 
 								muid=card_muid)
 				tMSGOut.append(lOut)
 						
@@ -841,7 +833,6 @@ class lib_monitoring:
 							
 							cInfo = lib_database.db_Card_GetDetails( card_uid=mUID, mysql=mysql )
 							
-							card_elite     = cInfo['elite']
 							card_mint      = cInfo['mint']					
 							card_name      = asset_name
 							try:
@@ -861,11 +852,7 @@ class lib_monitoring:
 							msg_missing_mint=""
 							if ( card_ntot_mint_no_source > 0 ):
 								msg_missing_mint = f"(+{card_ntot_mint_no_source})"
-									
-							card_elite_msg = ""
-							if ( card_elite == 1 ):
-								card_elite_msg = "<:exoelite:716334248524775485> Elite "
-								
+																	
 							msg_rarity = "Common"
 							if ( asset_rank == 1 ):
 								msg_rarity = "Rare"
@@ -876,8 +863,8 @@ class lib_monitoring:
 							elif ( asset_rank == -1 ):
 								msg_rarity = "???"
 												
-							lOut = ":green_square: {buyer} bought 1 **{elite}{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint}  *uid={muid}*) from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=card_name,
-										 rarity=msg_rarity, elite=card_elite_msg, mint=card_mint, ntot_mint=card_ntot_mint, missing_mint=msg_missing_mint, muid=mUID, seller=asset_seller, price=asset_price,sold_price=mSoldPrice)
+							lOut = ":green_square: {buyer} bought 1 **{name}** [*{rarity}*] (**{mint}**/{ntot_mint}{missing_mint}  *uid={muid}*) from {seller} for **${price}** (avg sold price is **${sold_price:.2f}**)".format(buyer=tTo, name=card_name,
+										 rarity=msg_rarity, mint=card_mint, ntot_mint=card_ntot_mint, missing_mint=msg_missing_mint, muid=mUID, seller=asset_seller, price=asset_price,sold_price=mSoldPrice)
 							if ( lOut != "" ):
 								tMSGOut.append(lOut)
 						
@@ -1048,9 +1035,9 @@ class lib_monitoring:
 		(is_pack, card_name, card_rank, card_num) = lib_exode.ex_GetAssetDetails(card_id)
 		if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) or (card_rank == -1) ):
 			if ( card_elite == 1 ):
-				msg_elite = "an **<:exoelite:716334248524775485> Elite "
+				msg_prefix = "an"
 			else:
-				msg_elite = "a **"
+				msg_prefix = "a"
 					
 			msg_rarity = "Common"
 			if ( card_rank == 1 ):
@@ -1062,7 +1049,7 @@ class lib_monitoring:
 			elif ( card_rank == -1 ):
 				msg_rarity = "???"
 				
-			msg = ":fire: {player} burn {elite}{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid})*".format(player=card_burner,elite=msg_elite,name=card_name, rarity=msg_rarity, mint=card_mint, uid=card_uid)
+			msg = ":fire: {player} burn {prefix} **{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid})*".format(player=card_burner,prefix=msg_prefix,name=card_name, rarity=msg_rarity, mint=card_mint, uid=card_uid)
 		
 		return msg
 		
@@ -1087,9 +1074,9 @@ class lib_monitoring:
 			(is_pack, card_name, card_rank, card_num) = lib_exode.ex_GetAssetDetails(card_id)
 			if ( card_new_owner == "exoderewardspool" ):
 				if ( card_elite == 1 ):
-					msg_elite = "an **<:exoelite:716334248524775485> Elite "
+					msg_prefix = "an"
 				else:
-					msg_elite = "a **"
+					msg_prefix = "a"
 						
 				msg_rarity = "Common"
 				if ( card_rank == 1 ):
@@ -1101,7 +1088,7 @@ class lib_monitoring:
 				elif ( card_rank == -1 ):
 					msg_rarity = "???"
 					
-				msg = ":gift: {player} gave {elite}{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid})* to the EXODE Reward Pool (*@exoderewardspool*)! :tada:".format(player=card_prev_owner,elite=msg_elite,name=card_name, rarity=msg_rarity, mint=card_mint, uid=card_uid)
+				msg = ":gift: {player} gave {prefix} **{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid})* to the EXODE Reward Pool (*@exoderewardspool*)! :tada:".format(player=card_prev_owner,prefix=msg_prefix,name=card_name, rarity=msg_rarity, mint=card_mint, uid=card_uid)
 			
 		
 		return msg

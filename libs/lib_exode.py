@@ -18,6 +18,17 @@ def ex_IsNameElite( name: str ):
 
 def ex_GetAssetDetails( mID ):
 
+	(is_pack, asset_name, asset_rank, asset_num) = ex_GetAssetDetails_List(mID=mID)
+
+	if ex_IsElite(mID=mID):
+		asset_name = f"<:exoelite:716334248524775485> Elite {asset_name}"
+		if asset_num >= 6000:
+			asset_name += " (Deluxe Edition)"
+
+	return (is_pack, asset_name, asset_rank, asset_num)
+
+def ex_GetAssetDetails_List(mID):
+
 	# rank: 
 	# 0 -> common
 	# 1 -> rare
@@ -586,6 +597,63 @@ def ex_GetAssetDetails( mID ):
 		return (False, "Narazu Stealth Corvette",							EPIC_CARD,		539)
 	if ( mID == "exode_card_541_vehicle_deployableOmnisiteTerrabot" or mID == "exode_card_E541_vehicle_deployableOmnisiteTerrabot" ):
 		return (False, "Deployable Omnisite Terrabot (DEPOT)",				EPIC_CARD,		541)
+	
+
+	if ( mID == "exode_card_601_cm30_nymans_cargo_magnet" 					or mID == "exode_card_E601_cm30_nymans_cargo_magnet" ):
+		return (False, "CM-30 Nymans Cargo Magnet",											RARE_CARD,			601)
+	if ( mID == "exode_card_605_omnitool" 									or mID == "exode_card_E605_omnitool" ):
+		return (False, "Omnitools",															RARE_CARD,			605)
+	if ( mID == "exode_card_606_pills_vitamine" 							or mID == "exode_card_E606_pills_vitamine" ):
+		return (False, "Vitamine Pills",													COMMON_CARD,		606)
+	if ( mID == "exode_card_607_pills_food" 								or mID == "exode_card_E607_pills_food" ):
+		return (False, "Nutritive Pills",													COMMON_CARD,		607)
+	if ( mID == "exode_card_608_pills_immunity" 							or mID == "exode_card_E608_pills_immunity" ):
+		return (False, "Immunity Pills",													RARE_CARD,			608)
+	if ( mID == "exode_card_609_pills_food_advanced" 						or mID == "exode_card_E609_pills_food_advanced" ):
+		return (False, "Food Pills",														EPIC_CARD,			609)
+	
+	if ( mID == "exode_card_6001_holocube_dinnerAdventurer_01" 				or mID == "exode_card_E6001_holocube_dinnerAdventurer_01" ):
+		return (False, "Dinner Adventurer - Season 1 - The Question of Space Tastes",		RARE_CARD,			6001)
+	if ( mID == "exode_card_6002_holocube_dinnerAdventurer_02" 				or mID == "exode_card_E6002_holocube_dinnerAdventurer_02" ):
+		return (False, "Dinner Adventurer - Season 2 - Legendary Recipes",					RARE_CARD,			6002)
+	if ( mID == "exode_card_6003_holocube_dinnerAdventurer_03" 				or mID == "exode_card_E6003_holocube_dinnerAdventurer_03" ):
+		return (False, "Dinner Adventurer - Season 3 - Restaurant of the Apocalypse",		EPIC_CARD,			6003)
+	
+	if ( mID == "exode_card_6032_holocube_doctorTravelSeason_02" 			or mID == "exode_card_E6032_holocube_doctorTravelSeason_02" ):
+		return (False, "Doctor Travel S2 - The Hidden Hours",								RARE_CARD,			6032)
+	
+	if ( mID == "exode_card_6011_holocube_spaceTractor_01" 					or mID == "exode_card_E6011_holocube_spaceTractor_01" ):
+		return (False, "Space Tractor (1) - Episodes 1 to 24 - Planet Evergreen",			RARE_CARD,			6011)	
+	if ( mID == "exode_card_6013_holocube_spaceTractor_03" 					or mID == "exode_card_E6013_holocube_spaceTractor_03" ):
+		return (False, "Space Tractor (3) - Episodes 49 to 72 - The Primordial Roots",		EPIC_CARD,			6013)
+	
+	if ( mID == "exode_card_6021_holocube_andromedaKids_01" 				or mID == "exode_card_E6021_holocube_andromedaKids_01" ):
+		return (False, "Andromeda Kids - Season 1- War Against the Burloks",				RARE_CARD,			6021)
+	
+	if ( mID == "exode_card_6051_holocube_plantManEater_04" 				or mID == "exode_card_E6051_holocube_plantManEater_04" ):
+		return (False, "True Beast (4) - The Plant Man-Eater",								LEGENDARY_CARD,		6051)
+	
+	if ( mID == "exode_card_6061_holocube_operation26_01" 					or mID == "exode_card_E6061_holocube_operation26_01" ):
+		return (False, "Operation 26 (1) - The Devoted",									RARE_CARD,			6061)
+	if ( mID == "exode_card_6062_holocube_operation26_02" 					or mID == "exode_card_E6062_holocube_operation26_02" ):
+		return (False, "Operation 26 (2) - The Secretive",									RARE_CARD,			6062)
+	
+	if ( mID == "exode_card_6071_holocube_legendOfTheTracklans_01" 			or mID == "exode_card_E6071_holocube_legendOfTheTracklans_01" ):
+		return (False, "Legens of the Tracklans (1)",										RARE_CARD,			6071)
+	if ( mID == "exode_card_6073_holocube_legendOfTheTracklans_03" 			or mID == "exode_card_E6073_holocube_legendOfTheTracklans_03" ):
+		return (False, "Revenge of the Tracklans (3)",										EPIC_CARD,			6073)
+	
+	if ( mID == "exode_card_6081_holocube_bizarreBoyz_01" 					or mID == "exode_card_E6081_holocube_bizarreBoyz_01" ):
+		return (False, "The Bizarre Boyz (1) - The Movie)",									RARE_CARD,			6081)
+	
+	if ( mID == "exode_card_6091_holocube_interactive_targetRange_01" 		or mID == "exode_card_E6091_holocube_interactive_targetRange_01" ):
+		return (False, "Interactive Saga (1) - Target Range",								RARE_CARD,			6091)
+	if ( mID == "exode_card_6092_holocube_interactive_investigations_02" 	or mID == "exode_card_E6092_holocube_interactive_investigations_02" ):
+		return (False, "Interactive Saga (2) - Investigations",								RARE_CARD,			6092)	
+	if ( mID == "exode_card_6093_holocube_interactive_adventures_03" 		or mID == "exode_card_E6093_holocube_interactive_adventures_03" ):
+		return (False, "Interactive Saga (3) - Adventures",									RARE_CARD,			6093)
+	if ( mID == "exode_card_6095_holocube_interactive_ninjaSpy_05" 			or mID == "exode_card_E6095_holocube_interactive_ninjaSpy_05" ):
+		return (False, "Interactive Saga (5) - Ninja Spy",									RARE_CARD,			6095)
 
 	print(mID)
 	is_pack = mID[:len("exode_card")] != "exode_card"
