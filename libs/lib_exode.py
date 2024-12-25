@@ -639,6 +639,10 @@ def ex_GetAssetDetails_List(mID):
 	
 	if ( mID == "exode_card_6041_holocube_oceanBeasts_01" 					or mID == "exode_card_E6041_holocube_oceanBeasts_01" ):
 		return (False, "True Ocean Beast (1), The First Era",								RARE_CARD,			6041)
+	if ( mID == "exode_card_6042_holocube_oceanBeasts_02" 					or mID == "exode_card_E6042_holocube_oceanBeasts_02" ):
+		return (False, "True Ocean Beast (2), The Second Era",								RARE_CARD,			6042)
+	if ( mID == "exode_card_6043_holocube_oceanBeasts_03" 					or mID == "exode_card_E6043_holocube_oceanBeasts_03" ):
+		return (False, "True Ocean Beast (3), The Third Generation",						EPIC_CARD,			6043)
 	
 	if ( mID == "exode_card_6051_holocube_plantManEater_04" 				or mID == "exode_card_E6051_holocube_plantManEater_04" ):
 		return (False, "True Beast (4) - The Plant Man-Eater",								LEGENDARY_CARD,		6051)
@@ -647,6 +651,8 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Operation 26 (1) - The Devoted",									RARE_CARD,			6061)
 	if ( mID == "exode_card_6062_holocube_operation26_02" 					or mID == "exode_card_E6062_holocube_operation26_02" ):
 		return (False, "Operation 26 (2) - The Secretive",									RARE_CARD,			6062)
+	if ( mID == "exode_card_6063_holocube_operation26_03" 					or mID == "exode_card_E6063_holocube_operation26_03" ):
+		return (False, "Operation 26 (3) - The Rebels",										EPIC_CARD,			6063)
 	
 	if ( mID == "exode_card_6071_holocube_legendOfTheTracklans_01" 			or mID == "exode_card_E6071_holocube_legendOfTheTracklans_01" ):
 		return (False, "Legens of the Tracklans (1)",										RARE_CARD,			6071)
@@ -675,7 +681,11 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Cosmic Mysteries - Genesis S1",										RARE_CARD,			6101)
 	if ( mID == "exode_card_6102_holocube_cosmicMysteries_02" 				or mID == "exode_card_E6102_holocube_cosmicMysteries_02" ):
 		return (False, "Cosmic Mysteries - Exploration S2",									RARE_CARD,			6102)
+	if ( mID == "exode_card_6103_holocube_cosmicMysteries_03" 				or mID == "exode_card_E6103_holocube_cosmicMysteries_03" ):
+		return (False, "Cosmic Mysteries - Hypergalactic S3",								EPIC_CARD,			6103)
 	
+	if ( mID == "exode_card_6111_holocube_historyAndTraditions_01" 			or mID == "exode_card_E6111_holocube_historyAndTraditions_01" ):
+		return (False, "History and Traditions - S1 Antique Times",							RARE_CARD,			6111)
 	if ( mID == "exode_card_6112_holocube_historyAndTraditions_02" 			or mID == "exode_card_E6112_holocube_historyAndTraditions_02" ):
 		return (False, "History and Traditions - S2 Wars of Napoleon",						RARE_CARD,			6112)
 	if ( mID == "exode_card_6113_holocube_historyAndTraditions_03" 			or mID == "exode_card_E6113_holocube_historyAndTraditions_03" ):
