@@ -601,6 +601,9 @@ def ex_GetAssetDetails_List(mID):
 
 	if ( mID == "exode_card_601_cm30_nymans_cargo_magnet" 					or mID == "exode_card_E601_cm30_nymans_cargo_magnet" ):
 		return (False, "CM-30 Nymans Cargo Magnet",											RARE_CARD,			601)
+	if ( mID == "exode_card_603_holoprojector_cine1" 						or mID == "exode_card_E603_holoprojector_cine1" ):
+		return (False, "CINE-1 Master Holoprojector",										RARE_CARD,			603)
+	
 	if ( mID == "exode_card_605_omnitool" 									or mID == "exode_card_E605_omnitool" ):
 		return (False, "Omnitools",															RARE_CARD,			605)
 	if ( mID == "exode_card_606_pills_vitamine" 							or mID == "exode_card_E606_pills_vitamine" ):
@@ -619,9 +622,6 @@ def ex_GetAssetDetails_List(mID):
 	if ( mID == "exode_card_6003_holocube_dinnerAdventurer_03" 				or mID == "exode_card_E6003_holocube_dinnerAdventurer_03" ):
 		return (False, "Dinner Adventurer - Season 3 - Restaurant of the Apocalypse",		EPIC_CARD,			6003)
 	
-	if ( mID == "exode_card_6032_holocube_doctorTravelSeason_02" 			or mID == "exode_card_E6032_holocube_doctorTravelSeason_02" ):
-		return (False, "Doctor Travel S2 - The Hidden Hours",								RARE_CARD,			6032)
-	
 	if ( mID == "exode_card_6011_holocube_spaceTractor_01" 					or mID == "exode_card_E6011_holocube_spaceTractor_01" ):
 		return (False, "Space Tractor (1) - Episodes 1 to 24 - Planet Evergreen",			RARE_CARD,			6011)	
 	if ( mID == "exode_card_6013_holocube_spaceTractor_03" 					or mID == "exode_card_E6013_holocube_spaceTractor_03" ):
@@ -630,8 +630,12 @@ def ex_GetAssetDetails_List(mID):
 	if ( mID == "exode_card_6021_holocube_andromedaKids_01" 				or mID == "exode_card_E6021_holocube_andromedaKids_01" ):
 		return (False, "Andromeda Kids - Season 1- War Against the Burloks",				RARE_CARD,			6021)
 	
+	if ( mID == "exode_card_6032_holocube_doctorTravelSeason_02" 			or mID == "exode_card_E6032_holocube_doctorTravelSeason_02" ):
+		return (False, "Doctor Travel S2 - The Hidden Hours",								RARE_CARD,			6032)
+	
 	if ( mID == "exode_card_6041_holocube_oceanBeasts_01" 					or mID == "exode_card_E6041_holocube_oceanBeasts_01" ):
 		return (False, "True Ocean Beast (1), The First Era",								RARE_CARD,			6041)
+	
 	if ( mID == "exode_card_6051_holocube_plantManEater_04" 				or mID == "exode_card_E6051_holocube_plantManEater_04" ):
 		return (False, "True Beast (4) - The Plant Man-Eater",								LEGENDARY_CARD,		6051)
 	
@@ -642,6 +646,8 @@ def ex_GetAssetDetails_List(mID):
 	
 	if ( mID == "exode_card_6071_holocube_legendOfTheTracklans_01" 			or mID == "exode_card_E6071_holocube_legendOfTheTracklans_01" ):
 		return (False, "Legens of the Tracklans (1)",										RARE_CARD,			6071)
+	if ( mID == "exode_card_6072_holocube_legendOfTheTracklans_02" 			or mID == "exode_card_E6072_holocube_legendOfTheTracklans_02" ):
+		return (False, "Rise of the Tracklans (2)",											RARE_CARD,			6072)
 	if ( mID == "exode_card_6073_holocube_legendOfTheTracklans_03" 			or mID == "exode_card_E6073_holocube_legendOfTheTracklans_03" ):
 		return (False, "Revenge of the Tracklans (3)",										EPIC_CARD,			6073)
 	

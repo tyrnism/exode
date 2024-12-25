@@ -490,9 +490,9 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 	
 	if ( (card_mint > 0 and card_mint <= 10) or (int(card_elite) == 1) or (card_rank >= 2) or (card_rank == -1) ):
 		if ( int(card_elite) == 1 ):
-			msg_elite = "an **<:exoelite:716334248524775485> Elite "
+			msg_prefix = "an"
 		else:
-			msg_elite = "a **"
+			msg_prefix = "a"
 						
 		msg_rarity = "Common"
 		if ( card_rank == 1 ):
@@ -504,7 +504,7 @@ def db_Card_Apply_Mint( card_owner, card_id, card_uid, card_mint, card_elite, ca
 		elif ( card_rank == -1 ):
 			msg_rarity = "???"
 		
-		msg = ":tada: {player} found {elite}{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid}*)".format(player=card_owner,rarity=msg_rarity, elite=msg_elite,name=card_name, 
+		msg = ":tada: {player} found {prefix} **{name}** [*{rarity}*] (**{mint}**/{mint} *uid={uid}*)".format(player=card_owner,rarity=msg_rarity, prefix=msg_prefix,name=card_name, 
 					mint=card_mint, uid=card_uid)
 	
 	return msg
