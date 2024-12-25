@@ -624,6 +624,8 @@ def ex_GetAssetDetails_List(mID):
 	
 	if ( mID == "exode_card_6011_holocube_spaceTractor_01" 					or mID == "exode_card_E6011_holocube_spaceTractor_01" ):
 		return (False, "Space Tractor (1) - Episodes 1 to 24 - Planet Evergreen",			RARE_CARD,			6011)	
+	if ( mID == "exode_card_6012_holocube_spaceTractor_02" 					or mID == "exode_card_E6012_holocube_spaceTractor_02" ):
+		return (False, "Space Tractor (2) - Episodes 25 to 48 - Against the Monter-Plants",	RARE_CARD,			6012)
 	if ( mID == "exode_card_6013_holocube_spaceTractor_03" 					or mID == "exode_card_E6013_holocube_spaceTractor_03" ):
 		return (False, "Space Tractor (3) - Episodes 49 to 72 - The Primordial Roots",		EPIC_CARD,			6013)
 	
@@ -662,6 +664,14 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Interactive Saga (3) - Adventures",									RARE_CARD,			6093)
 	if ( mID == "exode_card_6095_holocube_interactive_ninjaSpy_05" 			or mID == "exode_card_E6095_holocube_interactive_ninjaSpy_05" ):
 		return (False, "Interactive Saga (5) - Ninja Spy",									RARE_CARD,			6095)
+	if ( mID == "exode_card_6096_holocube_interactive_hackerLevels_06" 		or mID == "exode_card_E6096_holocube_interactive_hackerLevels_06" ):
+		return (False, "Interactive Saga (6) - Hacker Levels",								RARE_CARD,			6096)
+	
+	if ( mID == "exode_card_6101_holocube_cosmicMysteries_01" 				or mID == "exode_card_E6101_holocube_cosmicMysteries_01" ):
+		return (False, "Cosmic Mysteries - Genesis S1",										RARE_CARD,			6101)
+	
+	if ( mID == "exode_card_6112_holocube_historyAndTraditions_02" 			or mID == "exode_card_E6112_holocube_historyAndTraditions_02" ):
+		return (False, "History and Traditions (2) - Wars of Napoleon",						RARE_CARD,			6112)
 
 	print(mID)
 	is_pack = mID[:len("exode_card")] != "exode_card"
