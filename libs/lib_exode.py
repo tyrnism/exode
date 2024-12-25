@@ -636,8 +636,12 @@ def ex_GetAssetDetails_List(mID):
 	if ( mID == "exode_card_6023_holocube_andromedaKids_03" 				or mID == "exode_card_E6023_holocube_andromedaKids_03" ):
 		return (False, "Andromeda Kids - Season 3 - Johny John Pistol",						EPIC_CARD,			6023)
 	
+	if ( mID == "exode_card_6031_holocube_doctorTravelSeason_01" 			or mID == "exode_card_E6031_holocube_doctorTravelSeason_01" ):
+		return (False, "Doctor Travel S1 - Stairs of Beyond",								RARE_CARD,			6031)
 	if ( mID == "exode_card_6032_holocube_doctorTravelSeason_02" 			or mID == "exode_card_E6032_holocube_doctorTravelSeason_02" ):
 		return (False, "Doctor Travel S2 - The Hidden Hours",								RARE_CARD,			6032)
+	if ( mID == "exode_card_6033_holocube_doctorTravelSeason_03" 			or mID == "exode_card_E6033_holocube_doctorTravelSeason_03" ):
+		return (False, "Doctor Travel S3 - The Warped Eye",									EPIC_CARD,			6033)
 	
 	if ( mID == "exode_card_6041_holocube_oceanBeasts_01" 					or mID == "exode_card_E6041_holocube_oceanBeasts_01" ):
 		return (False, "True Ocean Beast (1), The First Era",								RARE_CARD,			6041)
@@ -647,7 +651,7 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "True Ocean Beast (3), The Third Generation",						EPIC_CARD,			6043)
 	
 	if ( mID == "exode_card_6051_holocube_plantManEater_04" 				or mID == "exode_card_E6051_holocube_plantManEater_04" ):
-		return (False, "True Beast (4) - The Plant Man-Eater",								LEGENDARY_CARD,		6051)
+		return (False, "True Beast (4), The Plant Man-Eater",								LEGENDARY_CARD,		6051)
 	
 	if ( mID == "exode_card_6061_holocube_operation26_01" 					or mID == "exode_card_E6061_holocube_operation26_01" ):
 		return (False, "Operation 26 (1) - The Devoted",									RARE_CARD,			6061)
