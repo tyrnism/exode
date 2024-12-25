@@ -630,7 +630,9 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Space Tractor (3) - Episodes 49 to 72 - The Primordial Roots",		EPIC_CARD,			6013)
 	
 	if ( mID == "exode_card_6021_holocube_andromedaKids_01" 				or mID == "exode_card_E6021_holocube_andromedaKids_01" ):
-		return (False, "Andromeda Kids - Season 1- War Against the Burloks",				RARE_CARD,			6021)
+		return (False, "Andromeda Kids - Season 1 - War Against the Burloks",				RARE_CARD,			6021)
+	if ( mID == "exode_card_6022_holocube_andromedaKids_02" 				or mID == "exode_card_E6022_holocube_andromedaKids_02" ):
+		return (False, "Andromeda Kids - Season 2 - The Quest for Krovitor",				RARE_CARD,			6021)
 	
 	if ( mID == "exode_card_6032_holocube_doctorTravelSeason_02" 			or mID == "exode_card_E6032_holocube_doctorTravelSeason_02" ):
 		return (False, "Doctor Travel S2 - The Hidden Hours",								RARE_CARD,			6032)
@@ -666,12 +668,21 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Interactive Saga (5) - Ninja Spy",									RARE_CARD,			6095)
 	if ( mID == "exode_card_6096_holocube_interactive_hackerLevels_06" 		or mID == "exode_card_E6096_holocube_interactive_hackerLevels_06" ):
 		return (False, "Interactive Saga (6) - Hacker Levels",								RARE_CARD,			6096)
+	if ( mID == "exode_card_6097_holocube_interactive_defensiveDome_07" 	or mID == "exode_card_E6097_holocube_interactive_defensiveDome_07" ):
+		return (False, "Interactive Saga (7) - The Defensive Dome",							RARE_CARD,			6097)
 	
 	if ( mID == "exode_card_6101_holocube_cosmicMysteries_01" 				or mID == "exode_card_E6101_holocube_cosmicMysteries_01" ):
 		return (False, "Cosmic Mysteries - Genesis S1",										RARE_CARD,			6101)
+	if ( mID == "exode_card_6102_holocube_cosmicMysteries_02" 				or mID == "exode_card_E6102_holocube_cosmicMysteries_02" ):
+		return (False, "Cosmic Mysteries - Exploration S2",									RARE_CARD,			6102)
 	
 	if ( mID == "exode_card_6112_holocube_historyAndTraditions_02" 			or mID == "exode_card_E6112_holocube_historyAndTraditions_02" ):
-		return (False, "History and Traditions (2) - Wars of Napoleon",						RARE_CARD,			6112)
+		return (False, "History and Traditions - S2 Wars of Napoleon",						RARE_CARD,			6112)
+	if ( mID == "exode_card_6113_holocube_historyAndTraditions_03" 			or mID == "exode_card_E6113_holocube_historyAndTraditions_03" ):
+		return (False, "History and Traditions - S3 Modern Corporations",					EPIC_CARD,			6113)
+	
+	if ( mID == "exode_card_6121_holocube_theHomeSchoolExpert_01" 			or mID == "exode_card_E6121_holocube_theHomeSchoolExpert_01" ):
+		return (False, "The Homeschooling Expert",											RARE_CARD,			6121)
 
 	print(mID)
 	is_pack = mID[:len("exode_card")] != "exode_card"
