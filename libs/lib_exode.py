@@ -635,6 +635,8 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Andromeda Kids - Season 2 - The Quest for Krovitor",				RARE_CARD,			6022)
 	if ( mID == "exode_card_6023_holocube_andromedaKids_03" 				or mID == "exode_card_E6023_holocube_andromedaKids_03" ):
 		return (False, "Andromeda Kids - Season 3 - Johny John Pistol",						EPIC_CARD,			6023)
+	if ( mID == "exode_card_6024_holocube_andromedaKids_04" 				or mID == "exode_card_E6024_holocube_andromedaKids_04" ):
+		return (False, "Andromeda Kids - Season 4 - Spacecalibur",							LEGENDARY_CARD,		6024)
 	
 	if ( mID == "exode_card_6031_holocube_doctorTravelSeason_01" 			or mID == "exode_card_E6031_holocube_doctorTravelSeason_01" ):
 		return (False, "Doctor Travel S1 - Stairs of Beyond",								RARE_CARD,			6031)
