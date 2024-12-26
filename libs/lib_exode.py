@@ -601,6 +601,8 @@ def ex_GetAssetDetails_List(mID):
 
 	if ( mID == "exode_card_601_cm30_nymans_cargo_magnet" 					or mID == "exode_card_E601_cm30_nymans_cargo_magnet" ):
 		return (False, "CM-30 Nymans Cargo Magnet",											RARE_CARD,			601)
+	if ( mID == "exode_card_602_cm50_nymans_magnetic_beam" 					or mID == "exode_card_E602_cm50_nymans_magnetic_beam" ):
+		return (False, "CM-50 Nymans Magnetic Beam",										EPIC_CARD,			602)
 	if ( mID == "exode_card_603_holoprojector_cine1" 						or mID == "exode_card_E603_holoprojector_cine1" ):
 		return (False, "CINE-1 Master Holoprojector",										RARE_CARD,			603)
 	
@@ -644,6 +646,8 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Doctor Travel S2 - The Hidden Hours",								RARE_CARD,			6032)
 	if ( mID == "exode_card_6033_holocube_doctorTravelSeason_03" 			or mID == "exode_card_E6033_holocube_doctorTravelSeason_03" ):
 		return (False, "Doctor Travel S3 - The Warped Eye",									EPIC_CARD,			6033)
+	if ( mID == "exode_card_6034_holocube_doctorTravelSeason_04" 			or mID == "exode_card_E6034_holocube_doctorTravelSeason_04" ):
+		return (False, "Doctor Travel S4 - Dreams of the Space Justicars",					LEGENDARY_CARD,		6034)
 	
 	if ( mID == "exode_card_6041_holocube_oceanBeasts_01" 					or mID == "exode_card_E6041_holocube_oceanBeasts_01" ):
 		return (False, "True Ocean Beast (1), The First Era",								RARE_CARD,			6041)
@@ -653,7 +657,7 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "True Ocean Beast (3), The Third Generation",						EPIC_CARD,			6043)
 	
 	if ( mID == "exode_card_6051_holocube_plantManEater_04" 				or mID == "exode_card_E6051_holocube_plantManEater_04" ):
-		return (False, "True Beast (4), The Plant Man-Eater",								LEGENDARY_CARD,		6051)
+		return (False, "True Beast (4), The Plant Man-Eater",								EPIC_CARD,			6051)
 	
 	if ( mID == "exode_card_6061_holocube_operation26_01" 					or mID == "exode_card_E6061_holocube_operation26_01" ):
 		return (False, "Operation 26 (1) - The Devoted",									RARE_CARD,			6061)
@@ -670,7 +674,7 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Revenge of the Tracklans (3)",										EPIC_CARD,			6073)
 	
 	if ( mID == "exode_card_6081_holocube_bizarreBoyz_01" 					or mID == "exode_card_E6081_holocube_bizarreBoyz_01" ):
-		return (False, "The Bizarre Boyz (1) - The Movie)",									RARE_CARD,			6081)
+		return (False, "The Bizarre Boyz (1) - The Movie",									RARE_CARD,			6081)
 	
 	if ( mID == "exode_card_6091_holocube_interactive_targetRange_01" 		or mID == "exode_card_E6091_holocube_interactive_targetRange_01" ):
 		return (False, "Interactive Saga (1) - Target Range",								RARE_CARD,			6091)
@@ -678,6 +682,8 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Interactive Saga (2) - Investigations",								RARE_CARD,			6092)	
 	if ( mID == "exode_card_6093_holocube_interactive_adventures_03" 		or mID == "exode_card_E6093_holocube_interactive_adventures_03" ):
 		return (False, "Interactive Saga (3) - Adventures",									RARE_CARD,			6093)
+	if ( mID == "exode_card_6094_holocube_interactive_spaceFighter_04" 		or mID == "exode_card_E6094_holocube_interactive_spaceFighter_04" ):
+		return (False, "Interactive Saga (4) - Space Fighters",								RARE_CARD,			6094)
 	if ( mID == "exode_card_6095_holocube_interactive_ninjaSpy_05" 			or mID == "exode_card_E6095_holocube_interactive_ninjaSpy_05" ):
 		return (False, "Interactive Saga (5) - Ninja Spy",									RARE_CARD,			6095)
 	if ( mID == "exode_card_6096_holocube_interactive_hackerLevels_06" 		or mID == "exode_card_E6096_holocube_interactive_hackerLevels_06" ):
