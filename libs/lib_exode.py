@@ -697,6 +697,8 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "Cosmic Mysteries - Exploration S2",									RARE_CARD,			6102)
 	if ( mID == "exode_card_6103_holocube_cosmicMysteries_03" 				or mID == "exode_card_E6103_holocube_cosmicMysteries_03" ):
 		return (False, "Cosmic Mysteries - Hypergalactic S3",								EPIC_CARD,			6103)
+	if ( mID == "exode_card_6104_holocube_cosmicMysteries_04" 				or mID == "exode_card_E6104_holocube_cosmicMysteries_04" ):
+		return (False, "Cosmic Mysteries - Beyond the Wormholes S4",						LEGENDARY_CARD,		6104)
 	
 	if ( mID == "exode_card_6111_holocube_historyAndTraditions_01" 			or mID == "exode_card_E6111_holocube_historyAndTraditions_01" ):
 		return (False, "History and Traditions - S1 Antique Times",							RARE_CARD,			6111)
