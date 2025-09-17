@@ -696,7 +696,7 @@ class lib_monitoring:
 					if ( l_pack_id[iPack] == "" or l_pack_nb[iPack] == "" ):
 						continue
 							
-					lib_database.db_Pack_Apply_Update(pack_owner=l_player, pack_id=l_pack_id[iPack], pack_nb=l_pack_nb[iPack], pack_open=0 )
+					lib_database.db_Pack_Apply_Update(pack_owner=l_player, pack_id=l_pack_id[iPack], pack_nb=l_pack_nb[iPack], pack_open=0, mysql=mysql )
 					
 			elif ( tVId == "exode_reward_medal" ):
 				#exode_reward_medal ['exode_reward_medal', {'recipient': 'raudell', 'medal_title': 'Winner of the Ocean World (Planetary Challenge, July 2020)', 'medal_globalid': '', 'medal_nft': '', 'medal_picture': '', 'tx_id': '', 'app_tx': '3b45b4392dcf1957ead42082a0628552'}]
