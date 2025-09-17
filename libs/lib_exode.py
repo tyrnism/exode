@@ -109,6 +109,10 @@ def ex_GetAssetDetails_List(mID):
 		return (True, "Credits pack [4400 EXOCREDITS + 1 Unique Epic]",		NO_RARITY, 		0)
 	if ( mID == "exode_pack_currency_1000" ):
 		return (True, "Credits pack [25.5k EXOCREDITS + 1 Unique Elite Epic]",		NO_RARITY, 		0)
+	
+	if ( mID == "exode_pack_share_aramea" ):
+		return (True, "Aramea share",										NO_RARITY, 		0)
+
 
 	if ( mID == "exode_card_001_originNavy" 						or mID == "exode_card_E001_originNavy" ):
 		return (False, "Navy Lieutenant [Origin]", 							EPIC_CARD, 		1)	
@@ -767,6 +771,9 @@ def ex_GetAssetID( mID: str, mElite: bool = False ):
 		
 		if ( mID == "exode_pack_currency_1000"	or mID == "22.5k credits pack" ):
 			return "exode_pack_currency_1000"
+
+		if ( mID == "exode_pack_share_aramea" or mID == "aramea share"):
+			return "exode_pack_share_aramea"
 			
 		if ( mID == "exode_card_001_originNavy"		or mID == "navy lieutenant"		or mID == "military origin"		or mID == "1" ): 	
 			return "exode_card_001_originNavy"		
