@@ -65,6 +65,7 @@ class lib_monitoring:
 		nodes.remove("https://api.c0ff33a.uk")
 		nodes.remove("https://rpc.ausbit.dev")
 		nodes.remove("https://api.deathwing.me")
+		nodes.remove("https://hived.emre.sh")
 
 		default_node = None#"https://api.openhive.network"
 		if default_node in nodes:
