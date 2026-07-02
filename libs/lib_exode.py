@@ -114,6 +114,10 @@ def ex_GetAssetDetails_List(mID):
 		return (True, "Aramea share",										NO_RARITY, 		0)
 
 
+	# Special name:
+	if ( mID == "exode_card_134_equipmentFactionRebellion" 			or mID == "exode_card_E134_equipmentFactionRebellion" ):
+		return (False, "The Rebellion Secrets ||\"They knew\"||",			EPIC_CARD,		134)
+	
 	is_pack = True
 	card_num = 0
 
