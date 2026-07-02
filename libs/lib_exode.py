@@ -125,7 +125,7 @@ def ex_GetAssetDetails_List(mID):
 		if mID in lib_exode_ext.global_assets:
 			return (
 				False, 
-				lib_exode_ext.global_assets[mID]['name'],
+				lib_exode_ext.global_assets[mID]['title'],
 				lib_exode_ext.global_assets[mID]['rarity'] - 1,
 				card_num
 			)
