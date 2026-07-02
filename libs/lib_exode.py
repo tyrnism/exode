@@ -40,7 +40,7 @@ def ex_GetAssetDetails_List(mID):
 	RARE_CARD = 1
 	EPIC_CARD = 2
 	LEGENDARY_CARD = 3
-	
+
 	if ( mID == "exode_????_booster" ):
 		return (True, "???? booster",										NO_RARITY, 		0)
 	if ( mID == "exode_alpha_booster" ):
@@ -114,6 +114,22 @@ def ex_GetAssetDetails_List(mID):
 		return (True, "Aramea share",										NO_RARITY, 		0)
 
 
+	is_pack = True
+	card_num = 0
+
+	if mID[:len("exode_card_")] == "exode_card_":
+		is_pack = False
+		card_num = int(mID.split("_")[2])
+
+		import lib_exode_ext
+		if mID in lib_exode_ext.global_assets:
+			return (
+				False, 
+				lib_exode_ext.global_assets[mID]['name'],
+				lib_exode_ext.global_assets[mID]['rarity'] - 1,
+				card_num
+			)
+	
 	if ( mID == "exode_card_001_originNavy" 						or mID == "exode_card_E001_originNavy" ):
 		return (False, "Navy Lieutenant [Origin]", 							EPIC_CARD, 		1)	
 	if ( mID == "exode_card_002_shipArcheon" 						or mID == "exode_card_E002_shipArcheon" ):
@@ -715,8 +731,7 @@ def ex_GetAssetDetails_List(mID):
 		return (False, "The Homeschooling Expert",											RARE_CARD,			6121)
 
 	print(mID)
-	is_pack = mID[:len("exode_card")] != "exode_card"
-	return ( is_pack, mID, -1, 0)
+	return ( is_pack, mID, -1, card_num)
 
 def ex_GetAssetID( mID: str, mElite: bool = False ):
 	
