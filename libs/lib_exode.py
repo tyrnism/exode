@@ -123,7 +123,10 @@ def ex_GetAssetDetails_List(mID):
 
 	if mID[:len("exode_card_")] == "exode_card_":
 		is_pack = False
-		card_num = int(mID.split("_")[2])
+		card_num = mID.split("_")[2]
+		if card_num[0] == "E":
+			card_num = card_num[1:]
+		card_num = int(card_num)
 
 		import lib_exode_ext
 		if mID in lib_exode_ext.global_assets:
